@@ -3,7 +3,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: kpfleming/apaz-test-images:pdns43-python3
+    container: kpfleming/apaz-test-images:pdns4.3-python3
     steps:
     - uses: actions/checkout@v2
 
