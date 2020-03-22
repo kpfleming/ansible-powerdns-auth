@@ -1,4 +1,8 @@
-on: [push]
+on:
+  push:
+    paths:
+    - 'pdns_auth_zone.py'
+    - 'api-swagger.json'
 
 jobs:
   test:
@@ -6,4 +10,3 @@ jobs:
     container: kpfleming/apaz-test-images:pdns4.3-python3
     steps:
     - uses: actions/checkout@v2
-
