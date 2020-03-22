@@ -381,14 +381,19 @@ def main():
         # create the requested zone
         zone_struct = {
             "name": zone,
-            "kind": module.params["properties"]["kind"],
         }
 
-        if module.params["properties"]["kind"] != "Slave":
-            zone_struct["nameservers"] = module.params["properties"]["nameservers"]
+        if module.params["properties"]:
+            props = module.params["properties"]
 
-        if module.params["properties"]["kind"] == "Slave":
-            zone_struct["masters"] = module.params["properties"]["masters"]
+            if props["kind"]:
+                zone_struct["kind"] = props["kind"]
+
+                if props["kind"] != "Slave":
+                    zone_struct["nameservers"] = props["nameservers"]
+
+                if props["kind"] == "Slave":
+                    zone_struct["masters"] = props["masters"]
 
         api.zones.createZone(
             server_id=server_id, rrsets=False, zone_struct=zone_struct
@@ -399,16 +404,20 @@ def main():
         # options and update it if necessary
         zone_struct = {}
 
-        if zone_info["kind"] != module.params["properties"]["kind"]:
-            zone_struct["kind"] = module.params["properties"]["kind"]
+        if module.params["properties"]:
+            props = module.params["properties"]
 
-        if module.params["properties"]["kind"] == "Slave":
-            if module.params["properties"]["masters"]:
-                mp_masters = module.params["properties"]["masters"].sort()
-                zi_masters = zone_info["masters"].sort()
+            if props["kind"]:
+                if zone_info["kind"] != props["kind"]:
+                    zone_struct["kind"] = props["kind"]
 
-                if zi_masters != mp_masters:
-                    zone_struct["masters"] = module.params["properties"]["masters"]
+                if props["kind"] == "Slave":
+                    if props["masters"]:
+                        mp_masters = props["masters"].sort()
+                        zi_masters = zone_info["masters"].sort()
+
+                        if zi_masters != mp_masters:
+                            zone_struct["masters"] = props["masters"]
 
         if len(zone_struct):
             api.zones.putZone(
