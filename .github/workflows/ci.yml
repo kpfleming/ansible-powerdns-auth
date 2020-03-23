@@ -3,8 +3,9 @@ on:
     paths:
     - 'pdns_auth_zone.py'
     - 'api-swagger.json'
-    - 'tests/*'
-    - '.github/workflow/*'
+    - 'tests/playbook.yml'
+    - 'tests/start_server.sh'
+    - '.github/workflows/ci.yml'
 
 jobs:
   test:
