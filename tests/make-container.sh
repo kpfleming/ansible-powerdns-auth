@@ -2,7 +2,7 @@
 
 root=$(dirname ${BASH_SOURCE[0]})
 
-image=docker.io/kpfleming/apaz-test-images:pdns4.3-python3
+image=quay.io/kpfleming/apaz-test-images:pdns4.3-python3
 
 c=$(buildah from debian:buster)
 
@@ -23,5 +23,7 @@ buildah run ${c} -- /ansible/bin/pip install bravado
 buildah run ${c} -- rm -rf /var/lib/apt/lists/*
 buildah run ${c} -- rm -rf /root/.cache
 
-buildah rmi ${image}
+if [ buildah image --quiet ${image} ]; then
+    buildah rmi ${image}
+fi
 buildah commit --squash --rm ${c} ${image}
