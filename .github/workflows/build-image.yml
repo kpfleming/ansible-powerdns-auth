@@ -20,11 +20,11 @@ jobs:
     - name: install buildah
       run: |
         . /etc/os-release
-        echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x${ID^}_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+        sudo sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x${ID^}_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
         wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/x${ID^}_${VERSION_ID}/Release.key -O Release.key
-        apt-key add - < Release.key
-        apt-get update --quiet=2
-        apt-get install --quiet=2 --yes buildah
+        sudo apt-key add - < Release.key
+        sudo apt-get update --quiet=2
+        sudo apt-get install --quiet=2 --yes buildah
     - name: build image
       run: tests/make_container.sh
     - name: publish image
