@@ -1,5 +1,16 @@
 on:
   push:
+    branches:
+    - master
+    paths:
+    - 'pdns_auth_zone.py'
+    - 'api-swagger.json'
+    - 'tests/playbook.yml'
+    - 'tests/start_server.sh'
+    - '.github/workflows/ci.yml'
+  pull_request:
+    branches:
+    - master
     paths:
     - 'pdns_auth_zone.py'
     - 'api-swagger.json'
@@ -13,7 +24,8 @@ jobs:
     container:
       image: docker://quay.io/kpfleming/apaz-test-images:pdns4.3-python3
     steps:
-    - uses: actions/checkout@v2
+    - name: checkout code
+      uses: actions/checkout@v2
     - name: start pdns_server
       run: tests/start_server.sh
     - name: run test playbook

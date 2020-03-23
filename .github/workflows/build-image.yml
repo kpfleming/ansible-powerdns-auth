@@ -1,0 +1,22 @@
+on:
+  push:
+    paths:
+    - 'tests/make_container.sh'
+    - '.github/workflows/build-image.yml'
+  pull_request:
+    paths:
+    - 'tests/make_container.sh'
+    - '.github/workflows/build-image.yml'
+  schedule:
+    - cron: "15 4 * * 6"
+
+# bring in quay.io token as an env variable set from GitHub secret
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: publish image
+      if: github.event_name != 'pull_request'
+      run: echo "publish image"

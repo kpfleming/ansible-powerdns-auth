@@ -11,3 +11,4 @@
         api_key: foo
         api_spec_file: ../api-swagger.json
       register: result
+      failed_when: result.zone.exists != false

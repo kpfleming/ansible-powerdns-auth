@@ -1,0 +1,28 @@
+on:
+  pull_request:
+    branches:
+    - master
+    paths:
+    - 'pdns_auth_zone.py'
+    - '.github/workflows/lint.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: install dependencies
+      run: pip install flake8 black lintly
+    - name: lint with flake8
+      run: flake8 --ignore=E501,E402,E231 | lintly --format=flake8 --commit-sha=${{ github.event.pull_request.head.sha }}
+      env:
+        LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+    - name: lint with black
+      run: black --check | lintly --format=black --commit-sha=${{ github.event.pull_request.head.sha }}
+      env:
+        LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
