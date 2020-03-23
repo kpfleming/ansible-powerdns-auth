@@ -1,4 +1,6 @@
-#!/usr/bin/env -S bash -e
+#!/usr/bin/env bash
+
+set -e
 
 root=$(dirname ${BASH_SOURCE[0]})
 
