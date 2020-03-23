@@ -15,5 +15,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: start pdns_server
       run: tests/start_server.sh
-    - name: stop pdns_server
-      run: kill $(cat /run/pdns.pid)
+    - name: run test playbook
+      run: /ansible/bin/ansible-playbook -M . -i localhost, tests/playbook.yml

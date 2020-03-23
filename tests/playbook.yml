@@ -1,0 +1,13 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: /ansible/bin/python
+  tasks:
+    - name: check for non-existent zone
+      pdns_auth_zone:
+        name: d1.example.
+        state: exists
+        api_key: foo
+        api_spec_file: ../api-swagger.json
+      register: result
