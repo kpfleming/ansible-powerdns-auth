@@ -253,7 +253,7 @@ def validate_params(module):
 
             for m in props["masters"]:
                 try:
-                    ip = ip_address(m)
+                    ip_address(m)
                 except ValueError:
                     module.fail_json(msg=f"Master '{m}' is not a valid IP address.")
 
@@ -291,7 +291,7 @@ def main():
         from bravado.requests_client import RequestsClient
         from bravado.client import SwaggerClient
         from bravado.swagger_model import load_file
-    except:
+    except ImportError:
         module.fail_json(
             msg="The pdns_auth_zone module requires the 'bravado' package."
         )
