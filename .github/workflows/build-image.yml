@@ -17,6 +17,16 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v2
+    - name: install buildah
+      run: |
+        . /etc/os-release
+        echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x${ID^}_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+        wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/x${ID^}_${VERSION_ID}/Release.key -O Release.key
+        apt-key add - < Release.key
+        apt-get update --quiet=2
+        apt-get install --quiet=2 --yes buildah
+    - name: build image
+      run: tests/make_container.sh
     - name: publish image
       if: github.event_name != 'pull_request'
       run: echo "publish image"
