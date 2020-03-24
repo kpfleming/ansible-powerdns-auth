@@ -19,6 +19,8 @@ on:
     - 'tests/playbook.yml'
     - 'tests/start_server.sh'
     - '.github/workflows/ci.yml'
+  repository_dispatch:
+    types: [trigger-ci]
 
 jobs:
   test:
