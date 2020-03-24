@@ -13,7 +13,7 @@ buildah run ${c} -- apt-get install --yes --quiet=2 gnupg python3 python3-venv g
 
 buildah add ${c} ${root}/apt-repo-pdns-auth-43.list /etc/apt/sources.list.d
 buildah add ${c} ${root}/apt-pref-pdns /etc/apt/preferences.d
-curl https://repo.powerdns.com/FD380FBB-pub.asc | buildah run ${c} -- apt-key add
+curl --silent --location https://repo.powerdns.com/FD380FBB-pub.asc | buildah run ${c} -- apt-key add
 buildah run ${c} -- apt-get update --quiet=2
 buildah run ${c} -- apt-get install --yes --quiet=2 pdns-server pdns-backend-sqlite3
 buildah run ${c} -- apt-get purge --yes --quiet=2 pdns-backend-bind
@@ -31,3 +31,9 @@ if buildah images --quiet ${image}; then
     buildah rmi ${image}
 fi
 buildah commit --squash --rm ${c} ${image}
+
+if [ -z "${GITHUB_WORKFLOW}" ]; then
+    echo New image is ${image}.
+else
+    echo "::set-env name=new_image::${image}"
+fi

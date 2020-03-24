@@ -1,9 +1,13 @@
 on:
   push:
+    branches:
+    - master
     paths:
     - 'tests/make_container.sh'
     - '.github/workflows/build-image.yml'
   pull_request:
+    branches:
+    - master
     paths:
     - 'tests/make_container.sh'
     - '.github/workflows/build-image.yml'
@@ -27,9 +31,11 @@ jobs:
         sudo apt-get --quiet=2 --yes install buildah
     - name: build image
       run: tests/make_container.sh
+    - name: display image name
+      run: echo ${new_image}
     - name: login to quay.io
       if: github.event_name != 'pull_request'
       run: buildah login -u="kpfleming" -p="${{ secrets.QUAY_TOKEN }}" quay.io
     - name: publish image to quay.io
       if: github.event_name != 'pull_request'
-      run: buildah push quay.io/kpfleming/apaz-test-images:pdns4.3-python3
+      run: buildah push ${new_image}
