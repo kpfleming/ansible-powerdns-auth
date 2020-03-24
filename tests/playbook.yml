@@ -3,12 +3,70 @@
   gather_facts: no
   vars:
     ansible_python_interpreter: /ansible/bin/python
+    common_args: &common
+      api_key: foo
+      api_spec_file: ../api-swagger.json
   tasks:
     - name: check for non-existent zone
       pdns_auth_zone:
+        <<: *common
         name: d1.example.
         state: exists
-        api_key: foo
-        api_spec_file: ../api-swagger.json
       register: result
       failed_when: result.zone.exists != false
+
+    - name: check notify for non-existent zone
+      pdns_auth_zone:
+        <<: *common
+        name: d1.example.
+        state: notify
+      ignore_errors: true
+      register: result
+      failed_when: result.failed != true
+
+    - name: check 'Native' zone creation
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: present
+        properties:
+          kind: 'Native'
+          nameservers:
+            - 'ns.example.'
+
+    - name: check zone kind change from 'Native' to 'Master'
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: present
+        properties:
+          kind: 'Master'
+
+    - name: check notify for zone
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: notify
+
+    - name: check zone removal
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: absent
+
+    - name: check 'Slave' zone creation
+      pdns_auth_zone:
+        <<: *common
+        name: d3.example.
+        state: present
+        properties:
+          kind: 'Slave'
+          masters:
+            - '1.1.1.1'
+            - '::1'
+
+    - name: check zone removal
+      pdns_auth_zone:
+        <<: *common
+        name: d3.example.
+        state: absent
