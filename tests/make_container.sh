@@ -31,3 +31,5 @@ if buildah images --quiet ${image}; then
     buildah rmi ${image}
 fi
 buildah commit --squash --rm ${c} ${image}
+
+echo ${image}
