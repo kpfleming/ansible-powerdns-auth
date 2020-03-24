@@ -43,6 +43,10 @@ jobs:
     - name: publish image to quay.io
       if: github.event_name != 'pull_request'
       run: buildah push ${new_image}
+  trigger-ci:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
     - name: trigger CI
       if: github.event_name != 'pull_request'
       uses: peter-evans/repository-dispatch@v1
