@@ -1,3 +1,5 @@
+name: CI
+
 on:
   push:
     branches:
@@ -21,8 +23,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pdns: [4.2, 4.3, master]
     container:
-      image: docker://quay.io/kpfleming/apaz-test-images:pdns4.3-python3
+      image: docker://quay.io/kpfleming/apaz-test-images:pdns-${{ matrix.pdns }}
     steps:
     - name: checkout code
       uses: actions/checkout@v2

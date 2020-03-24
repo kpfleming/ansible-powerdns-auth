@@ -1,19 +1,27 @@
+name: build-image
+
 on:
   push:
+    branches:
+    - master
     paths:
     - 'tests/make_container.sh'
     - '.github/workflows/build-image.yml'
   pull_request:
+    branches:
+    - master
     paths:
     - 'tests/make_container.sh'
     - '.github/workflows/build-image.yml'
   schedule:
     - cron: "15 4 * * 6"
 
-# bring in quay.io token as an env variable set from GitHub secret
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pdns: [4.2, 4.3, master]
     steps:
     - name: checkout code
       uses: actions/checkout@v2
@@ -26,10 +34,12 @@ jobs:
         sudo apt-get --quiet=2 update
         sudo apt-get --quiet=2 --yes install buildah
     - name: build image
-      run: tests/make_container.sh
+      run: tests/make_container.sh ${{ matrix.pdns }}
+    - name: display image name
+      run: echo ${new_image}
     - name: login to quay.io
       if: github.event_name != 'pull_request'
       run: buildah login -u="kpfleming" -p="${{ secrets.QUAY_TOKEN }}" quay.io
     - name: publish image to quay.io
       if: github.event_name != 'pull_request'
-      run: buildah push quay.io/kpfleming/apaz-test-images:pdns4.3-python3
+      run: buildah push ${new_image}
