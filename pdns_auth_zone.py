@@ -309,9 +309,9 @@ def populate_metadata_result(m, res):
         "TSIG-ALLOW-AXFR": list_value,
         "TSIG-ALLOW-DNSUPDATE": list_value,
     }
-    l = map.get(m["kind"])
-    if l:
-        l(m, res, m["kind"].lower().replace("-", "_"))
+    f = map.get(m["kind"])
+    if f:
+        f(m, res, m["kind"].lower().replace("-", "_"))
 
 
 def main():
