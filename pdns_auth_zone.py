@@ -99,6 +99,11 @@ options:
             Only used when I(kind=Slave).
         type: list
         elements: str
+  metadata:
+    description:
+      - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify), or I(state=retrieve).
+    type: complex
+    contains:
 
 author:
   - Kevin P. Fleming (@kpfleming)
@@ -224,6 +229,11 @@ zone:
       returned: when present
       type: list
       elements: str
+    metadata:
+      description: Zone metadata
+      returned: when present
+      type: complex
+      contains:
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -292,6 +302,7 @@ def main():
                 "masters": {"type": "list", "elements": "str",},
             },
         },
+        "metadata": {"type": "dict", "options": {},},
     }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -357,15 +368,49 @@ def main():
             # state must be 'present'
             zone_id = None
     else:
-        # extract the zone_info dict from the list
+        # get the full zone info
         # and populate the results dict
-        zone_info = zone_info[0]
-        zone_id = zone_info["id"]
+        zone_id = zone_info[0]["id"]
+        zone_info = api.zones.listZone(server_id=server_id, zone_id=zone_id).result()
         result["zone"]["exists"] = True
         result["zone"]["kind"] = zone_info["kind"]
         result["zone"]["serial"] = zone_info["serial"]
+        result["zone"]["account"] = zone_info["account"]
         result["zone"]["dnssec"] = zone_info["dnssec"]
         result["zone"]["masters"] = zone_info["masters"]
+        # initialize the metadata result dict
+        result["zone"]["metadata"] = {
+            "allow_axfr_from": [],
+            "allow_dnsupdate_from": [],
+            "also_notify": [],
+            "api_rectify": zone_info["api_rectify"],
+            "axfr_master_tsig": None,
+            "axfr_source": None,
+            "gss_acceptor_principal": None,
+            "gss_allow_axfr_principal": None,
+            "forward_dnsupdate": False,
+            "ixfr": False,
+            "lua_axfr_script": None,
+            "nsec3narrow": zone_info["nsec3narrow"],
+            "nsec3param": zone_info["nsec3param"],
+            "notify_dnsupdate": False,
+            "publish_cdnskey": False,
+            "publish_cds": [],
+            "slave_renotify": False,
+            "soa_edit": zone_info["soa_edit"],
+            "soa_edit_api": zone_info["soa_edit_api"],
+            "soa_edit_dnsupdate": None,
+            "tsig_allow_axfr": [],
+            "tsig_allow_dnsupdate": [],
+        }
+        zone_meta = api.zonemetadata.listMetadata(
+            server_id=server_id, zone_id=zone_id
+        ).result()
+        for m in zone_meta:
+            if m["kind"] == "NOTIFY-DNSUPDATE":
+                result["zone"]["metadata"]["notify_dnsupdate"] = m["metadata"][0] != 0
+            if m["kind"] == "TSIG-ALLOW-DNSUPDATE":
+                result["zone"]["metadata"]["tsig_allow_dnsupdate"] = m["metadata"]
 
     # if only an existence check was requested,
     # the operation is complete
@@ -419,6 +464,9 @@ def main():
                 if props["kind"] == "Slave":
                     zone_struct["masters"] = props["masters"]
 
+            if props["account"]:
+                zone_struct["account"] = props["account"]
+
         api.zones.createZone(
             server_id=server_id, rrsets=False, zone_struct=zone_struct
         ).result()
@@ -442,6 +490,10 @@ def main():
 
                         if zi_masters != mp_masters:
                             zone_struct["masters"] = props["masters"]
+
+            if props["account"]:
+                if zone_info["account"] != props["account"]:
+                    zone_struct["account"] = props["account"]
 
         if len(zone_struct):
             api.zones.putZone(
