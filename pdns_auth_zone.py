@@ -278,19 +278,40 @@ def validate_params(module):
 
 
 def populate_metadata_result(m, res):
-    def notify_dnsupdate(m, res):
-        res["notify_dnsupdate"] = m["metadata"][0] != 0
+    def boolean_value(m, r, k):
+        r[k] = m["metadata"][0] != 0
 
-    def tsig_allow_dnsupdate(m, res):
-        res["tsig_allow_dnsupdate"] = m["metadata"]
+    def boolean_presence(m, r, k):
+        r[k] = True
+
+    def list_value(m, r, k):
+        r[k] = m["metadata"]
+
+    def string_value(m, r, k):
+        r[k] = m["metadata"][0]
 
     map = {
-        "NOTIFY-DNSUPDATE": notify_dnsupdate,
-        "TSIG-ALLOW-DNSUPDATE": tsig_allow_dnsupdate,
+        "ALLOW-AXFR-FROM": list_value,
+        "ALLOW-DNSUPDATE-FROM": list_value,
+        "ALSO-NOTIFY": list_value,
+        "AXFR-MASTER-TSIG": string_value,
+        "AXFR-SOURCE": string_value,
+        "FORWARD-DNSUPDATE": boolean_presence,
+        "GSS-ACCEPTOR-PRINCIPAL": string_value,
+        "GSS-ALLOW-AXFR-PRINCIPAL": string_value,
+        "IXFR": boolean_value,
+        "LUA-AXFR-SCRIPT": string_value,
+        "NOTIFY-DNSUPDATE": boolean_value,
+        "PUBLISH-CDNSKEY": boolean_value,
+        "PUBLISH-CDS": list_value,
+        "SLAVE-RENOTIFY": boolean_value,
+        "SOA-EDIT-DNSUPDATE": string_value,
+        "TSIG-ALLOW-AXFR": list_value,
+        "TSIG-ALLOW-DNSUPDATE": list_value,
     }
     f = map.get(m["kind"])
     if f:
-        f(m, res)
+        f(m, res, m["kind"].lower().replace("-", "_"))
 
 
 def main():
