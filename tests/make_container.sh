@@ -11,7 +11,7 @@ fi
 root=$(dirname ${BASH_SOURCE[0]})
 pdns=${1}
 
-image=quay.io/kpfleming/apaz-test-images:pdns-${pdns}
+image=quay.io/kpfleming/apaa-test-images:pdns-${pdns}
 
 c=$(buildah from debian:buster)
 
