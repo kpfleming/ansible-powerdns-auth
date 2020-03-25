@@ -65,6 +65,12 @@
             - '1.1.1.1'
             - '::1'
 
+    - name: check slave zone retrieval
+      pdns_auth_zone:
+        <<: *common
+        name: d3.example.
+        state: retrieve
+
     - name: check zone removal
       pdns_auth_zone:
         <<: *common

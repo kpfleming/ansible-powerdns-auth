@@ -38,7 +38,9 @@ options:
         will be sent to the zone's slaves.
       - If C(notify) and the zone kind is C(Slave), then the slave
         zone will be updated as if a NOTIFY had been received.
-    choices: [ 'present', 'absent', 'exists', 'notify' ]
+      - If C(retrieve) and the zone kind is C(Slave), then the slave
+        zone will be retrieved from the master.
+    choices: [ 'present', 'absent', 'exists', 'notify', 'retrieve' ]
     type: str
     required: false
     default: 'present'
@@ -72,7 +74,7 @@ options:
     required: true
   properties:
     description:
-      - Zone properties. Ignored when I(state=exists), I(state=absent), or I(state=notify).
+      - Zone properties. Ignored when I(state=exists), I(state=absent), I(state=notify), or I(state=retrieve).
     type: complex
     contains:
       kind:
@@ -136,6 +138,13 @@ EXAMPLES = """
   pdns_auth_zone:
     name: d1.example.
     state: notify
+    api_key: 'foobar'
+    api_spec_file: "{{ temp_file.path }}"
+
+- name: retrieve zone from master server
+  pdns_auth_zone:
+    name: d1.example.
+    state: retrieve
     api_key: 'foobar'
     api_spec_file: "{{ temp_file.path }}"
 
@@ -263,7 +272,7 @@ def main():
         "state": {
             "type": "str",
             "default": "present",
-            "choices": ["present", "absent", "exists", "notify"],
+            "choices": ["present", "absent", "exists", "notify", "retrieve"],
         },
         "name": {"type": "str", "required": True,},
         "server_id": {"type": "str", "default": "localhost",},
@@ -338,7 +347,11 @@ def main():
             module.exit_json(**result)
         elif state == "notify":
             module.fail_json(
-                msg="NOTIFY cannot be requested for non-existent zones", **result
+                msg="NOTIFY cannot be requested for a non-existent zone", **result
+            )
+        elif state == "retrieve":
+            module.fail_json(
+                msg="Retrieval cannot be requested for a non-existent zone", **result
             )
         else:
             # state must be 'present'
@@ -373,6 +386,17 @@ def main():
             )
 
         api.zones.notifyZone(server_id=server_id, zone_id=zone_id).result()
+        result["changed"] = True
+        module.exit_json(**result)
+
+    # if retrieval was requested, process it and exit
+    if state == "retrieve":
+        if zone_info["kind"] != "Slave":
+            module.fail_json(
+                msg="Retrieval can only be requested for 'Slave' zones", **result
+            )
+
+        api.zones.axfrRetrieveZone(server_id=server_id, zone_id=zone_id).result()
         result["changed"] = True
         module.exit_json(**result)
 
