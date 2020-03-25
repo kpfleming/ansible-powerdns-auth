@@ -364,6 +364,7 @@ def main():
         result["zone"]["exists"] = True
         result["zone"]["kind"] = zone_info["kind"]
         result["zone"]["serial"] = zone_info["serial"]
+        result["zone"]["account"] = zone_info["account"]
         result["zone"]["dnssec"] = zone_info["dnssec"]
         result["zone"]["masters"] = zone_info["masters"]
 
@@ -419,6 +420,9 @@ def main():
                 if props["kind"] == "Slave":
                     zone_struct["masters"] = props["masters"]
 
+            if props["account"]:
+                zone_struct["account"] = props["account"]
+
         api.zones.createZone(
             server_id=server_id, rrsets=False, zone_struct=zone_struct
         ).result()
@@ -442,6 +446,10 @@ def main():
 
                         if zi_masters != mp_masters:
                             zone_struct["masters"] = props["masters"]
+
+            if props["account"]:
+                if zone_info["account"] != props["account"]:
+                    zone_struct["account"] = props["account"]
 
         if len(zone_struct):
             api.zones.putZone(
