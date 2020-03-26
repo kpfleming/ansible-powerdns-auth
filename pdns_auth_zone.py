@@ -314,6 +314,50 @@ def populate_metadata_result(m, res):
         f(m, res, m["kind"].lower().replace("-", "_"))
 
 
+def build_zone_result(api, server_id, zone_id):
+    z = {}
+    zone_info = api.zones.listZone(server_id=server_id, zone_id=zone_id).result()
+    z["exists"] = True
+    z["name"] = zone_info["name"]
+    z["kind"] = zone_info["kind"]
+    z["serial"] = zone_info["serial"]
+    z["account"] = zone_info["account"]
+    z["dnssec"] = zone_info["dnssec"]
+    z["masters"] = zone_info["masters"]
+    # initialize the metadata result dict
+    z["metadata"] = {
+        "allow_axfr_from": [],
+        "allow_dnsupdate_from": [],
+        "also_notify": [],
+        "api_rectify": zone_info["api_rectify"],
+        "axfr_master_tsig": None,
+        "axfr_source": None,
+        "gss_acceptor_principal": None,
+        "gss_allow_axfr_principal": None,
+        "forward_dnsupdate": False,
+        "ixfr": False,
+        "lua_axfr_script": None,
+        "nsec3narrow": zone_info["nsec3narrow"],
+        "nsec3param": zone_info["nsec3param"],
+        "notify_dnsupdate": False,
+        "publish_cdnskey": False,
+        "publish_cds": [],
+        "slave_renotify": False,
+        "soa_edit": zone_info["soa_edit"],
+        "soa_edit_api": zone_info["soa_edit_api"],
+        "soa_edit_dnsupdate": None,
+        "tsig_allow_axfr": [],
+        "tsig_allow_dnsupdate": [],
+    }
+    zone_meta = api.zonemetadata.listMetadata(
+        server_id=server_id, zone_id=zone_id
+    ).result()
+    for m in zone_meta:
+        populate_metadata_result(m, z["metadata"])
+
+    return z
+
+
 def main():
     module_args = {
         "state": {
@@ -406,45 +450,11 @@ def main():
             zone_id = None
     else:
         # get the full zone info
-        # and populate the results dict
+        # and populate the result dict
         zone_id = zone_info[0]["id"]
         zone_info = api.zones.listZone(server_id=server_id, zone_id=zone_id).result()
-        result["zone"]["exists"] = True
-        result["zone"]["kind"] = zone_info["kind"]
-        result["zone"]["serial"] = zone_info["serial"]
-        result["zone"]["account"] = zone_info["account"]
-        result["zone"]["dnssec"] = zone_info["dnssec"]
-        result["zone"]["masters"] = zone_info["masters"]
-        # initialize the metadata result dict
-        result["zone"]["metadata"] = {
-            "allow_axfr_from": [],
-            "allow_dnsupdate_from": [],
-            "also_notify": [],
-            "api_rectify": zone_info["api_rectify"],
-            "axfr_master_tsig": None,
-            "axfr_source": None,
-            "gss_acceptor_principal": None,
-            "gss_allow_axfr_principal": None,
-            "forward_dnsupdate": False,
-            "ixfr": False,
-            "lua_axfr_script": None,
-            "nsec3narrow": zone_info["nsec3narrow"],
-            "nsec3param": zone_info["nsec3param"],
-            "notify_dnsupdate": False,
-            "publish_cdnskey": False,
-            "publish_cds": [],
-            "slave_renotify": False,
-            "soa_edit": zone_info["soa_edit"],
-            "soa_edit_api": zone_info["soa_edit_api"],
-            "soa_edit_dnsupdate": None,
-            "tsig_allow_axfr": [],
-            "tsig_allow_dnsupdate": [],
-        }
-        zone_meta = api.zonemetadata.listMetadata(
-            server_id=server_id, zone_id=zone_id
-        ).result()
-        for m in zone_meta:
-            populate_metadata_result(m, result["zone"]["metadata"])
+
+        result["zone"] = build_zone_result(api, server_id, zone_id)
 
     # if only an existence check was requested,
     # the operation is complete
@@ -505,6 +515,8 @@ def main():
             server_id=server_id, rrsets=False, zone_struct=zone_struct
         ).result()
         result["changed"] = True
+        zone_info = api.zones.listZones(server_id=server_id, zone=zone).result()
+        result["zone"] = build_zone_result(api, server_id, zone_info[0]["id"])
     else:
         # compare the zone's attributes to the provided
         # options and update it if necessary
@@ -534,6 +546,7 @@ def main():
                 server_id=server_id, zone_id=zone_id, zone_struct=zone_struct
             ).result()
             result["changed"] = True
+            result["zone"] = build_zone_result(api, server_id, zone_id)
 
     module.exit_json(**result)
 
