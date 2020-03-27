@@ -277,41 +277,78 @@ def validate_params(module):
                     module.fail_json(msg=f"Master '{m}' is not a valid IP address.")
 
 
-def populate_metadata_result(m, res):
-    def boolean_value(m, r, k):
-        r[k] = m["metadata"][0] != 0
+class Metadata(object):
+    map_by_kind = {}
+    map_by_prop = {}
 
-    def boolean_presence(m, r, k):
-        r[k] = True
+    def __init__(self, kind):
+        self.kind = kind
+        self.prop = kind.lower().replace("-", "_")
+        self.map_by_kind[self.kind] = self
+        self.map_by_prop[self.prop] = self
 
-    def list_value(m, r, k):
-        r[k] = m["metadata"]
+    @classmethod
+    def by_kind(cls, kind):
+        return cls.map_by_kind.get(kind, None)
 
-    def string_value(m, r, k):
-        r[k] = m["metadata"][0]
+    @classmethod
+    def by_prop(cls, prop):
+        return cls.map_by_prop.get(prop, None)
 
-    map = {
-        "ALLOW-AXFR-FROM": list_value,
-        "ALLOW-DNSUPDATE-FROM": list_value,
-        "ALSO-NOTIFY": list_value,
-        "AXFR-MASTER-TSIG": string_value,
-        "AXFR-SOURCE": string_value,
-        "FORWARD-DNSUPDATE": boolean_presence,
-        "GSS-ACCEPTOR-PRINCIPAL": string_value,
-        "GSS-ALLOW-AXFR-PRINCIPAL": string_value,
-        "IXFR": boolean_value,
-        "LUA-AXFR-SCRIPT": string_value,
-        "NOTIFY-DNSUPDATE": boolean_value,
-        "PUBLISH-CDNSKEY": boolean_value,
-        "PUBLISH-CDS": list_value,
-        "SLAVE-RENOTIFY": boolean_value,
-        "SOA-EDIT-DNSUPDATE": string_value,
-        "TSIG-ALLOW-AXFR": list_value,
-        "TSIG-ALLOW-DNSUPDATE": list_value,
-    }
-    f = map.get(m["kind"])
-    if f:
-        f(m, res, m["kind"].lower().replace("-", "_"))
+    @classmethod
+    def prop_defaults(cls):
+        return {k: v.default() for k, v in cls.map_by_prop.items()}
+
+
+class MetadataBooleanValue(Metadata):
+    def default(self):
+        return False
+
+    def result_from_api(self, res, api):
+        res[self.prop] = api["metadata"][0] != 0
+
+
+class MetadataBooleanPresence(Metadata):
+    def default(self):
+        return False
+
+    def result_from_api(self, res, api):
+        res[self.prop] = True
+
+
+class MetadataListValue(Metadata):
+    def default(self):
+        return []
+
+    def result_from_api(self, res, api):
+        res[self.prop] = api["metadata"]
+
+
+class MetadataStringValue(Metadata):
+    def default(self):
+        return None
+
+    def result_from_api(self, res, api):
+        res[self.prop] = api["metadata"][0]
+
+
+MetadataListValue("ALLOW-AXFR-FROM")
+MetadataListValue("ALLOW-DNSUPDATE-FROM")
+MetadataListValue("ALSO-NOTIFY")
+MetadataStringValue("AXFR-MASTER-TSIG")
+MetadataStringValue("AXFR-SOURCE")
+MetadataBooleanPresence("FORWARD-DNSUPDATE")
+MetadataStringValue("GSS-ACCEPTOR-PRINCIPAL")
+MetadataStringValue("GSS-ALLOW-AXFR-PRINCIPAL")
+MetadataBooleanValue("IXFR")
+MetadataStringValue("LUA-AXFR-SCRIPT")
+MetadataBooleanValue("NOTIFY-DNSUPDATE")
+MetadataBooleanValue("PUBLISH-CDNSKEY")
+MetadataListValue("PUBLISH-CDS")
+MetadataBooleanValue("SLAVE-RENOTIFY")
+MetadataStringValue("SOA-EDIT-DNSUPDATE")
+MetadataListValue("TSIG-ALLOW-AXFR")
+MetadataListValue("TSIG-ALLOW-DNSUPDATE")
 
 
 def build_zone_result(api, server_id, zone_id):
@@ -325,35 +362,20 @@ def build_zone_result(api, server_id, zone_id):
     z["dnssec"] = zone_info["dnssec"]
     z["masters"] = zone_info["masters"]
     # initialize the metadata result dict
-    z["metadata"] = {
-        "allow_axfr_from": [],
-        "allow_dnsupdate_from": [],
-        "also_notify": [],
-        "api_rectify": zone_info["api_rectify"],
-        "axfr_master_tsig": None,
-        "axfr_source": None,
-        "gss_acceptor_principal": None,
-        "gss_allow_axfr_principal": None,
-        "forward_dnsupdate": False,
-        "ixfr": False,
-        "lua_axfr_script": None,
-        "nsec3narrow": zone_info["nsec3narrow"],
-        "nsec3param": zone_info["nsec3param"],
-        "notify_dnsupdate": False,
-        "publish_cdnskey": False,
-        "publish_cds": [],
-        "slave_renotify": False,
-        "soa_edit": zone_info["soa_edit"],
-        "soa_edit_api": zone_info["soa_edit_api"],
-        "soa_edit_dnsupdate": None,
-        "tsig_allow_axfr": [],
-        "tsig_allow_dnsupdate": [],
-    }
+    z["metadata"] = Metadata.prop_defaults()
+    z["metadata"]["api_rectify"] = zone_info["api_rectify"]
+    z["metadata"]["nsec3narrow"] = zone_info["nsec3narrow"]
+    z["metadata"]["nsec3param"] = zone_info["nsec3param"]
+    z["metadata"]["soa_edit"] = zone_info["soa_edit"]
+    z["metadata"]["soa_edit_api"] = zone_info["soa_edit_api"]
+
     zone_meta = api.zonemetadata.listMetadata(
         server_id=server_id, zone_id=zone_id
     ).result()
     for m in zone_meta:
-        populate_metadata_result(m, z["metadata"])
+        o = Metadata.by_kind(m["kind"])
+        if o:
+            o.result_from_api(z["metadata"], m)
 
     return z
 
