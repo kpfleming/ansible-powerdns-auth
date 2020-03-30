@@ -392,41 +392,6 @@ from urllib.parse import urlparse
 from ipaddress import ip_address
 
 
-def validate_params(module):
-    params = module.params
-
-    name = params["name"]
-    if not name.endswith("."):
-        module.fail_json(msg=f"Zone name '{name}' does not end with '.'")
-
-    if params["properties"]:
-        props = params["properties"]
-
-        if props["nameservers"]:
-            if props["kind"] == "Slave":
-                module.fail_json(
-                    msg="'nameservers' cannot be specified for 'Slave' zones."
-                )
-
-            for ns in props["nameservers"]:
-                if not ns.endswith("."):
-                    module.fail_json(
-                        msg=f"Nameserver name '{ns}' does not end with '.'"
-                    )
-
-        if props["masters"]:
-            if props["kind"] != "Slave":
-                module.fail_json(
-                    msg="'masters' cannot be specified for non-'Slave' zones."
-                )
-
-            for m in props["masters"]:
-                try:
-                    ip_address(m)
-                except ValueError:
-                    module.fail_json(msg=f"Master '{m}' is not a valid IP address.")
-
-
 class Metadata(object):
     map_by_kind = {}
     map_by_prop = {}
@@ -603,8 +568,6 @@ def main():
     result = {
         "changed": False,
     }
-
-    validate_params(module)
 
     state = module.params["state"]
     server_id = module.params["server_id"]
