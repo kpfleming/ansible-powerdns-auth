@@ -165,7 +165,8 @@ options:
           - Re-send NOTIFY to slaves after receiving AXFR from master.
         type: bool
       soa_edit_dnsupdate:
-        description: Method to update the serial number in the SOA record after a DNSUPDATE.
+        description:
+          - Method to update the serial number in the SOA record after a DNSUPDATE.
         type: str
         choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         default: 'DEFAULT'
@@ -280,12 +281,10 @@ zone:
       description: Name
       returned: always
       type: str
-      sample: "domain.example."
     exists:
       description: Indicate whether the zone exists
       returned: always
       type: bool
-      sample: yes
     kind:
       description: Kind
       returned: when present
