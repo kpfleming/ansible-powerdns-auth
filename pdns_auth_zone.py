@@ -480,7 +480,38 @@ def main():
                 "masters": {"type": "list", "elements": "str",},
             },
         },
-        "metadata": {"type": "dict", "options": {},},
+        "metadata": {
+            "type": "dict",
+            "options": {
+                "allow_axfr_from": {"type": "list", "elements": "str",},
+                "allow_dnsupdate_from": {"type": "list", "elements": "str",},
+                "also_notify": {"type": "list", "elements": "str",},
+                "axfr_master_tsig": {"type": "str",},
+                "axfr_source": {"type": "str",},
+                "forward_dnsupdate": {"type": "bool",},
+                "gss_acceptor_principal": {"type": "str",},
+                "gss_allow_axfr_principal": {"type": "str",},
+                "ixfr": {"type": "bool",},
+                "lua_axfr_script": {"type": "str",},
+                "notify_dnsupdate": {"type": "bool",},
+                "publish_cndskey": {"type": "bool",},
+                "publish_cds": {"type": "list", "elements": "str",},
+                "slave_renotify": {"type": "bool",},
+                "soa_edit_dnsupdate": {
+                    "type": "str",
+                    "default": "DEFAULT",
+                    "choices": [
+                        "DEFAULT",
+                        "INCREASE",
+                        "EPOCH",
+                        "SOA-EDIT",
+                        "SOA-EDIT-INCREASE",
+                    ],
+                },
+                "tsig_allow_axfr": {"type": "list", "elements": "str",},
+                "tsig_allow_dnsupdate": {"type": "list", "elements": "str",},
+            },
+        },
     }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
