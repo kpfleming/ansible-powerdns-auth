@@ -104,6 +104,82 @@ options:
       - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify), or I(state=retrieve).
     type: complex
     contains:
+      allow_axfr_from:
+        description:
+          - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR requests will be accepted.
+        type: list
+        elements: str
+      allow_dnsupdate_from:
+        description:
+          - List of IPv4 and/or IPv6 subnets from which DNSUPDATE requests will be accepted.
+        type: list
+        elements: str
+      also_notify:
+        description:
+          - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
+        type: list
+        elements: str
+      axfr_master_tsig:
+        description:
+          - Key to be used to AXFR the zone from its master.
+        type: str
+      axfr_source:
+        description:
+          - IPv4 or IPv6 address to be used as the source address for AXFR and IXFR requests.
+        type: str
+      forward_dnsupdate:
+        description:
+          - Forward DNSUPDATE requests to one of the zone's masters.
+        type: bool
+      gss_acceptor_principal:
+        description:
+          - Kerberos/GSS principal which identifies this server.
+        type: str
+      gss_allow_axfr_principal:
+        description:
+          - Kerberos/GSS principal which must be included in AXFR requests.
+        type: str
+      ixfr:
+        description:
+          - Attempt IXFR when retrieving zone updates.
+        type: bool
+      lua_axfr_script:
+        description:
+          - Script to be used to edit incoming AXFR requests; use 'NONE' to override a globally configured script.
+        type: str
+      notify_dnsupdate:
+        description:
+          - Send a NOTIFY to all slave servers after processing a DNSUPDATE request.
+        type: bool
+      publish_cdnskey:
+        description:
+          - Publish CDNSKEY records of the KSKs for the zone.
+        type: bool
+      publish_cds:
+        description:
+          - List of signature algorithm numbers for CDS records of the KSKs for the zone.
+        type: list
+        elements: str
+      slave_renotify:
+        description:
+          - Re-send NOTIFY to slaves after receiving AXFR from master.
+        type: bool
+      soa_edit_dnsupdate:
+        description:
+          - Method to update the serial number in the SOA record after a DNSUPDATE.
+        type: str
+        choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
+        default: 'DEFAULT'
+      tsig_allow_axfr:
+        description:
+          - List of TSIG keys for which AXFR requests will be accepted.
+        type: list
+        elements: str
+      tsig_allow_dnsupdate:
+        description:
+          - List of TSIG keys for which DNSUPDATE requests will be accepted.
+        type: list
+        elements: str
 
 author:
   - Kevin P. Fleming (@kpfleming)
@@ -205,12 +281,10 @@ zone:
       description: Name
       returned: always
       type: str
-      sample: "domain.example."
     exists:
       description: Indicate whether the zone exists
       returned: always
       type: bool
-      sample: yes
     kind:
       description: Kind
       returned: when present
@@ -234,6 +308,82 @@ zone:
       returned: when present
       type: complex
       contains:
+        allow_axfr_from:
+          description:
+            - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR requests will be accepted.
+          type: list
+          elements: str
+        allow_dnsupdate_from:
+          description:
+            - List of IPv4 and/or IPv6 subnets from which DNSUPDATE requests will be accepted.
+          type: list
+          elements: str
+        also_notify:
+          description:
+            - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
+          type: list
+          elements: str
+        axfr_master_tsig:
+          description:
+            - Key to be used to AXFR the zone from its master.
+          type: str
+        axfr_source:
+          description:
+            - IPv4 or IPv6 address to be used as the source address for AXFR and IXFR requests.
+          type: str
+        forward_dnsupdate:
+          description:
+            - Forward DNSUPDATE requests to one of the zone's masters.
+          type: bool
+        gss_acceptor_principal:
+          description:
+            - Kerberos/GSS principal which identifies this server.
+          type: str
+        gss_allow_axfr_principal:
+          description:
+            - Kerberos/GSS principal which must be included in AXFR requests.
+          type: str
+        ixfr:
+          description:
+            - Attempt IXFR when retrieving zone updates.
+          type: bool
+        lua_axfr_script:
+          description:
+            - Script to be used to edit incoming AXFR requests; use 'NONE' to override a globally configured script.
+          type: str
+        notify_dnsupdate:
+          description:
+            - Send a NOTIFY to all slave servers after processing a DNSUPDATE request.
+          type: bool
+        publish_cdnskey:
+          description:
+            - Publish CDNSKEY records of the KSKs for the zone.
+          type: bool
+        publish_cds:
+          description:
+            - List of signature algorithm numbers for CDS records of the KSKs for the zone.
+          type: list
+          elements: str
+        slave_renotify:
+          description:
+            - Re-send NOTIFY to slaves after receiving AXFR from master.
+          type: bool
+        soa_edit_dnsupdate:
+          description:
+            - Method to update the serial number in the SOA record after a DNSUPDATE.
+          type: str
+          choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
+          default: 'DEFAULT'
+        tsig_allow_axfr:
+          description:
+            - List of TSIG keys for which AXFR requests will be accepted.
+          type: list
+          elements: str
+        tsig_allow_dnsupdate:
+          description:
+            - List of TSIG keys for which DNSUPDATE requests will be accepted.
+          type: list
+          elements: str
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -405,7 +555,38 @@ def main():
                 "masters": {"type": "list", "elements": "str",},
             },
         },
-        "metadata": {"type": "dict", "options": {},},
+        "metadata": {
+            "type": "dict",
+            "options": {
+                "allow_axfr_from": {"type": "list", "elements": "str",},
+                "allow_dnsupdate_from": {"type": "list", "elements": "str",},
+                "also_notify": {"type": "list", "elements": "str",},
+                "axfr_master_tsig": {"type": "str",},
+                "axfr_source": {"type": "str",},
+                "forward_dnsupdate": {"type": "bool",},
+                "gss_acceptor_principal": {"type": "str",},
+                "gss_allow_axfr_principal": {"type": "str",},
+                "ixfr": {"type": "bool",},
+                "lua_axfr_script": {"type": "str",},
+                "notify_dnsupdate": {"type": "bool",},
+                "publish_cndskey": {"type": "bool",},
+                "publish_cds": {"type": "list", "elements": "str",},
+                "slave_renotify": {"type": "bool",},
+                "soa_edit_dnsupdate": {
+                    "type": "str",
+                    "default": "DEFAULT",
+                    "choices": [
+                        "DEFAULT",
+                        "INCREASE",
+                        "EPOCH",
+                        "SOA-EDIT",
+                        "SOA-EDIT-INCREASE",
+                    ],
+                },
+                "tsig_allow_axfr": {"type": "list", "elements": "str",},
+                "tsig_allow_dnsupdate": {"type": "list", "elements": "str",},
+            },
+        },
     }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
