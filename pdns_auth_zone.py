@@ -389,7 +389,6 @@ zone:
 from ansible.module_utils.basic import AnsibleModule
 
 from urllib.parse import urlparse
-from ipaddress import ip_address
 
 
 class Metadata(object):
