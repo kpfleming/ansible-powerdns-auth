@@ -308,6 +308,82 @@ zone:
       returned: when present
       type: complex
       contains:
+        allow_axfr_from:
+          description:
+            - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR requests will be accepted.
+          type: list
+          elements: str
+        allow_dnsupdate_from:
+          description:
+            - List of IPv4 and/or IPv6 subnets from which DNSUPDATE requests will be accepted.
+          type: list
+          elements: str
+        also_notify:
+          description:
+            - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
+          type: list
+          elements: str
+        axfr_master_tsig:
+          description:
+            - Key to be used to AXFR the zone from its master.
+          type: str
+        axfr_source:
+          description:
+            - IPv4 or IPv6 address to be used as the source address for AXFR and IXFR requests.
+          type: str
+        forward_dnsupdate:
+          description:
+            - Forward DNSUPDATE requests to one of the zone's masters.
+          type: bool
+        gss_acceptor_principal:
+          description:
+            - Kerberos/GSS principal which identifies this server.
+          type: str
+        gss_allow_axfr_principal:
+          description:
+            - Kerberos/GSS principal which must be included in AXFR requests.
+          type: str
+        ixfr:
+          description:
+            - Attempt IXFR when retrieving zone updates.
+          type: bool
+        lua_axfr_script:
+          description:
+            - Script to be used to edit incoming AXFR requests; use 'NONE' to override a globally configured script.
+          type: str
+        notify_dnsupdate:
+          description:
+            - Send a NOTIFY to all slave servers after processing a DNSUPDATE request.
+          type: bool
+        publish_cdnskey:
+          description:
+            - Publish CDNSKEY records of the KSKs for the zone.
+          type: bool
+        publish_cds:
+          description:
+            - List of signature algorithm numbers for CDS records of the KSKs for the zone.
+          type: list
+          elements: str
+        slave_renotify:
+          description:
+            - Re-send NOTIFY to slaves after receiving AXFR from master.
+          type: bool
+        soa_edit_dnsupdate:
+          description:
+            - Method to update the serial number in the SOA record after a DNSUPDATE.
+          type: str
+          choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
+          default: 'DEFAULT'
+        tsig_allow_axfr:
+          description:
+            - List of TSIG keys for which AXFR requests will be accepted.
+          type: list
+          elements: str
+        tsig_allow_dnsupdate:
+          description:
+            - List of TSIG keys for which DNSUPDATE requests will be accepted.
+          type: list
+          elements: str
 """
 
 from ansible.module_utils.basic import AnsibleModule
