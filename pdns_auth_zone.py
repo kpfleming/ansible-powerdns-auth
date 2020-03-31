@@ -391,6 +391,56 @@ from ansible.module_utils.basic import AnsibleModule
 from urllib.parse import urlparse
 
 
+class APIZonesWrapper(object):
+    def __init__(self, raw_api, server_id, zone_id):
+        self.raw_api = raw_api
+        self.server_id = server_id
+        self.zone_id = zone_id
+
+    def axfrRetrieveZone(self):
+        return self.raw_api.axfrRetrieveZone(server_id=self.server_id, zone_id=self.zone_id).result()
+
+    def createZone(self, **kwargs):
+        return self.raw_api.createZone(server_id=self.server_id, **kwargs).result()
+
+    def deleteZone(self):
+        return self.raw_api.deleteZone(server_id=self.server_id, zone_id=self.zone_id).result()
+
+    def listZone(self):
+        return self.raw_api.listZone(server_id=self.server_id, zone_id=self.zone_id).result()
+
+    def listZones(self, **kwargs):
+        return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
+
+    def notifyZone(self):
+        return self.raw_api.notifyZone(server_id=self.server_id, zone_id=self.zone_id).result()
+
+    def putZone(self, **kwargs):
+        return self.raw_api.putZone(server_id=self.server_id, zone_id=self.zone_id, **kwargs).result()
+
+
+class APIZoneMetadataWrapper(object):
+    def __init__(self, raw_api, server_id, zone_id):
+        self.raw_api = raw_api
+        self.server_id = server_id
+        self.zone_id = zone_id
+
+    def listMetadata(self):
+        return self.raw_api.listMetadata(server_id=self.server_id, zone_id=self.zone_id).result()
+
+
+class APIWrapper(object):
+    def __init__(self, raw_api, server_id, zone_id):
+        self.zones = APIZonesWrapper(raw_api.zones, server_id, zone_id)
+        self.zonemetadata = APIZoneMetadataWrapper(
+            raw_api.zonemetadata, server_id, zone_id
+        )
+
+    def setZoneID(self,zone_id):
+        self.zones.zone_id = zone_id
+        self.zonemetadata.zone_id = zone_id
+
+
 class Metadata(object):
     map_by_kind = {}
     map_by_prop = {}
@@ -465,9 +515,9 @@ MetadataListValue("TSIG-ALLOW-AXFR")
 MetadataListValue("TSIG-ALLOW-DNSUPDATE")
 
 
-def build_zone_result(api, server_id, zone_id):
+def build_zone_result(api):
     z = {}
-    zone_info = api.zones.listZone(server_id=server_id, zone_id=zone_id).result()
+    zone_info = api.zones.listZone()
     z["exists"] = True
     z["name"] = zone_info["name"]
     z["kind"] = zone_info["kind"]
@@ -483,15 +533,13 @@ def build_zone_result(api, server_id, zone_id):
     z["metadata"]["soa_edit"] = zone_info["soa_edit"]
     z["metadata"]["soa_edit_api"] = zone_info["soa_edit_api"]
 
-    zone_meta = api.zonemetadata.listMetadata(
-        server_id=server_id, zone_id=zone_id
-    ).result()
+    zone_meta = api.zonemetadata.listMetadata()
     for m in zone_meta:
         o = Metadata.by_kind(m["kind"])
         if o:
             o.result_from_api(z["metadata"], m)
 
-    return z
+    return zone_info, z
 
 
 def main():
@@ -586,7 +634,12 @@ def main():
     spec["host"] = url.netloc
     spec["schemes"] = [url.scheme]
 
-    api = SwaggerClient.from_spec(spec, http_client=http_client)
+    raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
+
+    # create an APIWrapper to proxy the raw_api object
+    # and curry the server_id and zone_id into all API
+    # calls automatically
+    api = APIWrapper(raw_api, server_id, None)
 
     result["zone"] = {}
     result["zone"]["name"] = zone
@@ -596,9 +649,9 @@ def main():
     # this is required to translate the user-friendly zone name into
     # the zone_id required for subsequent API calls
 
-    zone_info = api.zones.listZones(server_id=server_id, zone=zone).result()
+    partial_zone_info = api.zones.listZones(zone=zone)
 
-    if len(zone_info) == 0:
+    if len(partial_zone_info) == 0:
         if (state == "exists") or (state == "absent"):
             # exit as there is nothing left to do
             module.exit_json(**result)
@@ -614,12 +667,11 @@ def main():
             # state must be 'present'
             zone_id = None
     else:
-        # get the full zone info
-        # and populate the result dict
-        zone_id = zone_info[0]["id"]
-        zone_info = api.zones.listZone(server_id=server_id, zone_id=zone_id).result()
-
-        result["zone"] = build_zone_result(api, server_id, zone_id)
+        #
+        # get the full zone info and populate the result dict
+        zone_id = partial_zone_info[0]["id"]
+        api.setZoneID(zone_id)
+        zone_info, result["zone"] = build_zone_result(api)
 
     # if only an existence check was requested,
     # the operation is complete
@@ -628,7 +680,7 @@ def main():
 
     # if absence was requested, remove the zone and exit
     if state == "absent":
-        api.zones.deleteZone(server_id=server_id, zone_id=zone_id).result()
+        api.zones.deleteZone()
         result["changed"] = True
         module.exit_json(**result)
 
@@ -639,7 +691,7 @@ def main():
                 msg="NOTIFY cannot be requested for 'Native' zones", **result
             )
 
-        api.zones.notifyZone(server_id=server_id, zone_id=zone_id).result()
+        api.zones.notifyZone()
         result["changed"] = True
         module.exit_json(**result)
 
@@ -650,7 +702,7 @@ def main():
                 msg="Retrieval can only be requested for 'Slave' zones", **result
             )
 
-        api.zones.axfrRetrieveZone(server_id=server_id, zone_id=zone_id).result()
+        api.zones.axfrRetrieveZone()
         result["changed"] = True
         module.exit_json(**result)
 
@@ -676,12 +728,11 @@ def main():
             if props["account"]:
                 zone_struct["account"] = props["account"]
 
-        api.zones.createZone(
-            server_id=server_id, rrsets=False, zone_struct=zone_struct
-        ).result()
+        api.zones.createZone(rrsets=False, zone_struct=zone_struct)
         result["changed"] = True
-        zone_info = api.zones.listZones(server_id=server_id, zone=zone).result()
-        result["zone"] = build_zone_result(api, server_id, zone_info[0]["id"])
+        partial_zone_info = api.zones.listZones(zone=zone)
+        api.setZoneID(partial_zone_info[0]["id"])
+        zone_info, result["zone"] = build_zone_result(api)
     else:
         # compare the zone's attributes to the provided
         # options and update it if necessary
@@ -707,11 +758,9 @@ def main():
                     zone_struct["account"] = props["account"]
 
         if len(zone_struct):
-            api.zones.putZone(
-                server_id=server_id, zone_id=zone_id, zone_struct=zone_struct
-            ).result()
+            api.zones.putZone(zone_struct=zone_struct)
             result["changed"] = True
-            result["zone"] = build_zone_result(api, server_id, zone_id)
+            zone_info, result["zone"] = build_zone_result(api)
 
     module.exit_json(**result)
 
