@@ -33,6 +33,10 @@
           kind: 'Native'
           nameservers:
             - 'ns.example.'
+        metadata:
+          allow_axfr_from: ['AUTO-NS']
+          ixfr: true
+          axfr_source: '127.0.0.1'
 
     - name: check zone kind change from 'Native' to 'Master'
       pdns_auth_zone:

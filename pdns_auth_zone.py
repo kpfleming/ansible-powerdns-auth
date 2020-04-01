@@ -398,25 +398,35 @@ class APIZonesWrapper(object):
         self.zone_id = zone_id
 
     def axfrRetrieveZone(self):
-        return self.raw_api.axfrRetrieveZone(server_id=self.server_id, zone_id=self.zone_id).result()
+        return self.raw_api.axfrRetrieveZone(
+            server_id=self.server_id, zone_id=self.zone_id
+        ).result()
 
     def createZone(self, **kwargs):
         return self.raw_api.createZone(server_id=self.server_id, **kwargs).result()
 
     def deleteZone(self):
-        return self.raw_api.deleteZone(server_id=self.server_id, zone_id=self.zone_id).result()
+        return self.raw_api.deleteZone(
+            server_id=self.server_id, zone_id=self.zone_id
+        ).result()
 
     def listZone(self):
-        return self.raw_api.listZone(server_id=self.server_id, zone_id=self.zone_id).result()
+        return self.raw_api.listZone(
+            server_id=self.server_id, zone_id=self.zone_id
+        ).result()
 
     def listZones(self, **kwargs):
         return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
 
     def notifyZone(self):
-        return self.raw_api.notifyZone(server_id=self.server_id, zone_id=self.zone_id).result()
+        return self.raw_api.notifyZone(
+            server_id=self.server_id, zone_id=self.zone_id
+        ).result()
 
     def putZone(self, **kwargs):
-        return self.raw_api.putZone(server_id=self.server_id, zone_id=self.zone_id, **kwargs).result()
+        return self.raw_api.putZone(
+            server_id=self.server_id, zone_id=self.zone_id, **kwargs
+        ).result()
 
 
 class APIZoneMetadataWrapper(object):
@@ -425,8 +435,20 @@ class APIZoneMetadataWrapper(object):
         self.server_id = server_id
         self.zone_id = zone_id
 
+    def deleteMetadata(self):
+        return self.raw_api.deleteMetadata(
+            server_id=self.server_id, zone_id=self.zone_id,
+        ).result()
+
     def listMetadata(self):
-        return self.raw_api.listMetadata(server_id=self.server_id, zone_id=self.zone_id).result()
+        return self.raw_api.listMetadata(
+            server_id=self.server_id, zone_id=self.zone_id
+        ).result()
+
+    def modifyMetadata(self, **kwargs):
+        return self.raw_api.modifyMetadata(
+            server_id=self.server_id, zone_id=self.zone_id, **kwargs
+        ).result()
 
 
 class APIWrapper(object):
@@ -436,56 +458,100 @@ class APIWrapper(object):
             raw_api.zonemetadata, server_id, zone_id
         )
 
-    def setZoneID(self,zone_id):
+    def setZoneID(self, zone_id):
         self.zones.zone_id = zone_id
         self.zonemetadata.zone_id = zone_id
 
 
 class Metadata(object):
     map_by_kind = {}
-    map_by_prop = {}
+    map_by_meta = {}
 
     def __init__(self, kind):
         self.kind = kind
-        self.prop = kind.lower().replace("-", "_")
+        self.meta = kind.lower().replace("-", "_")
         self.map_by_kind[self.kind] = self
-        self.map_by_prop[self.prop] = self
+        self.map_by_meta[self.meta] = self
 
     @classmethod
     def by_kind(cls, kind):
         return cls.map_by_kind.get(kind, None)
 
     @classmethod
-    def by_prop(cls, prop):
-        return cls.map_by_prop.get(prop, None)
+    def by_meta(cls, meta):
+        return cls.map_by_meta.get(meta, None)
 
     @classmethod
-    def prop_defaults(cls):
-        return {k: v.default() for k, v in cls.map_by_prop.items()}
+    def meta_defaults(cls):
+        return {k: v.default() for k, v in cls.map_by_meta.items()}
+
+    @classmethod
+    def set_all(cls, metadata, api):
+        for meta, value in metadata.items():
+            m = cls.by_meta(meta)
+            if m:
+                m.set(value, api)
 
 
-class MetadataBooleanValue(Metadata):
+class MetadataBinaryValue(Metadata):
     def default(self):
         return False
 
     def result_from_api(self, res, api):
-        res[self.prop] = api["metadata"][0] != 0
+        res[self.meta] = api["metadata"][0] == "1"
+
+    def set(self, value, api):
+        if value:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": ["1"]}
+            )
 
 
-class MetadataBooleanPresence(Metadata):
+class MetadataBinaryPresence(Metadata):
     def default(self):
         return False
 
     def result_from_api(self, res, api):
-        res[self.prop] = True
+        res[self.meta] = True
+
+    def set(self, value, api):
+        if value:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": [""]}
+            )
+
+
+class MetadataTernaryValue(Metadata):
+    def default(self):
+        return None
+
+    def result_from_api(self, res, api):
+        res[self.meta] = api["metadata"][0] == "1"
+
+    def set(self, value, api):
+        if value is not None:
+            if value:
+                api.zonemetadata.modifyMetadata(
+                    metadata_kind=self.kind, metadata={"metadata": ["1"]}
+                )
+            else:
+                api.zonemetadata.modifyMetadata(
+                    metadata_kind=self.kind, metadata={"metadata": ["0"]}
+                )
 
 
 class MetadataListValue(Metadata):
     def default(self):
-        return []
+        return None
 
     def result_from_api(self, res, api):
-        res[self.prop] = api["metadata"]
+        res[self.meta] = api["metadata"]
+
+    def set(self, value, api):
+        if value:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": value}
+            )
 
 
 class MetadataStringValue(Metadata):
@@ -493,7 +559,13 @@ class MetadataStringValue(Metadata):
         return None
 
     def result_from_api(self, res, api):
-        res[self.prop] = api["metadata"][0]
+        res[self.meta] = api["metadata"][0]
+
+    def set(self, value, api):
+        if value:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": [value]}
+            )
 
 
 MetadataListValue("ALLOW-AXFR-FROM")
@@ -501,15 +573,15 @@ MetadataListValue("ALLOW-DNSUPDATE-FROM")
 MetadataListValue("ALSO-NOTIFY")
 MetadataStringValue("AXFR-MASTER-TSIG")
 MetadataStringValue("AXFR-SOURCE")
-MetadataBooleanPresence("FORWARD-DNSUPDATE")
+MetadataBinaryPresence("FORWARD-DNSUPDATE")
 MetadataStringValue("GSS-ACCEPTOR-PRINCIPAL")
 MetadataStringValue("GSS-ALLOW-AXFR-PRINCIPAL")
-MetadataBooleanValue("IXFR")
+MetadataBinaryValue("IXFR")
 MetadataStringValue("LUA-AXFR-SCRIPT")
-MetadataBooleanValue("NOTIFY-DNSUPDATE")
-MetadataBooleanValue("PUBLISH-CDNSKEY")
+MetadataBinaryValue("NOTIFY-DNSUPDATE")
+MetadataBinaryValue("PUBLISH-CDNSKEY")
 MetadataListValue("PUBLISH-CDS")
-MetadataBooleanValue("SLAVE-RENOTIFY")
+MetadataTernaryValue("SLAVE-RENOTIFY")
 MetadataStringValue("SOA-EDIT-DNSUPDATE")
 MetadataListValue("TSIG-ALLOW-AXFR")
 MetadataListValue("TSIG-ALLOW-DNSUPDATE")
@@ -526,7 +598,7 @@ def build_zone_result(api):
     z["dnssec"] = zone_info["dnssec"]
     z["masters"] = zone_info["masters"]
     # initialize the metadata result dict
-    z["metadata"] = Metadata.prop_defaults()
+    z["metadata"] = Metadata.meta_defaults()
     z["metadata"]["api_rectify"] = zone_info["api_rectify"]
     z["metadata"]["nsec3narrow"] = zone_info["nsec3narrow"]
     z["metadata"]["nsec3param"] = zone_info["nsec3param"]
@@ -732,6 +804,11 @@ def main():
         result["changed"] = True
         partial_zone_info = api.zones.listZones(zone=zone)
         api.setZoneID(partial_zone_info[0]["id"])
+
+        if module.params["metadata"]:
+            meta = module.params["metadata"]
+            Metadata.set_all(meta, api)
+
         zone_info, result["zone"] = build_zone_result(api)
     else:
         # compare the zone's attributes to the provided
