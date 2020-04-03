@@ -435,9 +435,9 @@ class APIZoneMetadataWrapper(object):
         self.server_id = server_id
         self.zone_id = zone_id
 
-    def deleteMetadata(self):
+    def deleteMetadata(self, **kwargs):
         return self.raw_api.deleteMetadata(
-            server_id=self.server_id, zone_id=self.zone_id,
+            server_id=self.server_id, zone_id=self.zone_id, **kwargs
         ).result()
 
     def listMetadata(self):
@@ -475,11 +475,11 @@ class Metadata(object):
 
     @classmethod
     def by_kind(cls, kind):
-        return cls.map_by_kind.get(kind, None)
+        return cls.map_by_kind.get(kind)
 
     @classmethod
     def by_meta(cls, meta):
-        return cls.map_by_meta.get(meta, None)
+        return cls.map_by_meta.get(meta)
 
     @classmethod
     def meta_defaults(cls):
@@ -490,7 +490,17 @@ class Metadata(object):
         for meta, value in metadata.items():
             m = cls.by_meta(meta)
             if m:
-                m.set(value, api)
+                m.set(value or m.default(), api)
+
+    @classmethod
+    def update_all(cls, old, new, api):
+        changed = False
+
+        for k, v in cls.map_by_meta.items():
+            if v.update(old.get(k), new.get(k) or v.default(), api):
+                changed = True
+
+        return changed
 
 
 class MetadataBinaryValue(Metadata):
@@ -506,6 +516,18 @@ class MetadataBinaryValue(Metadata):
                 metadata_kind=self.kind, metadata={"metadata": ["1"]}
             )
 
+    def update(self, oldval, newval, api):
+        if newval == oldval:
+            return False
+
+        if newval:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": ["1"]}
+            )
+        else:
+            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+        return True
+
 
 class MetadataBinaryPresence(Metadata):
     def default(self):
@@ -519,6 +541,18 @@ class MetadataBinaryPresence(Metadata):
             api.zonemetadata.modifyMetadata(
                 metadata_kind=self.kind, metadata={"metadata": [""]}
             )
+
+    def update(self, oldval, newval, api):
+        if newval == oldval:
+            return False
+
+        if newval:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": [""]}
+            )
+        else:
+            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+        return True
 
 
 class MetadataTernaryValue(Metadata):
@@ -539,24 +573,53 @@ class MetadataTernaryValue(Metadata):
                     metadata_kind=self.kind, metadata={"metadata": ["0"]}
                 )
 
+    def update(self, oldval, newval, api):
+        if newval == oldval:
+            return False
+
+        if newval is not None:
+            if newval:
+                api.zonemetadata.modifyMetadata(
+                    metadata_kind=self.kind, metadata={"metadata": ["1"]}
+                )
+            else:
+                api.zonemetadata.modifyMetadata(
+                    metadata_kind=self.kind, metadata={"metadata": ["0"]}
+                )
+        else:
+            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+        return True
+
 
 class MetadataListValue(Metadata):
     def default(self):
-        return None
+        return []
 
     def result_from_api(self, res, api):
         res[self.meta] = api["metadata"]
 
     def set(self, value, api):
-        if value:
+        if len(value) != 0:
             api.zonemetadata.modifyMetadata(
                 metadata_kind=self.kind, metadata={"metadata": value}
             )
 
+    def update(self, oldval, newval, api):
+        if newval == oldval:
+            return False
+
+        if len(newval) != 0:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": newval}
+            )
+        else:
+            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+        return True
+
 
 class MetadataStringValue(Metadata):
     def default(self):
-        return None
+        return ""
 
     def result_from_api(self, res, api):
         res[self.meta] = api["metadata"][0]
@@ -566,6 +629,18 @@ class MetadataStringValue(Metadata):
             api.zonemetadata.modifyMetadata(
                 metadata_kind=self.kind, metadata={"metadata": [value]}
             )
+
+    def update(self, oldval, newval, api):
+        if newval == oldval:
+            return False
+
+        if len(newval) != 0:
+            api.zonemetadata.modifyMetadata(
+                metadata_kind=self.kind, metadata={"metadata": [newval]}
+            )
+        else:
+            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+        return True
 
 
 MetadataListValue("ALLOW-AXFR-FROM")
@@ -837,6 +912,14 @@ def main():
         if len(zone_struct):
             api.zones.putZone(zone_struct=zone_struct)
             result["changed"] = True
+
+        if module.params["metadata"]:
+            old = result["zone"]["metadata"]
+            new = module.params["metadata"]
+            if Metadata.update_all(old, new, api):
+                result["changed"] = True
+
+        if result["changed"]:
             zone_info, result["zone"] = build_zone_result(api)
 
     module.exit_json(**result)

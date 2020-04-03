@@ -46,6 +46,19 @@
         properties:
           kind: 'Master'
 
+    - name: check zone metadata change
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: present
+        properties:
+          kind: 'Master'
+        metadata:
+          allow_axfr_from: ['AUTO-NS', '::']
+          ixfr: false
+          axfr_source: '127.0.0.8'
+          slave_renotify: true
+
     - name: check notify for zone
       pdns_auth_zone:
         <<: *common
