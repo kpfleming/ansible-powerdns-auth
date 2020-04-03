@@ -9,8 +9,9 @@ Ansible modules which can be used to manage zones and other content in
 [PowerDNS Authoritative servers.](https://www.powerdns.com/auth.html)
 
 Open Source software: Apache License 2.0
-
-
+&nbsp;
+&nbsp;
+&nbsp;
 
 ## pdns_auth_zone.py
 
