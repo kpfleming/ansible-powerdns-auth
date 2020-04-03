@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2020-04-03
+### Changed
+
+- Removed metata elements which are immutable from the module parameters list;
+  they will still be included in the return value if set on a zone.
+
+## 1.0.0 - 2020-04-03
 
 First release!
 

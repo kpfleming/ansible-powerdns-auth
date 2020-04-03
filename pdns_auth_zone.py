@@ -119,10 +119,6 @@ options:
           - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
         type: list
         elements: str
-      axfr_master_tsig:
-        description:
-          - Key to be used to AXFR the zone from its master.
-        type: str
       axfr_source:
         description:
           - IPv4 or IPv6 address to be used as the source address for AXFR and IXFR requests.
@@ -143,10 +139,6 @@ options:
         description:
           - Attempt IXFR when retrieving zone updates.
         type: bool
-      lua_axfr_script:
-        description:
-          - Script to be used to edit incoming AXFR requests; use 'NONE' to override a globally configured script.
-        type: str
       notify_dnsupdate:
         description:
           - Send a NOTIFY to all slave servers after processing a DNSUPDATE request.
@@ -172,11 +164,6 @@ options:
         type: str
         choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         default: 'DEFAULT'
-      tsig_allow_axfr:
-        description:
-          - List of TSIG keys for which AXFR requests will be accepted.
-        type: list
-        elements: str
       tsig_allow_dnsupdate:
         description:
           - List of TSIG keys for which DNSUPDATE requests will be accepted.
@@ -651,19 +638,16 @@ class MetadataStringValue(Metadata):
 MetadataListValue("ALLOW-AXFR-FROM")
 MetadataListValue("ALLOW-DNSUPDATE-FROM")
 MetadataListValue("ALSO-NOTIFY")
-MetadataStringValue("AXFR-MASTER-TSIG")
 MetadataStringValue("AXFR-SOURCE")
 MetadataBinaryPresence("FORWARD-DNSUPDATE")
 MetadataStringValue("GSS-ACCEPTOR-PRINCIPAL")
 MetadataStringValue("GSS-ALLOW-AXFR-PRINCIPAL")
 MetadataBinaryValue("IXFR")
-MetadataStringValue("LUA-AXFR-SCRIPT")
 MetadataBinaryValue("NOTIFY-DNSUPDATE")
 MetadataBinaryValue("PUBLISH-CDNSKEY")
 MetadataListValue("PUBLISH-CDS")
 MetadataTernaryValue("SLAVE-RENOTIFY")
 MetadataStringValue("SOA-EDIT-DNSUPDATE")
-MetadataListValue("TSIG-ALLOW-AXFR")
 MetadataListValue("TSIG-ALLOW-DNSUPDATE")
 
 
@@ -725,13 +709,11 @@ def main():
                 "allow_axfr_from": {"type": "list", "elements": "str",},
                 "allow_dnsupdate_from": {"type": "list", "elements": "str",},
                 "also_notify": {"type": "list", "elements": "str",},
-                "axfr_master_tsig": {"type": "str",},
                 "axfr_source": {"type": "str",},
                 "forward_dnsupdate": {"type": "bool",},
                 "gss_acceptor_principal": {"type": "str",},
                 "gss_allow_axfr_principal": {"type": "str",},
                 "ixfr": {"type": "bool",},
-                "lua_axfr_script": {"type": "str",},
                 "notify_dnsupdate": {"type": "bool",},
                 "publish_cndskey": {"type": "bool",},
                 "publish_cds": {"type": "list", "elements": "str",},
@@ -747,7 +729,6 @@ def main():
                         "SOA-EDIT-INCREASE",
                     ],
                 },
-                "tsig_allow_axfr": {"type": "list", "elements": "str",},
                 "tsig_allow_dnsupdate": {"type": "list", "elements": "str",},
             },
         },
