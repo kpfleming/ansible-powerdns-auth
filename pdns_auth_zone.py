@@ -163,6 +163,8 @@ options:
       slave_renotify:
         description:
           - Re-send NOTIFY to slaves after receiving AXFR from master.
+          - If this is not set, the 'slave-renotify' setting in the server configuration
+            will be applied to the zone.
         type: bool
       soa_edit_dnsupdate:
         description:
