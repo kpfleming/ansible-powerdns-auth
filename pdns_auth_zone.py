@@ -241,6 +241,9 @@ EXAMPLES = """
       kind: 'Native'
       nameservers:
         - 'ns1.example.'
+    metadata:
+      allow_axfr_from: ['AUTO-NS']
+      axfr_source: '127.0.0.1'
 
 - name: change native zone to master
   pdns_auth_zone:
