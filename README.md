@@ -32,7 +32,7 @@ Examples:
     name: d2.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
+    api_spec_file: 'api-swagger.json'
     properties:
       kind: 'Native'
       nameservers:
@@ -46,7 +46,7 @@ Examples:
     name: d2.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
+    api_spec_file: 'api-swagger.json'
     properties:
       kind: 'Master'
 
@@ -55,7 +55,39 @@ Examples:
     name: d2.example.
     state: absent
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
+    api_spec_file: 'api-swagger.json'
+```
+
+## pdns_auth_tsigkey.py
+
+This module can be used to create, remove, and manage TSIG keys.  Put
+the module file into a suitable 'library' directory for your Ansible
+installation, role, or playbook.
+
+Examples:
+```
+- name: create key with default algorithm
+  pdns_auth_tsigkey:
+    name: key2
+    state: present
+    api_key: 'foobar'
+    api_spec_file: 'api-swagger.json'
+
+- name: remove key
+  pdns_auth_tsigkey:
+    name: key2
+    state: absent
+    api_key: 'foobar'
+    api_spec_file: 'api-swagger.json'
+
+- name: create key with algorithm and content
+  pdns_auth_tsigkey:
+    name: key3
+    state: present
+    api_key: 'foobar'
+    api_spec_file: 'api-swagger.json'
+    algorithm: hmac-sha256
+    key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
 ```
 
 ## Notes
