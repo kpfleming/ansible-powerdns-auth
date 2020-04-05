@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pdns_auth_tsigkey.py module for managing TSIG keys.
 
+- Updated to 0.0.15 version of API specification which documents all response objects.
+
 ## 1.0.0 - 2020-04-03
 
 First release!
