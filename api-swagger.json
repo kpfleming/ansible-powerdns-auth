@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "0.0.13",
+    "version": "0.0.15",
     "title": "PowerDNS Authoritative HTTP API",
     "license": {
       "name": "MIT"
@@ -31,6 +31,44 @@
     }
   ],
   "paths": {
+    "/error": {
+      "get": {
+        "summary": "Will always generate an error",
+        "operationId": "error",
+        "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/servers": {
       "get": {
         "summary": "List all servers",
@@ -39,6 +77,36 @@
           "servers"
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "An array of servers",
             "schema": {
@@ -68,6 +136,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "An server",
             "schema": {
@@ -101,6 +199,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "Flush successful",
             "schema": {
@@ -142,6 +270,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "An array of Zones",
             "schema": {
@@ -185,6 +343,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "201": {
             "description": "A zone",
             "schema": {
@@ -218,6 +406,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "A Zone",
             "schema": {
@@ -249,6 +467,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "204": {
             "description": "Returns 204 No Content on success."
           }
@@ -285,6 +533,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "204": {
             "description": "Returns 204 No Content on success."
           }
@@ -322,6 +600,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "204": {
             "description": "Returns 204 No Content on success."
           }
@@ -353,6 +661,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "OK"
           }
@@ -384,6 +722,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "OK"
           }
@@ -414,6 +782,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "OK",
             "schema": {
@@ -448,6 +846,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "OK",
             "schema": {
@@ -474,6 +902,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "List of config values",
             "schema": {
@@ -511,6 +969,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "List of config values",
             "schema": {
@@ -553,6 +1041,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "List of Statistic Items",
             "schema": {
@@ -569,9 +1087,6 @@
                 }
               ]
             }
-          },
-          "422": {
-            "description": "Returned when a non-existing statistic name has been requested. Contains an error message"
           }
         }
       }
@@ -615,6 +1130,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "Returns a JSON array with results",
             "schema": {
@@ -648,6 +1193,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "List of Metadata objects",
             "schema": {
@@ -691,6 +1266,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "204": {
             "description": "OK"
           }
@@ -728,6 +1333,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "Metadata object with list of values",
             "schema": {
@@ -775,6 +1410,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "Metadata object with list of values",
             "schema": {
@@ -813,6 +1478,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "OK"
           }
@@ -843,6 +1538,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "List of Cryptokey objects",
             "schema": {
@@ -886,6 +1611,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "201": {
             "description": "Created",
             "schema": {
@@ -926,6 +1681,36 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "Cryptokey",
             "schema": {
@@ -972,11 +1757,38 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "OK"
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           },
           "422": {
-            "description": "Returned when something is wrong with the content of the request. Contains an error message"
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "204": {
+            "description": "OK"
           }
         }
       },
@@ -1010,11 +1822,38 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "OK"
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           },
           "422": {
-            "description": "Returned when something is wrong with the content of the request. Contains an error message"
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "204": {
+            "description": "OK"
           }
         }
       }
@@ -1036,6 +1875,36 @@
           "tsigkey"
         ],
         "responses": {
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
           "200": {
             "description": "List of TSIGKey objects",
             "schema": {
@@ -1043,12 +1912,6 @@
               "items": {
                 "$ref": "#/definitions/TSIGKey"
               }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error, keys could not be retrieved. Contains error message",
-            "schema": {
-              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -1072,28 +1935,40 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created",
+          "400": {
+            "description": "The supplied request was not valid",
             "schema": {
-              "$ref": "#/definitions/TSIGKey"
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           },
           "409": {
-            "description": "Conflict. A key with this name already exists",
+            "description": "An item with this name already exists",
             "schema": {
               "$ref": "#/definitions/Error"
             }
           },
           "422": {
-            "description": "Unprocessable Entry, the TSIGKey provided has issues.",
+            "description": "The input to the operation was not valid",
             "schema": {
               "$ref": "#/definitions/Error"
             }
           },
           "500": {
-            "description": "Internal Server Error. There was a problem creating the key",
+            "description": "Internal server error",
             "schema": {
               "$ref": "#/definitions/Error"
+            }
+          },
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/TSIGKey"
             }
           }
         }
@@ -1123,22 +1998,40 @@
           "tsigkey"
         ],
         "responses": {
-          "200": {
-            "description": "OK.",
+          "400": {
+            "description": "The supplied request was not valid",
             "schema": {
-              "$ref": "#/definitions/TSIGKey"
+              "$ref": "#/definitions/Error"
             }
           },
           "404": {
-            "description": "Not found. The TSIGKey with the specified tsigkey_id does not exist",
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
             "schema": {
               "$ref": "#/definitions/Error"
             }
           },
           "500": {
-            "description": "Internal Server Error, keys could not be retrieved. Contains error message",
+            "description": "Internal server error",
             "schema": {
               "$ref": "#/definitions/Error"
+            }
+          },
+          "200": {
+            "description": "OK.",
+            "schema": {
+              "$ref": "#/definitions/TSIGKey"
             }
           }
         }
@@ -1161,22 +2054,40 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK. TSIGKey is changed.",
+          "400": {
+            "description": "The supplied request was not valid",
             "schema": {
-              "$ref": "#/definitions/TSIGKey"
+              "$ref": "#/definitions/Error"
             }
           },
           "404": {
-            "description": "Not found. The TSIGKey with the specified tsigkey_id does not exist",
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
             "schema": {
               "$ref": "#/definitions/Error"
             }
           },
           "500": {
-            "description": "Internal Server Error. Contains error message",
+            "description": "Internal server error",
             "schema": {
               "$ref": "#/definitions/Error"
+            }
+          },
+          "200": {
+            "description": "OK. TSIGKey is changed.",
+            "schema": {
+              "$ref": "#/definitions/TSIGKey"
             }
           }
         }
@@ -1188,20 +2099,38 @@
           "tsigkey"
         ],
         "responses": {
-          "204": {
-            "description": "OK, key was deleted"
+          "400": {
+            "description": "The supplied request was not valid",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           },
           "404": {
-            "description": "Not found. The TSIGKey with the specified tsigkey_id does not exist",
+            "description": "Requested item was not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "409": {
+            "description": "An item with this name already exists",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "422": {
+            "description": "The input to the operation was not valid",
             "schema": {
               "$ref": "#/definitions/Error"
             }
           },
           "500": {
-            "description": "Internal Server Error. Contains error message",
+            "description": "Internal server error",
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "204": {
+            "description": "OK, key was deleted"
           }
         }
       }
@@ -1749,7 +2678,7 @@
     },
     "Error": {
       "title": "Error",
-      "description": "Returned when the server encounters an error. Either in client input or internally",
+      "description": "Returned when the server encounters an error, either in client input or internally",
       "properties": {
         "error": {
           "type": "string",
