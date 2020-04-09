@@ -85,3 +85,14 @@
       failed_when:
         - result.failed == true
         - result.changed != true
+
+    - name: leave key for zone tests
+      pdns_auth_tsigkey:
+        <<: *common
+        name: axfr-key
+        state: present
+      register: result
+      failed_when:
+        - result.failed == true
+        - result.key.exists == false
+        - result.key.algoritm != 'hmac-md5'
