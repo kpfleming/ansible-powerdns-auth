@@ -34,7 +34,8 @@
           nameservers:
             - 'ns.example.'
         metadata:
-          allow_axfr_from: ['AUTO-NS']
+          allow_axfr_from:
+            - 'AUTO-NS'
           ixfr: true
           axfr_source: '127.0.0.1'
       register: result
@@ -67,10 +68,14 @@
         properties:
           kind: 'Master'
         metadata:
-          allow_axfr_from: ['AUTO-NS', '::']
+          allow_axfr_from:
+            - 'AUTO-NS'
+            - '::'
           ixfr: false
           axfr_source: '127.0.0.8'
           slave_renotify: true
+          tsig_allow_axfr:
+            - 'axfr-key'
       register: result
       failed_when:
         - result.changed != true
@@ -79,6 +84,7 @@
         - result.zone.metadata.ixfr != false
         - result.zone.metadata.axfr_source != '127.0.0.8'
         - result.zone.metadata.slave_renotify != true
+        - result.zone.tsig_allow_axfr[0] != 'axfr-key'
 
     - name: check notify for zone
       pdns_auth_zone:
@@ -108,6 +114,9 @@
           masters:
             - '1.1.1.1'
             - '::1'
+        metadata:
+          axfr_master_tsig:
+            - 'axfr-key'
       register: result
       failed_when:
         - result.changed != true
@@ -115,6 +124,7 @@
         - result.zone.kind != 'Slave'
         - result.zone.masters[0] != '1.1.1.1'
         - result.zone.masters[1] != '::1'
+        - result.zone.axfr_master_tsig[0] != 'axfr-key'
 
     - name: check slave zone retrieval
       pdns_auth_zone:

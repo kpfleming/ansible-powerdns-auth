@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated to 0.0.15 version of API specification which documents all response objects.
 
+- Added support for metadata-in-zone properties.
+
 ## 1.0.0 - 2020-04-03
 
 First release!

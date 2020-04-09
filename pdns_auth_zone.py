@@ -119,10 +119,23 @@ options:
           - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
         type: list
         elements: str
+      api_rectify:
+        description:
+          - Rectify zone's record sets after changes made through the API.
+          - If this is not set, the 'default-api-rectify' setting in the server configuration
+            will be applied to the zone.
+        type: bool
       axfr_source:
         description:
           - IPv4 or IPv6 address to be used as the source address for AXFR and IXFR requests.
         type: str
+      axfr_master_tsig:
+        description:
+          - List of TSIG keys used to validate NOTIFY requests from zone masters and to
+            sign AXFR/IXFR requests to zone masters.
+          - Note: only the first key in the list will be used.
+        type: list
+        elements: str
       forward_dnsupdate:
         description:
           - Forward DNSUPDATE requests to one of the zone's masters.
@@ -143,6 +156,14 @@ options:
         description:
           - Send a NOTIFY to all slave servers after processing a DNSUPDATE request.
         type: bool
+      nsec3narrow:
+        description:
+          - Indicates that this zone operations in NSEC3 'narrow' mode.
+        type: bool
+      nsec3param:
+        description:
+          - NSEC3 parameters for the zone when DNSSEC is used.
+        type: str
       publish_cdnskey:
         description:
           - Publish CDNSKEY records of the KSKs for the zone.
@@ -158,12 +179,30 @@ options:
           - If this is not set, the 'slave-renotify' setting in the server configuration
             will be applied to the zone.
         type: bool
+      soa_edit:
+        description:
+          - Method to update the serial number in the SOA record when serving it.
+        type: str
+        choices: [ 'INCREMENT-WEEKS', 'INCEPTION-EPOCH', 'INCEPTION-INCREMENT', 'EPOCH', 'NONE' ]
+      soa_edit_api:
+        description:
+          - Method to update the serial number in the SOA record after an API edit.
+        type: str
+        choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
+        default: 'DEFAULT'
       soa_edit_dnsupdate:
         description:
           - Method to update the serial number in the SOA record after a DNSUPDATE.
         type: str
         choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         default: 'DEFAULT'
+      tsig_allow_axfr:
+        description:
+          - List of TSIG keys used to sign NOTIFY requests and to validate
+            AXFR/IXFR requests.
+          - Note: only the first key in the list will be used.
+        type: list
+        elements: str
       tsig_allow_dnsupdate:
         description:
           - List of TSIG keys for which DNSUPDATE requests will be accepted.
@@ -315,10 +354,16 @@ zone:
             - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
           type: list
           elements: str
+        api_rectify:
+          description:
+            - Rectify zone's record sets after changes made through the API.
+          type: bool
         axfr_master_tsig:
           description:
-            - Key to be used to AXFR the zone from its master.
-          type: str
+            - List of TSIG keys used to validate NOTIFY requests from zone masters and to
+              sign AXFR/IXFR requests to zone masters.
+          type: list
+          elements: str
         axfr_source:
           description:
             - IPv4 or IPv6 address to be used as the source address for AXFR and IXFR requests.
@@ -347,6 +392,14 @@ zone:
           description:
             - Send a NOTIFY to all slave servers after processing a DNSUPDATE request.
           type: bool
+        nsec3narrow:
+          description:
+            - Indicates that this zone operations in NSEC3 'narrow' mode.
+          type: bool
+        nsec3param:
+          description:
+            - NSEC3 parameters for the zone when DNSSEC is used.
+          type: str
         publish_cdnskey:
           description:
             - Publish CDNSKEY records of the KSKs for the zone.
@@ -356,19 +409,33 @@ zone:
             - List of signature algorithm numbers for CDS records of the KSKs for the zone.
           type: list
           elements: str
+        presigned:
+          description:
+            - Indicates that this zone zone carries DNSSEC RRSIGs, and is presigned.
+          type: bool
         slave_renotify:
           description:
             - Re-send NOTIFY to slaves after receiving AXFR from master.
           type: bool
+        soa_edit:
+          description:
+            - Method to update the serial number in the SOA record when serving it.
+          type: str
+          choices: [ 'INCREMENT-WEEKS', 'INCEPTION-EPOCH', 'INCEPTION-INCREMENT', 'EPOCH', 'NONE' ]
+        soa_edit_api:
+          description:
+            - Method to update the serial number in the SOA record after an API edit.
+          type: str
+          choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         soa_edit_dnsupdate:
           description:
             - Method to update the serial number in the SOA record after a DNSUPDATE.
           type: str
           choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
-          default: 'DEFAULT'
         tsig_allow_axfr:
           description:
-            - List of TSIG keys for which AXFR requests will be accepted.
+            - List of TSIG keys used to sign NOTIFY requests and to validate
+              AXFR/IXFR requests.
           type: list
           elements: str
         tsig_allow_dnsupdate:
@@ -456,18 +523,19 @@ class APIWrapper(object):
 
 
 class Metadata(object):
-    map_by_kind = {}
+    map_by_api_kind = {}
     map_by_meta = {}
 
-    def __init__(self, kind):
-        self.kind = kind
-        self.meta = kind.lower().replace("-", "_")
-        self.map_by_kind[self.kind] = self
+    def __init__(self, api_kind):
+        self.api_kind = api_kind
+        self.meta = api_kind.lower().replace("-", "_")
+        self.immutable = False
+        self.map_by_api_kind[self.api_kind] = self
         self.map_by_meta[self.meta] = self
 
     @classmethod
-    def by_kind(cls, kind):
-        return cls.map_by_kind.get(kind)
+    def by_kind(cls, api_kind):
+        return cls.map_by_api_kind.get(api_kind)
 
     @classmethod
     def by_meta(cls, meta):
@@ -478,46 +546,71 @@ class Metadata(object):
         return {k: v.default() for k, v in cls.map_by_meta.items()}
 
     @classmethod
-    def set_all(cls, metadata, api):
-        for meta, value in metadata.items():
-            m = cls.by_meta(meta)
-            if m:
-                m.set(value or m.default(), api)
+    def user_meta_from_api(cls, api_meta):
+        user_meta = cls.meta_defaults()
+
+        for api_meta_item in api_meta:
+            meta_object = Metadata.by_kind(api_meta_item["kind"])
+            if meta_object:
+                meta_object.user_meta_from_api(user_meta, api_meta_item["metadata"])
+
+        return user_meta
 
     @classmethod
-    def update_all(cls, old, new, api):
-        changed = False
+    def setters(cls, user_meta):
+        res = []
+
+        for meta, value in user_meta.items():
+            m = cls.by_meta(meta)
+            if m and not m.immutable:
+                res.append(
+                    lambda api_client, m=m, value=value: m.set(
+                        value or m.default(), api_client
+                    )
+                )
+
+        return res
+
+    @classmethod
+    def updaters(cls, old_user_meta, new_user_meta):
+        res = []
 
         for k, v in cls.map_by_meta.items():
-            if v.update(old.get(k), new.get(k) or v.default(), api):
-                changed = True
+            if not v.immutable:
+                res.append(
+                    lambda api_client, k=k, v=v: v.update(
+                        old_user_meta.get(k),
+                        new_user_meta.get(k) or v.default(),
+                        api_client,
+                    )
+                )
 
-        return changed
+        return res
 
 
 class MetadataBinaryValue(Metadata):
     def default(self):
         return False
 
-    def result_from_api(self, res, api):
-        res[self.meta] = api["metadata"][0] == "1"
+    def user_meta_from_api(self, user_meta, api_meta_item):
+        user_meta[self.meta] = api_meta_item[0] == "1"
 
-    def set(self, value, api):
+    def set(self, value, api_client):
         if value:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": ["1"]}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
             )
 
-    def update(self, oldval, newval, api):
+    def update(self, oldval, newval, api_client):
         if newval == oldval:
             return False
 
         if newval:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": ["1"]}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
             )
         else:
-            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+            api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
         return True
 
 
@@ -525,25 +618,25 @@ class MetadataBinaryPresence(Metadata):
     def default(self):
         return False
 
-    def result_from_api(self, res, api):
-        res[self.meta] = True
+    def user_meta_from_api(self, user_meta, api_meta_item):
+        user_meta[self.meta] = True
 
-    def set(self, value, api):
+    def set(self, value, api_client):
         if value:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": [""]}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": [""]}
             )
 
-    def update(self, oldval, newval, api):
+    def update(self, oldval, newval, api_client):
         if newval == oldval:
             return False
 
         if newval:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": [""]}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": [""]}
             )
         else:
-            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+            api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
         return True
 
 
@@ -551,35 +644,35 @@ class MetadataTernaryValue(Metadata):
     def default(self):
         return None
 
-    def result_from_api(self, res, api):
-        res[self.meta] = api["metadata"][0] == "1"
+    def user_meta_from_api(self, user_meta, api_meta_item):
+        user_meta[self.meta] = api_meta_item[0] == "1"
 
-    def set(self, value, api):
+    def set(self, value, api_client):
         if value is not None:
             if value:
-                api.zonemetadata.modifyMetadata(
-                    metadata_kind=self.kind, metadata={"metadata": ["1"]}
+                api_client.zonemetadata.modifyMetadata(
+                    metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
                 )
             else:
-                api.zonemetadata.modifyMetadata(
-                    metadata_kind=self.kind, metadata={"metadata": ["0"]}
+                api_client.zonemetadata.modifyMetadata(
+                    metadata_kind=self.api_kind, metadata={"metadata": ["0"]}
                 )
 
-    def update(self, oldval, newval, api):
+    def update(self, oldval, newval, api_client):
         if newval == oldval:
             return False
 
         if newval is not None:
             if newval:
-                api.zonemetadata.modifyMetadata(
-                    metadata_kind=self.kind, metadata={"metadata": ["1"]}
+                api_client.zonemetadata.modifyMetadata(
+                    metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
                 )
             else:
-                api.zonemetadata.modifyMetadata(
-                    metadata_kind=self.kind, metadata={"metadata": ["0"]}
+                api_client.zonemetadata.modifyMetadata(
+                    metadata_kind=self.api_kind, metadata={"metadata": ["0"]}
                 )
         else:
-            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+            api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
         return True
 
 
@@ -587,25 +680,25 @@ class MetadataListValue(Metadata):
     def default(self):
         return []
 
-    def result_from_api(self, res, api):
-        res[self.meta] = api["metadata"]
+    def user_meta_from_api(self, user_meta, api_meta_item):
+        user_meta[self.meta] = api_meta_item
 
-    def set(self, value, api):
+    def set(self, value, api_client):
         if len(value) != 0:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": value}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": value}
             )
 
-    def update(self, oldval, newval, api):
+    def update(self, oldval, newval, api_client):
         if newval == oldval:
             return False
 
         if len(newval) != 0:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": newval}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": newval}
             )
         else:
-            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+            api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
         return True
 
 
@@ -613,36 +706,163 @@ class MetadataStringValue(Metadata):
     def default(self):
         return ""
 
-    def result_from_api(self, res, api):
-        res[self.meta] = api["metadata"][0]
+    def user_meta_from_api(self, user_meta, api_meta_item):
+        user_meta[self.meta] = api_meta_item[0]
 
-    def set(self, value, api):
+    def set(self, value, api_client):
         if value:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": [value]}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": [value]}
             )
 
-    def update(self, oldval, newval, api):
+    def update(self, oldval, newval, api_client):
         if newval == oldval:
             return False
 
         if len(newval) != 0:
-            api.zonemetadata.modifyMetadata(
-                metadata_kind=self.kind, metadata={"metadata": [newval]}
+            api_client.zonemetadata.modifyMetadata(
+                metadata_kind=self.api_kind, metadata={"metadata": [newval]}
             )
         else:
-            api.zonemetadata.deleteMetadata(metadata_kind=self.kind)
+            api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
         return True
 
 
-MetadataListValue("ALLOW-AXFR-FROM")
+class ZoneMetadata(object):
+    map_by_zone_kind = {}
+    map_by_meta = {}
+
+    def __init__(self, api_kind, zone_kind):
+        self.zone_kind = zone_kind
+        self.meta = api_kind.lower().replace("-", "_")
+        self.immutable = False
+        self.map_by_zone_kind[self.zone_kind] = self
+        self.map_by_meta[self.meta] = self
+
+    @classmethod
+    def by_kind(cls, zone_kind):
+        return cls.map_by_zone_kind.get(zone_kind)
+
+    @classmethod
+    def by_meta(cls, meta):
+        return cls.map_by_meta.get(meta)
+
+    @classmethod
+    def meta_defaults(cls):
+        return {k: v.default() for k, v in cls.map_by_meta.items()}
+
+    @classmethod
+    def user_meta_from_api(cls, api_zone):
+        user_meta = cls.meta_defaults()
+
+        for api_zone_item in api_zone:
+            meta_object = Metadata.by_kind(api_zone_item)
+            if meta_object:
+                meta_object.user_meta_from_api(user_meta, api_zone[api_zone_item])
+
+        return user_meta
+
+    def _set(self, value, zone_struct):
+        zone_struct[self.zone_kind] = value
+
+    @classmethod
+    def setters(cls, user_meta):
+        res = []
+
+        for meta, value in user_meta.items():
+            m = cls.by_meta(meta)
+            if m and not m.immutable:
+                res.append(
+                    lambda zone_struct, m=m, value=value: m._set(
+                        value or m.default(), zone_struct
+                    )
+                )
+
+        return res
+
+    @classmethod
+    def updaters(cls, old_user_meta, new_user_meta):
+        res = []
+
+        for k, v in cls.map_by_meta.items():
+            if not v.immutable:
+                res.append(
+                    lambda zone_struct, k=k, v=v: v.update(
+                        old_user_meta.get(k),
+                        new_user_meta.get(k) or v.default(),
+                        zone_struct,
+                    )
+                )
+
+        return res
+
+
+class ZoneMetadataBinaryValue(ZoneMetadata):
+    def default(self):
+        return False
+
+    def user_meta_from_api(self, user_meta, zone_meta_item):
+        user_meta[self.meta] = zone_meta_item == "1"
+
+    def update(self, oldval, newval, zone_struct):
+        if newval != oldval:
+            if newval:
+                zone_struct[self.zone_kind] = "1"
+            else:
+                zone_struct[self.zone_kind] = "0"
+
+
+class ZoneMetadataTernaryValue(ZoneMetadata):
+    def default(self):
+        return None
+
+    def user_meta_from_api(self, user_meta, zone_meta_item):
+        user_meta[self.meta] = zone_meta_item == "1"
+
+    def update(self, oldval, newval, zone_struct):
+        if newval != oldval:
+            if newval is not None:
+                if newval:
+                    zone_struct[self.zone_kind] = "1"
+                else:
+                    zone_struct[self.zone_kind] = "0"
+            else:
+                zone_struct[self.zone_kind] = ""
+
+
+class ZoneMetadataListValue(ZoneMetadata):
+    def default(self):
+        return []
+
+    def user_meta_from_api(self, user_meta, zone_meta_item):
+        user_meta[self.meta] = zone_meta_item
+
+    def update(self, oldval, newval, zone_struct):
+        if newval != oldval:
+            zone_struct[self.zone_kind] = newval
+
+
+class ZoneMetadataStringValue(ZoneMetadata):
+    def default(self):
+        return ""
+
+    def user_meta_from_api(self, user_meta, zone_meta_item):
+        user_meta[self.meta] = zone_meta_item
+
+    def update(self, oldval, newval, zone_struct):
+        if newval != oldval:
+            zone_struct[self.zone_kind] = newval
+
+
 MetadataListValue("ALLOW-DNSUPDATE-FROM")
+MetadataListValue("ALLOW-AXFR-FROM")
 MetadataListValue("ALSO-NOTIFY")
 MetadataStringValue("AXFR-SOURCE")
 MetadataBinaryPresence("FORWARD-DNSUPDATE")
 MetadataStringValue("GSS-ACCEPTOR-PRINCIPAL")
 MetadataStringValue("GSS-ALLOW-AXFR-PRINCIPAL")
 MetadataBinaryValue("IXFR")
+MetadataStringValue("LUA-AXFR-SCRIPT").immutable = True
 MetadataBinaryValue("NOTIFY-DNSUPDATE")
 MetadataBinaryValue("PUBLISH-CDNSKEY")
 MetadataListValue("PUBLISH-CDS")
@@ -650,32 +870,34 @@ MetadataTernaryValue("SLAVE-RENOTIFY")
 MetadataStringValue("SOA-EDIT-DNSUPDATE")
 MetadataListValue("TSIG-ALLOW-DNSUPDATE")
 
+ZoneMetadataTernaryValue("API-RECTIFY", "api_rectify")
+ZoneMetadataListValue("AXFR-MASTER-TSIG", "slave_tsig_key_ids")
+ZoneMetadataBinaryValue("NSEC3NARROW", "nsec3narrow")
+ZoneMetadataStringValue("NSEC3PARAM", "nsec3param")
+ZoneMetadataBinaryValue("PRESIGNED", "presigned").immutable = True
+ZoneMetadataStringValue("SOA-EDIT", "soa_edit")
+ZoneMetadataStringValue("SOA-EDIT-API", "soa_edit_api")
+ZoneMetadataListValue("TSIG-ALLOW-AXFR", "master_tsig_key_ids")
+
 
 def build_zone_result(api):
-    z = {}
-    zone_info = api.zones.listZone()
-    z["exists"] = True
-    z["name"] = zone_info["name"]
-    z["kind"] = zone_info["kind"]
-    z["serial"] = zone_info["serial"]
-    z["account"] = zone_info["account"]
-    z["dnssec"] = zone_info["dnssec"]
-    z["masters"] = zone_info["masters"]
-    # initialize the metadata result dict
-    z["metadata"] = Metadata.meta_defaults()
-    z["metadata"]["api_rectify"] = zone_info["api_rectify"]
-    z["metadata"]["nsec3narrow"] = zone_info["nsec3narrow"]
-    z["metadata"]["nsec3param"] = zone_info["nsec3param"]
-    z["metadata"]["soa_edit"] = zone_info["soa_edit"]
-    z["metadata"]["soa_edit_api"] = zone_info["soa_edit_api"]
+    api_zone = api.zones.listZone()
+    api_meta = api.zonemetadata.listMetadata()
+    z = {
+        "exists": True,
+        "name": api_zone["name"],
+        "kind": api_zone["kind"],
+        "serial": api_zone["serial"],
+        "account": api_zone["account"],
+        "dnssec": api_zone["dnssec"],
+        "masters": api_zone["masters"],
+        "metadata": {
+            **Metadata.user_meta_from_api(api_meta),
+            **ZoneMetadata.user_meta_from_api(api_zone),
+        },
+    }
 
-    zone_meta = api.zonemetadata.listMetadata()
-    for m in zone_meta:
-        o = Metadata.by_kind(m["kind"])
-        if o:
-            o.result_from_api(z["metadata"], m)
-
-    return zone_info, z
+    return api_zone, z
 
 
 def main():
@@ -709,15 +931,40 @@ def main():
                 "allow_axfr_from": {"type": "list", "elements": "str",},
                 "allow_dnsupdate_from": {"type": "list", "elements": "str",},
                 "also_notify": {"type": "list", "elements": "str",},
+                "api_rectify": {"type": "bool",},
                 "axfr_source": {"type": "str",},
+                "axfr_master_tsig": {"type": "list", "elements": "str",},
                 "forward_dnsupdate": {"type": "bool",},
                 "gss_acceptor_principal": {"type": "str",},
                 "gss_allow_axfr_principal": {"type": "str",},
                 "ixfr": {"type": "bool",},
                 "notify_dnsupdate": {"type": "bool",},
-                "publish_cndskey": {"type": "bool",},
+                "nsec3narrow": {"type": "bool",},
+                "nsec3param": {"type": "str",},
+                "publish_cdnskey": {"type": "bool",},
                 "publish_cds": {"type": "list", "elements": "str",},
                 "slave_renotify": {"type": "bool",},
+                "soa_edit": {
+                    "type": "str",
+                    "choices": [
+                        "INCREMENT-WEEKS",
+                        "INCEPTION-EPOCH",
+                        "INCEPTION-INCREMENT",
+                        "EPOCH",
+                        "NONE",
+                    ],
+                },
+                "soa_edit_api": {
+                    "type": "str",
+                    "default": "DEFAULT",
+                    "choices": [
+                        "DEFAULT",
+                        "INCREASE",
+                        "EPOCH",
+                        "SOA-EDIT",
+                        "SOA-EDIT-INCREASE",
+                    ],
+                },
                 "soa_edit_dnsupdate": {
                     "type": "str",
                     "default": "DEFAULT",
@@ -729,6 +976,7 @@ def main():
                         "SOA-EDIT-INCREASE",
                     ],
                 },
+                "tsig_allow_axfr": {"type": "list", "elements": "str",},
                 "tsig_allow_dnsupdate": {"type": "list", "elements": "str",},
             },
         },
@@ -861,14 +1109,18 @@ def main():
             if props["account"]:
                 zone_struct["account"] = props["account"]
 
+        if module.params["metadata"]:
+            for setter in ZoneMetadata.setters(module.params["metadata"]):
+                setter(zone_struct)
+
         api.zones.createZone(rrsets=False, zone_struct=zone_struct)
         result["changed"] = True
         partial_zone_info = api.zones.listZones(zone=zone)
         api.setZoneID(partial_zone_info[0]["id"])
 
         if module.params["metadata"]:
-            meta = module.params["metadata"]
-            Metadata.set_all(meta, api)
+            for setter in Metadata.setters(module.params["metadata"]):
+                setter(api)
 
         zone_info, result["zone"] = build_zone_result(api)
     else:
@@ -895,15 +1147,22 @@ def main():
                 if zone_info["account"] != props["account"]:
                     zone_struct["account"] = props["account"]
 
+        if module.params["metadata"]:
+            for updater in ZoneMetadata.updaters(
+                result["zone"]["metadata"], module.params["metadata"]
+            ):
+                updater(zone_struct)
+
         if len(zone_struct):
             api.zones.putZone(zone_struct=zone_struct)
             result["changed"] = True
 
         if module.params["metadata"]:
-            old = result["zone"]["metadata"]
-            new = module.params["metadata"]
-            if Metadata.update_all(old, new, api):
-                result["changed"] = True
+            for updater in Metadata.updaters(
+                result["zone"]["metadata"], module.params["metadata"]
+            ):
+                if updater(api):
+                    result["changed"] = True
 
         if result["changed"]:
             zone_info, result["zone"] = build_zone_result(api)
