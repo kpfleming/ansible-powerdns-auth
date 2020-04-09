@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.1.0 - 2020-04-09
+
 ### Changed
 
 - Removed metadata elements which are immutable from the module parameters list;
@@ -28,4 +30,5 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.0.0...v1.1.0
