@@ -5,20 +5,46 @@ on:
     branches:
     - master
     paths:
-    - 'tests/make_container.sh'
+    - 'tests/make_tox_container.sh'
+    - 'tests/make_pdns_container.sh'
     - '.github/workflows/build-image.yml'
   pull_request:
     branches:
     - master
     paths:
-    - 'tests/make_container.sh'
+    - 'tests/make_tox_container.sh'
+    - 'tests/make_pdns_container.sh'
     - '.github/workflows/build-image.yml'
   schedule:
     - cron: "15 4 * * 6"
 
 jobs:
-  build:
+  build-tox:
     runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: install buildah
+      run: |
+        . /etc/os-release
+        sudo sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/x${ID^}_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+        wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/x${ID^}_${VERSION_ID}/Release.key -O Release.key
+        sudo apt-key add - < Release.key
+        sudo apt-get --quiet=2 update
+        sudo apt-get --quiet=2 --yes install buildah
+    - name: build tox image
+      run: tests/make_tox_container.sh
+    - name: display image name
+      run: echo ${new_image}
+    - name: login to quay.io
+      if: github.event_name != 'pull_request'
+      run: buildah login -u="kpfleming" -p="${{ secrets.QUAY_TOKEN }}" quay.io
+    - name: publish image to quay.io
+      if: github.event_name != 'pull_request'
+      run: buildah push ${new_image}
+  build-pdns:
+    runs-on: ubuntu-latest
+    needs: build-tox
     strategy:
       matrix:
         pdns: [4.2, 4.3, master]
@@ -33,8 +59,8 @@ jobs:
         sudo apt-key add - < Release.key
         sudo apt-get --quiet=2 update
         sudo apt-get --quiet=2 --yes install buildah
-    - name: build image
-      run: tests/make_container.sh ${{ matrix.pdns }}
+    - name: build pdns image
+      run: tests/make_pdns_container.sh ${{ matrix.pdns }}
     - name: display image name
       run: echo ${new_image}
     - name: login to quay.io
@@ -45,7 +71,7 @@ jobs:
       run: buildah push ${new_image}
   trigger-ci:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-pdns
     steps:
     - name: trigger CI
       if: github.event_name != 'pull_request'
