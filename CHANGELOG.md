@@ -7,18 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improved handling of predictable exceptions from API operations.
+
 ## [1.1.0] - 2020-04-09
+
+### Added
+
+- pdns_auth_tsigkey.py module for managing TSIG keys.
+
+- Support for metadata-in-zone properties.
 
 ### Changed
 
 - Removed metadata elements which are immutable from the module parameters list;
   they will still be included in the return value if set on a zone.
 
-- pdns_auth_tsigkey.py module for managing TSIG keys.
-
 - Updated to 0.0.15 version of API specification which documents all response objects.
-
-- Added support for metadata-in-zone properties.
 
 ## 1.0.0 - 2020-04-03
 
