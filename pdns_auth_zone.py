@@ -445,6 +445,13 @@ zone:
           elements: str
 """
 
+import sys
+
+MIN_PYTHON = (3, 5)
+assert (
+    sys.version_info >= MIN_PYTHON
+), f"This module requires Python {'.'.join([str(n) for n in MIN_PYTHON])} or newer."
+
 from ansible.module_utils.basic import AnsibleModule
 
 from urllib.parse import urlparse
