@@ -3,6 +3,7 @@
 <a href="https://opensource.org"><img height="150" align="left" src="https://opensource.org/files/OSIApprovedCropped.png" alt="Open Source Initiative Approved License logo"></a>
 [![CI](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg?branch=master)
 [![build-image](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/build-image/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/build-image/badge.svg?branch=master)
+[![Python](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/download/releases/3.5.0/)
 
 Ansible modules which can be used to manage zones and other content in
 [PowerDNS Authoritative servers.](https://www.powerdns.com/auth.html)
