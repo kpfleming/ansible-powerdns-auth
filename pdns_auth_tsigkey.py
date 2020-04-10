@@ -161,6 +161,56 @@ key:
 from ansible.module_utils.basic import AnsibleModule
 
 from urllib.parse import urlparse
+from functools import wraps
+
+module = None
+result = None
+api_exceptions_to_catch = ()
+
+
+def APIExceptionHandler(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except api_exceptions_to_catch as e:
+            module.fail_json(
+                msg=f"API operation {func.__name__} returned '{e.swagger_result['error']}'",
+                **result,
+            )
+
+    return wrapper
+
+
+class APITSIGKeyWrapper(object):
+    def __init__(self, raw_api, server_id):
+        self.raw_api = raw_api
+        self.server_id = server_id
+
+    @APIExceptionHandler
+    def createTSIGKey(self, **kwargs):
+        return self.raw_api.createTSIGKey(server_id=self.server_id, **kwargs).result()
+
+    @APIExceptionHandler
+    def deleteTSIGKey(self, **kwargs):
+        return self.raw_api.deleteTSIGKey(server_id=self.server_id, **kwargs).result()
+
+    @APIExceptionHandler
+    def getTSIGKey(self, **kwargs):
+        return self.raw_api.getTSIGKey(server_id=self.server_id, **kwargs).result()
+
+    @APIExceptionHandler
+    def listTSIGKeys(self):
+        return self.raw_api.listTSIGKeys(server_id=self.server_id).result()
+
+    @APIExceptionHandler
+    def putTSIGKey(self, **kwargs):
+        return self.raw_api.putTSIGKey(server_id=self.server_id, **kwargs).result()
+
+
+class APIWrapper(object):
+    def __init__(self, raw_api, server_id):
+        self.tsigkey = APITSIGKeyWrapper(raw_api.tsigkey, server_id)
 
 
 def main():
@@ -190,17 +240,35 @@ def main():
         "key": {"type": "str"},
     }
 
+    global module
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     try:
         from bravado.requests_client import RequestsClient
         from bravado.client import SwaggerClient
         from bravado.swagger_model import load_file
+        from bravado.exception import (
+            HTTPBadRequest,
+            HTTPNotFound,
+            HTTPConflict,
+            HTTPUnprocessableEntity,
+            HTTPInternalServerError,
+        )
     except ImportError:
         module.fail_json(
             msg="The pdns_auth_tsigkey module requires the 'bravado' package."
         )
 
+    global api_exceptions_to_catch
+    api_exceptions_to_catch = (
+        HTTPBadRequest,
+        HTTPNotFound,
+        HTTPConflict,
+        HTTPUnprocessableEntity,
+        HTTPInternalServerError,
+    )
+
+    global result
     result = {
         "changed": False,
     }
@@ -223,7 +291,13 @@ def main():
     spec["host"] = url.netloc
     spec["schemes"] = [url.scheme]
 
-    api = SwaggerClient.from_spec(spec, http_client=http_client)
+    raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
+
+    # create an APIWrapper to proxy the raw_api object
+    # and curry the server_id into all API calls
+    # automatically, along with handling
+    # predictable exceptions
+    api_client = APIWrapper(raw_api, server_id)
 
     result["key"] = {"name": key, "exists": False}
 
@@ -232,9 +306,7 @@ def main():
     # the key_id required for subsequent API calls
 
     partial_key_info = [
-        k
-        for k in api.tsigkey.listTSIGKeys(server_id=server_id).result()
-        if k["name"] == key
+        k for k in api_client.tsigkey.listTSIGKeys() if k["name"] == key
     ]
 
     if len(partial_key_info) == 0:
@@ -247,9 +319,7 @@ def main():
     else:
         # get the full key info and populate the result dict
         key_id = partial_key_info[0]["id"]
-        key_info = api.tsigkey.getTSIGKey(
-            server_id=server_id, tsigkey_id=key_id
-        ).result()
+        key_info = api_client.tsigkey.getTSIGKey(tsigkey_id=key_id)
         result["key"]["exists"] = True
         result["key"]["algorithm"] = key_info["algorithm"]
         result["key"]["key"] = key_info["key"]
@@ -261,7 +331,7 @@ def main():
 
     # if absence was requested, remove the zone and exit
     if state == "absent":
-        api.tsigkey.deleteTSIGKey(server_id=server_id, tsigkey_id=key_id).result()
+        api_client.tsigkey.deleteTSIGKey(tsigkey_id=key_id)
         result["changed"] = True
         module.exit_json(**result)
 
@@ -276,9 +346,7 @@ def main():
         if module.params["key"]:
             key_struct["key"] = module.params["key"]
 
-        key_info = api.tsigkey.createTSIGKey(
-            server_id=server_id, tsigkey=key_struct
-        ).result()
+        key_info = api_client.tsigkey.createTSIGKey(tsigkey=key_struct)
         result["changed"] = True
         result["key"]["exists"] = True
         result["key"]["algorithm"] = key_info["algorithm"]
@@ -297,9 +365,9 @@ def main():
                 key_struct["key"] = module.params["key"]
 
         if len(key_struct):
-            key_info = api.tsigkey.putTSIGKey(
-                server_id=server_id, tsigkey_id=key_id, tsigkey=key_struct
-            ).result()
+            key_info = api_client.tsigkey.putTSIGKey(
+                tsigkey_id=key_id, tsigkey=key_struct
+            )
             result["changed"] = True
 
         if result["changed"]:

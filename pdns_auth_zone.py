@@ -1067,7 +1067,8 @@ def main():
 
     # create an APIWrapper to proxy the raw_api object
     # and curry the server_id and zone_id into all API
-    # calls automatically
+    # calls automatically, along with handling
+    # predictable exceptions
     api_client = APIWrapper(raw_api, server_id, None)
 
     result["zone"] = {}
