@@ -448,6 +448,26 @@ zone:
 from ansible.module_utils.basic import AnsibleModule
 
 from urllib.parse import urlparse
+from functools import wraps
+
+
+module = None
+result = None
+api_exceptions_to_catch = ()
+
+
+def APIExceptionHandler(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except api_exceptions_to_catch as e:
+            module.fail_json(
+                msg=f"API operation {func.__name__} returned '{e.swagger_result['error']}'",
+                **result,
+            )
+
+    return wrapper
 
 
 class APIZonesWrapper(object):
@@ -456,32 +476,39 @@ class APIZonesWrapper(object):
         self.server_id = server_id
         self.zone_id = zone_id
 
+    @APIExceptionHandler
     def axfrRetrieveZone(self):
         return self.raw_api.axfrRetrieveZone(
             server_id=self.server_id, zone_id=self.zone_id
         ).result()
 
+    @APIExceptionHandler
     def createZone(self, **kwargs):
         return self.raw_api.createZone(server_id=self.server_id, **kwargs).result()
 
+    @APIExceptionHandler
     def deleteZone(self):
         return self.raw_api.deleteZone(
             server_id=self.server_id, zone_id=self.zone_id
         ).result()
 
+    @APIExceptionHandler
     def listZone(self):
         return self.raw_api.listZone(
             server_id=self.server_id, zone_id=self.zone_id
         ).result()
 
+    @APIExceptionHandler
     def listZones(self, **kwargs):
         return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
 
+    @APIExceptionHandler
     def notifyZone(self):
         return self.raw_api.notifyZone(
             server_id=self.server_id, zone_id=self.zone_id
         ).result()
 
+    @APIExceptionHandler
     def putZone(self, **kwargs):
         return self.raw_api.putZone(
             server_id=self.server_id, zone_id=self.zone_id, **kwargs
@@ -494,16 +521,19 @@ class APIZoneMetadataWrapper(object):
         self.server_id = server_id
         self.zone_id = zone_id
 
+    @APIExceptionHandler
     def deleteMetadata(self, **kwargs):
         return self.raw_api.deleteMetadata(
             server_id=self.server_id, zone_id=self.zone_id, **kwargs
         ).result()
 
+    @APIExceptionHandler
     def listMetadata(self):
         return self.raw_api.listMetadata(
             server_id=self.server_id, zone_id=self.zone_id
         ).result()
 
+    @APIExceptionHandler
     def modifyMetadata(self, **kwargs):
         return self.raw_api.modifyMetadata(
             server_id=self.server_id, zone_id=self.zone_id, **kwargs
@@ -880,9 +910,9 @@ ZoneMetadataStringValue("SOA-EDIT-API", "soa_edit_api")
 ZoneMetadataListValue("TSIG-ALLOW-AXFR", "master_tsig_key_ids")
 
 
-def build_zone_result(api):
-    api_zone = api.zones.listZone()
-    api_meta = api.zonemetadata.listMetadata()
+def build_zone_result(api_client):
+    api_zone = api_client.zones.listZone()
+    api_meta = api_client.zonemetadata.listMetadata()
     z = {
         "exists": True,
         "name": api_zone["name"],
@@ -982,17 +1012,35 @@ def main():
         },
     }
 
+    global module
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     try:
         from bravado.requests_client import RequestsClient
         from bravado.client import SwaggerClient
         from bravado.swagger_model import load_file
+        from bravado.exception import (
+            HTTPBadRequest,
+            HTTPNotFound,
+            HTTPConflict,
+            HTTPUnprocessableEntity,
+            HTTPInternalServerError,
+        )
     except ImportError:
         module.fail_json(
             msg="The pdns_auth_zone module requires the 'bravado' package."
         )
 
+    global api_exceptions_to_catch
+    api_exceptions_to_catch = (
+        HTTPBadRequest,
+        HTTPNotFound,
+        HTTPConflict,
+        HTTPUnprocessableEntity,
+        HTTPInternalServerError,
+    )
+
+    global result
     result = {
         "changed": False,
     }
@@ -1020,7 +1068,7 @@ def main():
     # create an APIWrapper to proxy the raw_api object
     # and curry the server_id and zone_id into all API
     # calls automatically
-    api = APIWrapper(raw_api, server_id, None)
+    api_client = APIWrapper(raw_api, server_id, None)
 
     result["zone"] = {}
     result["zone"]["name"] = zone
@@ -1030,7 +1078,7 @@ def main():
     # this is required to translate the user-friendly zone name into
     # the zone_id required for subsequent API calls
 
-    partial_zone_info = api.zones.listZones(zone=zone)
+    partial_zone_info = api_client.zones.listZones(zone=zone)
 
     if len(partial_zone_info) == 0:
         if (state == "exists") or (state == "absent"):
@@ -1051,8 +1099,8 @@ def main():
         #
         # get the full zone info and populate the result dict
         zone_id = partial_zone_info[0]["id"]
-        api.setZoneID(zone_id)
-        zone_info, result["zone"] = build_zone_result(api)
+        api_client.setZoneID(zone_id)
+        zone_info, result["zone"] = build_zone_result(api_client)
 
     # if only an existence check was requested,
     # the operation is complete
@@ -1061,7 +1109,7 @@ def main():
 
     # if absence was requested, remove the zone and exit
     if state == "absent":
-        api.zones.deleteZone()
+        api_client.zones.deleteZone()
         result["changed"] = True
         module.exit_json(**result)
 
@@ -1072,7 +1120,7 @@ def main():
                 msg="NOTIFY cannot be requested for 'Native' zones", **result
             )
 
-        api.zones.notifyZone()
+        api_client.zones.notifyZone()
         result["changed"] = True
         module.exit_json(**result)
 
@@ -1083,7 +1131,7 @@ def main():
                 msg="Retrieval can only be requested for 'Slave' zones", **result
             )
 
-        api.zones.axfrRetrieveZone()
+        api_client.zones.axfrRetrieveZone()
         result["changed"] = True
         module.exit_json(**result)
 
@@ -1113,16 +1161,18 @@ def main():
             for setter in ZoneMetadata.setters(module.params["metadata"]):
                 setter(zone_struct)
 
-        api.zones.createZone(rrsets=False, zone_struct=zone_struct)
+        partial_zone_info = api_client.zones.createZone(
+            rrsets=False, zone_struct=zone_struct
+        )
+
         result["changed"] = True
-        partial_zone_info = api.zones.listZones(zone=zone)
-        api.setZoneID(partial_zone_info[0]["id"])
+        api_client.setZoneID(partial_zone_info["id"])
 
         if module.params["metadata"]:
             for setter in Metadata.setters(module.params["metadata"]):
-                setter(api)
+                setter(api_client)
 
-        zone_info, result["zone"] = build_zone_result(api)
+        zone_info, result["zone"] = build_zone_result(api_client)
     else:
         # compare the zone's attributes to the provided
         # options and update it if necessary
@@ -1154,18 +1204,18 @@ def main():
                 updater(zone_struct)
 
         if len(zone_struct):
-            api.zones.putZone(zone_struct=zone_struct)
+            api_client.zones.putZone(zone_struct=zone_struct)
             result["changed"] = True
 
         if module.params["metadata"]:
             for updater in Metadata.updaters(
                 result["zone"]["metadata"], module.params["metadata"]
             ):
-                if updater(api):
+                if updater(api_client):
                     result["changed"] = True
 
         if result["changed"]:
-            zone_info, result["zone"] = build_zone_result(api)
+            zone_info, result["zone"] = build_zone_result(api_client)
 
     module.exit_json(**result)
 
