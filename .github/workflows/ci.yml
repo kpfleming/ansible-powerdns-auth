@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pdns: [4.2, 4.3, master]
+        pdns: [4.2, 4.3, 4.4, master]
     container:
       image: docker://quay.io/kpfleming/apaa-test-images:pdns-${{ matrix.pdns }}
     steps:
