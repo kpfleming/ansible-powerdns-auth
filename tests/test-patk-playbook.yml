@@ -13,6 +13,14 @@
         name: k1
         state: exists
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.key.exists != false
@@ -23,6 +31,14 @@
         name: k2
         state: present
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.key.exists == false
@@ -34,6 +50,14 @@
         name: k2
         state: absent
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.changed != true
@@ -46,6 +70,14 @@
         algorithm: hmac-sha256
         key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.key.exists == false
@@ -58,6 +90,14 @@
         name: k3
         state: exists
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.key.exists == false
@@ -71,6 +111,14 @@
         state: present
         algorithm: hmac-sha512
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.key.exists == false
@@ -82,6 +130,14 @@
         name: k3
         state: absent
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.changed != true
@@ -92,6 +148,14 @@
         name: axfr-key
         state: present
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.failed == true
         - result.key.exists == false
