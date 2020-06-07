@@ -36,6 +36,8 @@ jobs:
     strategy:
       matrix:
         pdns: [4.2, 4.3, master]
+        python: [py35, py36, py37, py38]
+      fail-fast: false
     container:
       image: docker://quay.io/kpfleming/apaa-test-images:pdns-${{ matrix.pdns }}
     steps:
@@ -43,11 +45,5 @@ jobs:
       uses: actions/checkout@v2
     - name: start pdns_server
       run: tests/start_server.sh
-    - name: run tests with Python 3.5
-      run: tox -epy35-ansible --workdir /root/tox
-    - name: run tests with Python 3.6
-      run: tox -epy36-ansible --workdir /root/tox
-    - name: run tests with Python 3.7
-      run: tox -epy37-ansible --workdir /root/tox
-    - name: run tests with Python 3.8
-      run: tox -epy38-ansible --workdir /root/tox
+    - name: run tests
+      run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
