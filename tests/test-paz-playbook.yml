@@ -13,6 +13,14 @@
         name: d1.example.
         state: exists
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when: result.zone.exists != false
 
     - name: check notify for non-existent zone
@@ -22,6 +30,14 @@
         state: notify
       ignore_errors: true
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when: result.failed != true
 
     - name: check 'Native' zone creation
@@ -39,6 +55,14 @@
           ixfr: true
           axfr_source: '127.0.0.1'
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
         - result.zone.name != d2.example.
@@ -56,6 +80,14 @@
         properties:
           kind: 'Master'
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
         - result.zone.kind != 'Master'
@@ -77,6 +109,14 @@
           tsig_allow_axfr:
             - 'axfr-key'
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
         - result.zone.metadata.allow_axfr_from[0] != 'AUTO-NS'
@@ -92,6 +132,14 @@
         name: d2.example.
         state: notify
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
 
@@ -101,6 +149,14 @@
         name: d2.example.
         state: absent
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
 
@@ -118,6 +174,14 @@
           axfr_master_tsig:
             - 'axfr-key'
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
         - result.zone.name != d3.example.
@@ -138,5 +202,13 @@
         name: d3.example.
         state: absent
       register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
       failed_when:
         - result.changed != true
