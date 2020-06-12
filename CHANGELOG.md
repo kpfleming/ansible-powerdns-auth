@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Improved handling of predictable exceptions from API operations.
+- Corrected handling of changes to list of masters in slave zones.
 
 ## [1.1.0] - 2020-04-09
 
