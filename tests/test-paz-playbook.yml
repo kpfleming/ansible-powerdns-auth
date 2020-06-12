@@ -196,6 +196,30 @@
         name: d3.example.
         state: retrieve
 
+    - name: check 'Slave' master change
+      pdns_auth_zone:
+        <<: *common
+        name: d3.example.
+        state: present
+        properties:
+          kind: 'Slave'
+          masters:
+            - '2.2.2.2'
+            - '::1'
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.changed != true
+        - result.zone.masters[0] != '2.2.2.2'
+        - result.zone.masters[1] != '::1'
+
     - name: check zone removal
       pdns_auth_zone:
         <<: *common

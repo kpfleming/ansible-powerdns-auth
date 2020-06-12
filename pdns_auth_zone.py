@@ -1196,8 +1196,8 @@ def main():
 
                 if props["kind"] == "Slave":
                     if props["masters"]:
-                        mp_masters = props["masters"].sort()
-                        zi_masters = zone_info["masters"].sort()
+                        mp_masters = sorted(props["masters"])
+                        zi_masters = sorted(zone_info["masters"])
 
                         if zi_masters != mp_masters:
                             zone_struct["masters"] = props["masters"]
