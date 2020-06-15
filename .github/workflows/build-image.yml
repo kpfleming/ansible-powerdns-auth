@@ -3,7 +3,7 @@ name: build-image
 on:
   push:
     branches:
-    - master
+    - develop
     paths:
     - 'tox.ini'
     - 'tests/make_tox_container.sh'
@@ -11,7 +11,7 @@ on:
     - '.github/workflows/build-image.yml'
   pull_request:
     branches:
-    - master
+    - develop
     paths:
     - 'tox.ini'
     - 'tests/make_tox_container.sh'

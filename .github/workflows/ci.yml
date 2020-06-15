@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-    - master
+    - develop
     - 'branch-[1-9]+.[0-9]+'
     tags:
     - 'v[1-9]+.[0-9]+.[0-9]+'
@@ -17,7 +17,7 @@ on:
     - '.github/workflows/ci.yml'
   pull_request:
     branches:
-    - master
+    - develop
     paths:
     - 'pdns_auth_zone.py'
     - 'pdns_auth_tsigkey.py'
