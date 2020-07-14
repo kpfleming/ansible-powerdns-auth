@@ -19,7 +19,7 @@ buildcmd apt-get update
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
-for pyver in 3.5.9 3.6.10 3.7.7 3.8.2; do
+for pyver in 3.5.9 3.6.11 3.7.8 3.8.4; do
     wget -O - https://www.python.org/ftp/python/${pyver}/Python-${pyver}.tgz | buildcmd tar xzf -
     buildah config --workingdir /root/Python-${pyver} ${c}
     buildcmd ./configure --enable-optimizations
