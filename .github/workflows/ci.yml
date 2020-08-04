@@ -27,8 +27,10 @@ on:
     - 'tests/test-patk-playbook.yml'
     - 'tests/start_server.sh'
     - '.github/workflows/ci.yml'
-  repository_dispatch:
-    types: [trigger-ci]
+  workflow_run:
+    workflows: ["build-image"]
+    types:
+      - completed
 
 jobs:
   test:
