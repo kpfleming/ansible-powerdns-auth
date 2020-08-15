@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2020-08-15
+
+### Changed
+
+- Improved handling of zone metadata during zone creation; default values are
+  no longer sent, as they can trigger errors using the current development
+  branch of the server.
+
 ## [1.2.0] - 2020-06-12
 
 ### Changed
@@ -39,6 +47,7 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.0.0...v1.1.0
