@@ -470,7 +470,7 @@ def APIExceptionHandler(func):
             return func(self, *args, **kwargs)
         except api_exceptions_to_catch as e:
             module.fail_json(
-                msg="API operation % returned '%s'"
+                msg="API operation %s returned '%s'"
                 % (func.__name__, e.swagger_result["error"]),
                 **result,
             )
