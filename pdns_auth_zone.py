@@ -876,8 +876,12 @@ class ZoneMetadataListValue(ZoneMetadata):
         user_meta[self.meta] = zone_meta_item
 
     def update(self, oldval, newval, zone_struct):
-        if newval != oldval:
-            zone_struct[self.zone_kind] = newval
+        if len(oldval) != 0:
+            if newval != oldval:
+                zone_struct[self.zone_kind] = newval
+        else:
+            if len(newval) != 0:
+                zone_struct[self.zone_kind] = newval
 
 
 class ZoneMetadataStringValue(ZoneMetadata):
@@ -888,8 +892,12 @@ class ZoneMetadataStringValue(ZoneMetadata):
         user_meta[self.meta] = zone_meta_item
 
     def update(self, oldval, newval, zone_struct):
-        if newval != oldval:
-            zone_struct[self.zone_kind] = newval
+        if len(oldval) != 0:
+            if newval != oldval:
+                zone_struct[self.zone_kind] = newval
+        else:
+            if len(newval) != 0:
+                zone_struct[self.zone_kind] = newval
 
 
 MetadataListValue("ALLOW-DNSUPDATE-FROM")
