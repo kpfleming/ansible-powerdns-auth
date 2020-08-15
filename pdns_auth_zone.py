@@ -748,7 +748,7 @@ class MetadataStringValue(Metadata):
         user_meta[self.meta] = api_meta_item[0]
 
     def set(self, value, api_client):
-        if len(value) != 0:
+        if value:
             api_client.zonemetadata.modifyMetadata(
                 metadata_kind=self.api_kind, metadata={"metadata": [value]}
             )
@@ -800,9 +800,6 @@ class ZoneMetadata(object):
 
         return user_meta
 
-    def _set(self, value, zone_struct):
-        zone_struct[self.zone_kind] = value
-
     @classmethod
     def setters(cls, user_meta):
         res = []
@@ -811,7 +808,7 @@ class ZoneMetadata(object):
             m = cls.by_meta(meta)
             if m and not m.immutable:
                 res.append(
-                    lambda zone_struct, m=m, value=value: m._set(
+                    lambda zone_struct, m=m, value=value: m.set(
                         value or m.default(), zone_struct
                     )
                 )
@@ -842,6 +839,10 @@ class ZoneMetadataBinaryValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
+    def set(self, value, zone_struct):
+        if value:
+            zone_struct[self.zone_kind] = "1"
+
     def update(self, oldval, newval, zone_struct):
         if newval != oldval:
             if newval:
@@ -856,6 +857,13 @@ class ZoneMetadataTernaryValue(ZoneMetadata):
 
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
+
+    def set(self, value, zone_struct):
+        if value is not None:
+            if value:
+                zone_struct[self.zone_kind] = "1"
+            else:
+                zone_struct[self.zone_kind] = "0"
 
     def update(self, oldval, newval, zone_struct):
         if newval != oldval:
@@ -875,13 +883,13 @@ class ZoneMetadataListValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
+    def set(self, value, zone_struct):
+        if value != []:
+            zone_struct[self.zone_kind] = value
+
     def update(self, oldval, newval, zone_struct):
-        if len(oldval) != 0:
-            if newval != oldval:
-                zone_struct[self.zone_kind] = newval
-        else:
-            if len(newval) != 0:
-                zone_struct[self.zone_kind] = newval
+        if newval != oldval:
+            zone_struct[self.zone_kind] = newval
 
 
 class ZoneMetadataStringValue(ZoneMetadata):
@@ -891,13 +899,13 @@ class ZoneMetadataStringValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
+    def set(self, value, zone_struct):
+        if value != "":
+            zone_struct[self.zone_kind] = value
+
     def update(self, oldval, newval, zone_struct):
-        if len(oldval) != 0:
-            if newval != oldval:
-                zone_struct[self.zone_kind] = newval
-        else:
-            if len(newval) != 0:
-                zone_struct[self.zone_kind] = newval
+        if newval != oldval:
+            zone_struct[self.zone_kind] = newval
 
 
 MetadataListValue("ALLOW-DNSUPDATE-FROM")
