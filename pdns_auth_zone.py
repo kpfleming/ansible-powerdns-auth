@@ -748,7 +748,7 @@ class MetadataStringValue(Metadata):
         user_meta[self.meta] = api_meta_item[0]
 
     def set(self, value, api_client):
-        if value:
+        if len(value) != 0:
             api_client.zonemetadata.modifyMetadata(
                 metadata_kind=self.api_kind, metadata={"metadata": [value]}
             )
