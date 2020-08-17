@@ -122,8 +122,6 @@ options:
       api_rectify:
         description:
           - Rectify zone's record sets after changes made through the API.
-          - If this is not set, the 'default-api-rectify' setting in the server configuration
-            will be applied to the zone.
         type: bool
       axfr_source:
         description:
@@ -924,7 +922,7 @@ MetadataTernaryValue("SLAVE-RENOTIFY")
 MetadataStringValue("SOA-EDIT-DNSUPDATE")
 MetadataListValue("TSIG-ALLOW-DNSUPDATE")
 
-ZoneMetadataTernaryValue("API-RECTIFY", "api_rectify")
+ZoneMetadataBinaryValue("API-RECTIFY", "api_rectify")
 ZoneMetadataListValue("AXFR-MASTER-TSIG", "slave_tsig_key_ids")
 ZoneMetadataBinaryValue("NSEC3NARROW", "nsec3narrow")
 ZoneMetadataStringValue("NSEC3PARAM", "nsec3param")
