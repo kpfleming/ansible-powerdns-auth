@@ -72,6 +72,38 @@
         - result.zone.metadata.ixfr != true
         - result.zone.metadata.axfr_source != '127.0.0.1'
 
+    - name: check that zone properties and metadata did not change
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: present
+        properties:
+          kind: 'Native'
+          nameservers:
+            - 'ns.example.'
+        metadata:
+          allow_axfr_from:
+            - 'AUTO-NS'
+          ixfr: true
+          axfr_source: '127.0.0.1'
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.changed != false
+        - result.zone.name != d2.example.
+        - result.zone.kind != 'Native'
+        - result.zone.nameservers[0] != 'ns.example.'
+        - result.zone.metadata.allow_axfr_from[0] != 'AUTO-NS'
+        - result.zone.metadata.ixfr != true
+        - result.zone.metadata.axfr_source != '127.0.0.1'
+
     - name: check zone kind change from 'Native' to 'Master'
       pdns_auth_zone:
         <<: *common
