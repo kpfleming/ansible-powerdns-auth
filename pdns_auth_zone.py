@@ -585,10 +585,10 @@ class Metadata(object):
     def user_meta_from_api(cls, api_meta):
         user_meta = cls.meta_defaults()
 
-        for api_meta_item in api_meta:
-            meta_object = Metadata.by_kind(api_meta_item["kind"])
+        for k, v in {m["kind"]: m["metadata"] for m in api_meta}.items():
+            meta_object = cls.by_kind(k)
             if meta_object:
-                meta_object.user_meta_from_api(user_meta, api_meta_item["metadata"])
+                meta_object.user_meta_from_api(user_meta, v)
 
         return user_meta
 
@@ -791,10 +791,10 @@ class ZoneMetadata(object):
     def user_meta_from_api(cls, api_zone):
         user_meta = cls.meta_defaults()
 
-        for api_zone_item in api_zone:
-            meta_object = ZoneMetadata.by_kind(api_zone_item)
+        for k, v in api_zone.items():
+            meta_object = cls.by_kind(k)
             if meta_object:
-                meta_object.user_meta_from_api(user_meta, api_zone[api_zone_item])
+                meta_object.user_meta_from_api(user_meta, v)
 
         return user_meta
 
