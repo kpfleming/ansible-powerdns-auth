@@ -490,7 +490,7 @@ class APIZonesWrapper(object):
 
     @APIExceptionHandler
     def createZone(self, **kwargs):
-        return self.raw_api.createZone(server_id=self.server_id, **kwargs).result()
+        return self.raw_api.createZone(server_id=self.server_id, rrsets=False, **kwargs).result()
 
     @APIExceptionHandler
     def deleteZone(self):
@@ -501,7 +501,7 @@ class APIZonesWrapper(object):
     @APIExceptionHandler
     def listZone(self):
         return self.raw_api.listZone(
-            server_id=self.server_id, zone_id=self.zone_id
+            server_id=self.server_id, zone_id=self.zone_id, rrsets=False
         ).result()
 
     @APIExceptionHandler
@@ -1184,9 +1184,7 @@ def main():
             for setter in ZoneMetadata.setters(module.params["metadata"]):
                 setter(zone_struct)
 
-        partial_zone_info = api_client.zones.createZone(
-            rrsets=False, zone_struct=zone_struct
-        )
+        partial_zone_info = api_client.zones.createZone(zone_struct=zone_struct)
 
         result["changed"] = True
         api_client.setZoneID(partial_zone_info["id"])
