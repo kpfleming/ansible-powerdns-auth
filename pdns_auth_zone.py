@@ -794,7 +794,7 @@ class ZoneMetadata(object):
         user_meta = cls.meta_defaults()
 
         for api_zone_item in api_zone:
-            meta_object = Metadata.by_kind(api_zone_item)
+            meta_object = ZoneMetadata.by_kind(api_zone_item)
             if meta_object:
                 meta_object.user_meta_from_api(user_meta, api_zone[api_zone_item])
 
