@@ -16,13 +16,11 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v2
+    - name: install Python
+      uses: actions/setup-python@v2
     - name: test 1
       run: pip install flake8 lintly
     - name: test 2
       run: 'flake8 | lintly --log --format=flake8'
-      env:
-        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
-    - name: run lint tests
-      run: tox -elint --workdir /root/tox
       env:
         LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
