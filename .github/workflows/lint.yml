@@ -20,4 +20,4 @@ jobs:
       run: tox -elint --workdir /root/tox
       env:
         LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
-        TOX_TESTENV_PASSENV: GITHUB_*
+        TOX_TESTENV_PASSENV: GITHUB_* LINTLY_API_KEY
