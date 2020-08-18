@@ -19,6 +19,6 @@ jobs:
     - name: test 1
       run: python3.8 -m pip install flake8 lintly
     - name: test 2
-      run: 'flake8 | lintly --log --format=flake8'
+      run: 'flake8 --ignore=E501,E402,E231 | lintly --log --format=flake8 --use-checks --no-post-status --no-request-changes'
       env:
         LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
