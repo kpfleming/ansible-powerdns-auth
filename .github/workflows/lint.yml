@@ -16,7 +16,11 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v2
-    - name: run lint tests
-      run: tox -elint --workdir /root/tox
+    - name: test lintly
+      run: lintly --log < tox.ini
       env:
         LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
+#    - name: run lint tests
+#      run: tox -elint --workdir /root/tox
+#      env:
+#        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
