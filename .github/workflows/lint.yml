@@ -16,13 +16,8 @@ jobs:
     steps:
     - name: checkout code
       uses: actions/checkout@v2
-    - name: test 1
-      run: python3.8 -m pip install flake8 lintly black
-    - name: test 2
-      run: 'flake8 --ignore=E501,E402,E231 | lintly --log --format=flake8 --no-request-changes'
+    - name: run lint tests
+      run: tox -elint --workdir /root/tox
       env:
         LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
-    - name: test 3
-      run: 'black --check . 2>&1 >/dev/null | lintly --log --format=black --no-request-changes'
-      env:
-        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
+        TOX_TESTENV_PASSENV: GITHUB_*
