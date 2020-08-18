@@ -19,4 +19,4 @@ jobs:
     - name: run lint tests
       run: tox -elint --workdir /root/tox
       env:
-        LINTLY_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
