@@ -19,7 +19,7 @@ jobs:
     - name: install Python
       uses: actions/setup-python@v2
     - name: test 1
-      run: pip install flake8 lintly
+      run: python -m pip install flake8 lintly
     - name: test 2
       run: 'flake8 | lintly --log --format=flake8'
       env:
