@@ -20,7 +20,7 @@ buildcmd apt-get update
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
-for pyver in 3.5.9 3.6.11 3.7.8 3.8.4; do
+for pyver in 3.6.11 3.7.8 3.8.5; do
     wget -O - https://www.python.org/ftp/python/${pyver}/Python-${pyver}.tgz | buildcmd tar xzf -
     buildah config --workingdir /root/Python-${pyver} ${c}
     buildcmd ./configure --disable-shared
@@ -36,7 +36,7 @@ buildah copy ${c} tox.ini
 buildcmd tox -eALL --notest --workdir /root/tox
 
 buildcmd apt-get remove --yes --purge ${pydeps[@]}
-buildcmd apt-get autoremove --purge
+buildcmd apt-get autoremove --yes --purge
 buildcmd apt-get clean autoclean
 buildcmd rm -rf "/var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
