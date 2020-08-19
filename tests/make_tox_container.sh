@@ -32,7 +32,8 @@ buildcmd pip3.8 install tox
 buildah copy ${c} tox.ini
 buildcmd tox -eALL --notest --workdir /root/tox
 
-buildcmd rm -rf /var/lib/apt/lists/*
+buildcmd apt-get clean autoclean
+buildcmd rm -rf "/var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
 if buildah images --quiet ${image}; then
