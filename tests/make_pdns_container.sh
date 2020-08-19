@@ -1,6 +1,6 @@
-#!/usr/bin/env bash -e
+#!/usr/bin/env bash
 
-set -e
+set -ex
 
 if [ -z "${1}" ]; then
     echo "Must specify a PowerDNS Auth version (or 'master')."

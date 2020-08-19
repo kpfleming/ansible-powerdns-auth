@@ -1,6 +1,6 @@
-#!/usr/bin/env bash -e
+#!/usr/bin/env bash
 
-set -e
+set -ex
 
 root=$(dirname ${BASH_SOURCE[0]})
 pdns=${1}
