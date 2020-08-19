@@ -29,7 +29,7 @@ for pyver in 3.6.11 3.7.8 3.8.5; do
     buildcmd rm -rf /root/Python-${pyver}
 done
 
-buildcmd sh -c "rm -rf /usr/local/lib/python3.?m*"
+buildcmd sh -c "rm -rf /usr/local/bin/python3.?m*"
 
 buildcmd pip3.8 install tox
 buildah copy ${c} tox.ini
