@@ -490,7 +490,9 @@ class APIZonesWrapper(object):
 
     @APIExceptionHandler
     def createZone(self, **kwargs):
-        return self.raw_api.createZone(server_id=self.server_id, rrsets=False, **kwargs).result()
+        return self.raw_api.createZone(
+            server_id=self.server_id, rrsets=False, **kwargs
+        ).result()
 
     @APIExceptionHandler
     def deleteZone(self):

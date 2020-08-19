@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 if [ -z "${1}" ]; then
     echo "Must specify a PowerDNS Auth version (or 'master')."
@@ -36,7 +36,9 @@ buildcmd apt-get install --yes --quiet=2 pdns-server pdns-backend-sqlite3
 buildcmd apt-get purge --yes --quiet=2 pdns-backend-bind
 buildcmd sqlite3 /run/pdns.sqlite3 '.read /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql'
 
-buildcmd rm -rf /var/lib/apt/lists/*
+buildcmd apt-get autoremove --yes --purge
+buildcmd apt-get clean autoclean
+buildcmd rm -rf "/var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
 if buildah images --quiet ${image}; then
