@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 
 set -e
 
@@ -36,6 +36,7 @@ buildcmd apt-get install --yes --quiet=2 pdns-server pdns-backend-sqlite3
 buildcmd apt-get purge --yes --quiet=2 pdns-backend-bind
 buildcmd sqlite3 /run/pdns.sqlite3 '.read /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql'
 
+buildcmd apt-get autoremove --purge
 buildcmd apt-get clean autoclean
 buildcmd rm -rf "/var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
