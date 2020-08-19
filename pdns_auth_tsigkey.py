@@ -160,10 +160,7 @@ key:
 
 import sys
 
-MIN_PYTHON = (3, 5)
-assert (
-    sys.version_info >= MIN_PYTHON
-), "This module requires Python %s or newer." % ".".join([str(n) for n in MIN_PYTHON])
+assert sys.version_info >= (3, 6), "This module requires Python 3.6 or newer."
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -182,8 +179,7 @@ def APIExceptionHandler(func):
             return func(self, *args, **kwargs)
         except api_exceptions_to_catch as e:
             module.fail_json(
-                msg="API operation %s returned '%s'"
-                % (func.__name__, e.swagger_result["error"]),
+                msg=f"API operation {func.__name__} returned '{e.swagger_result['error']}'",
                 **result,
             )
 
