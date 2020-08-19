@@ -29,7 +29,7 @@ for pyver in 3.6.11 3.7.8 3.8.5; do
     buildcmd rm -rf /root/Python-${pyver}
 done
 
-buildcmd rm -rf "/usr/local/lib/python3.?m*"
+buildcmd sh -c "rm -rf /usr/local/lib/python3.?m*"
 
 buildcmd pip3.8 install tox
 buildah copy ${c} tox.ini
@@ -38,7 +38,7 @@ buildcmd tox -eALL --notest --workdir /root/tox
 buildcmd apt-get remove --yes --purge ${pydeps[@]}
 buildcmd apt-get autoremove --yes --purge
 buildcmd apt-get clean autoclean
-buildcmd rm -rf "/var/lib/apt/lists/*"
+buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
 if buildah images --quiet ${image}; then

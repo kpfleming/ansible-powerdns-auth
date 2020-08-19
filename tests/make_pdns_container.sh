@@ -38,7 +38,7 @@ buildcmd sqlite3 /run/pdns.sqlite3 '.read /usr/share/doc/pdns-backend-sqlite3/sc
 
 buildcmd apt-get autoremove --yes --purge
 buildcmd apt-get clean autoclean
-buildcmd rm -rf "/var/lib/apt/lists/*"
+buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
 if buildah images --quiet ${image}; then
