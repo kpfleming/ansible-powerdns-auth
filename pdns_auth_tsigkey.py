@@ -224,11 +224,27 @@ def main():
             "default": "present",
             "choices": ["present", "absent", "exists"],
         },
-        "name": {"type": "str", "required": True,},
-        "server_id": {"type": "str", "default": "localhost",},
-        "api_url": {"type": "str", "default": "http://localhost:8081",},
-        "api_key": {"type": "str", "required": True, "no_log": True,},
-        "api_spec_file": {"type": "path", "required": True,},
+        "name": {
+            "type": "str",
+            "required": True,
+        },
+        "server_id": {
+            "type": "str",
+            "default": "localhost",
+        },
+        "api_url": {
+            "type": "str",
+            "default": "http://localhost:8081",
+        },
+        "api_key": {
+            "type": "str",
+            "required": True,
+            "no_log": True,
+        },
+        "api_spec_file": {
+            "type": "path",
+            "required": True,
+        },
         "algorithm": {
             "type": "str",
             "default": "hmac-md5",

@@ -957,11 +957,27 @@ def main():
             "default": "present",
             "choices": ["present", "absent", "exists", "notify", "retrieve"],
         },
-        "name": {"type": "str", "required": True,},
-        "server_id": {"type": "str", "default": "localhost",},
-        "api_url": {"type": "str", "default": "http://localhost:8081",},
-        "api_key": {"type": "str", "required": True, "no_log": True,},
-        "api_spec_file": {"type": "path", "required": True,},
+        "name": {
+            "type": "str",
+            "required": True,
+        },
+        "server_id": {
+            "type": "str",
+            "default": "localhost",
+        },
+        "api_url": {
+            "type": "str",
+            "default": "http://localhost:8081",
+        },
+        "api_key": {
+            "type": "str",
+            "required": True,
+            "no_log": True,
+        },
+        "api_spec_file": {
+            "type": "path",
+            "required": True,
+        },
         "properties": {
             "type": "dict",
             "options": {
@@ -970,30 +986,75 @@ def main():
                     "choices": ["Native", "Master", "Slave"],
                     "required": True,
                 },
-                "account": {"type": "str",},
-                "nameservers": {"type": "list", "elements": "str",},
-                "masters": {"type": "list", "elements": "str",},
+                "account": {
+                    "type": "str",
+                },
+                "nameservers": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "masters": {
+                    "type": "list",
+                    "elements": "str",
+                },
             },
         },
         "metadata": {
             "type": "dict",
             "options": {
-                "allow_axfr_from": {"type": "list", "elements": "str",},
-                "allow_dnsupdate_from": {"type": "list", "elements": "str",},
-                "also_notify": {"type": "list", "elements": "str",},
-                "api_rectify": {"type": "bool",},
-                "axfr_source": {"type": "str",},
-                "axfr_master_tsig": {"type": "list", "elements": "str",},
-                "forward_dnsupdate": {"type": "bool",},
-                "gss_acceptor_principal": {"type": "str",},
-                "gss_allow_axfr_principal": {"type": "str",},
-                "ixfr": {"type": "bool",},
-                "notify_dnsupdate": {"type": "bool",},
-                "nsec3narrow": {"type": "bool",},
-                "nsec3param": {"type": "str",},
-                "publish_cdnskey": {"type": "bool",},
-                "publish_cds": {"type": "list", "elements": "str",},
-                "slave_renotify": {"type": "bool",},
+                "allow_axfr_from": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "allow_dnsupdate_from": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "also_notify": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "api_rectify": {
+                    "type": "bool",
+                },
+                "axfr_source": {
+                    "type": "str",
+                },
+                "axfr_master_tsig": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "forward_dnsupdate": {
+                    "type": "bool",
+                },
+                "gss_acceptor_principal": {
+                    "type": "str",
+                },
+                "gss_allow_axfr_principal": {
+                    "type": "str",
+                },
+                "ixfr": {
+                    "type": "bool",
+                },
+                "notify_dnsupdate": {
+                    "type": "bool",
+                },
+                "nsec3narrow": {
+                    "type": "bool",
+                },
+                "nsec3param": {
+                    "type": "str",
+                },
+                "publish_cdnskey": {
+                    "type": "bool",
+                },
+                "publish_cds": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "slave_renotify": {
+                    "type": "bool",
+                },
                 "soa_edit": {
                     "type": "str",
                     "choices": [
@@ -1026,8 +1087,14 @@ def main():
                         "SOA-EDIT-INCREASE",
                     ],
                 },
-                "tsig_allow_axfr": {"type": "list", "elements": "str",},
-                "tsig_allow_dnsupdate": {"type": "list", "elements": "str",},
+                "tsig_allow_axfr": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "tsig_allow_dnsupdate": {
+                    "type": "list",
+                    "elements": "str",
+                },
             },
         },
     }
