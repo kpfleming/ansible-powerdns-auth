@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container:
       image: docker://quay.io/kpfleming/apaa-test-images:pdns-master
     steps:

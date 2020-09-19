@@ -22,7 +22,7 @@ on:
 
 jobs:
   build-tox:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: checkout code
       uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
       if: github.event_name != 'pull_request'
       run: buildah push ${new_image}
   build-pdns:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build-tox
     strategy:
       matrix:
