@@ -32,7 +32,7 @@ done
 buildcmd sh -c "rm -rf /usr/local/bin/python3.?m*"
 
 buildcmd pip3.8 install tox
-buildah copy ${c} tox.ini
+buildah copy ${c} `pwd`/tox.ini /root/tox.ini
 buildcmd tox -eALL --notest --workdir /root/tox
 
 buildcmd apt-get remove --yes --purge ${pydeps[@]}
