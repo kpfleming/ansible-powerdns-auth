@@ -11,7 +11,7 @@ fi
 sudo apt-get update
 sudo apt-get --yes upgrade
 
-root=$(realpath $(dirname ${BASH_SOURCE[0]}))
+scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 
 image=quay.io/kpfleming/apaa-test-images:pdns-${pdns}
@@ -27,8 +27,8 @@ buildah config --workingdir /root ${c}
 buildcmd apt-get update
 buildcmd apt-get install --yes --quiet=2 gnupg sqlite3
 
-buildah copy ${c} ${root}/apt-repo-pdns-auth-${pdns}.list /etc/apt/sources.list.d
-buildah copy ${c} ${root}/apt-pref-pdns /etc/apt/preferences.d
+buildah copy ${c} ${scriptdir}/apt-repo-pdns-auth-${pdns}.list /etc/apt/sources.list.d
+buildah copy ${c} ${scriptdir}/apt-pref-pdns /etc/apt/preferences.d
 if [ "${pdns}" == "master" ]; then
     curl --silent --location https://repo.powerdns.com/CBC8B383-pub.asc | buildcmd apt-key add
 else
