@@ -8,7 +8,7 @@ if [ -z "${1}" ]; then
     exit 1
 fi
 
-root=$(dirname ${BASH_SOURCE[0]})
+root=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 
 image=quay.io/kpfleming/apaa-test-images:pdns-${pdns}
