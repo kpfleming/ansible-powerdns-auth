@@ -8,6 +8,9 @@ if [ -z "${1}" ]; then
     exit 1
 fi
 
+sudo apt-get update
+sudo apt-get --yes upgrade
+
 root=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 

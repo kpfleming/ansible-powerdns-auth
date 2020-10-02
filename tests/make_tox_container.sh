@@ -2,6 +2,9 @@
 
 set -ex
 
+sudo apt-get update
+sudo apt-get --yes upgrade
+
 root=$(dirname ${BASH_SOURCE[0]})
 pdns=${1}
 pydeps=(build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev)
@@ -20,7 +23,7 @@ buildcmd apt-get update
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
-for pyver in 3.6.12 3.7.9 3.8.5; do
+for pyver in 3.6.12 3.7.9 3.8.6; do
     wget -O - https://www.python.org/ftp/python/${pyver}/Python-${pyver}.tgz | buildcmd tar xzf -
     buildah config --workingdir /root/Python-${pyver} ${c}
     buildcmd ./configure --disable-shared
@@ -32,7 +35,7 @@ done
 buildcmd sh -c "rm -rf /usr/local/bin/python3.?m*"
 
 buildcmd pip3.8 install tox
-buildah copy ${c} `pwd`/tox.ini /root/tox.ini
+buildah copy ${c} ${root}/tox.ini /root/tox.ini
 buildcmd tox -eALL --notest --workdir /root/tox
 
 buildcmd apt-get remove --yes --purge ${pydeps[@]}
