@@ -23,7 +23,7 @@ buildcmd apt-get update
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
-for pyver in 3.6.12 3.7.9 3.8.6; do
+for pyver in 3.6.12 3.7.9 3.8.6 3.9.0; do
     wget -O - https://www.python.org/ftp/python/${pyver}/Python-${pyver}.tgz | buildcmd tar xzf -
     buildah config --workingdir /root/Python-${pyver} ${c}
     buildcmd ./configure --disable-shared
