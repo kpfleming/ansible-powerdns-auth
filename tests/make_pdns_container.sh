@@ -19,7 +19,7 @@ image=quay.io/kpfleming/apaa-test-images:pdns-${pdns}
 c=$(buildah from quay.io/kpfleming/apaa-test-images:tox)
 
 buildcmd() {
-    buildah run ${c} -- "$@"
+    buildah run --network host ${c} -- "$@"
 }
 
 buildah config --workingdir /root ${c}

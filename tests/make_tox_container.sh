@@ -14,7 +14,7 @@ image=quay.io/kpfleming/apaa-test-images:tox
 c=$(buildah from debian:buster)
 
 buildcmd() {
-    buildah run ${c} -- "$@"
+    buildah run --network host ${c} -- "$@"
 }
 
 buildah config --workingdir /root ${c}
