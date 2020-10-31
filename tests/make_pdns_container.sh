@@ -21,7 +21,7 @@ buildcmd() {
 
 buildah config --workingdir /root ${c}
 
-buildcmd apt-get update
+buildcmd apt-get update --quiet=2
 buildcmd apt-get install --yes --quiet=2 gnupg sqlite3
 
 buildah copy ${c} ${scriptdir}/apt-repo-pdns-auth-${pdns}.list /etc/apt/sources.list.d

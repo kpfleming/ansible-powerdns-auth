@@ -16,7 +16,7 @@ buildcmd() {
 
 buildah config --workingdir /root ${c}
 
-buildcmd apt-get update
+buildcmd apt-get update --quiet=2
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
