@@ -49,5 +49,5 @@ buildah commit --squash --rm ${c} ${image}
 if [ -z "${GITHUB_WORKFLOW}" ]; then
     echo New image is ${image}.
 else
-    echo "::set-env name=new_image::${image}"
+    echo "new_image=${image}" >> $GITHUB_ENV
 fi
