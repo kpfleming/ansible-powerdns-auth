@@ -1,15 +1,20 @@
-name: build-image
+name: build-image-pr
 
 on:
-  push:
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
     branches:
     - develop
     paths:
     - 'tox.ini'
     - 'tests/make_*_container.sh'
-    - '.github/workflows/build-image.yml'
-  schedule:
-    - cron: "15 4 * * 6"
+    - '.github/workflows/build-image-pr.yml'
+
+env:
+  pr_prefix: pr${{ github.event.pull_request.number }}
 
 jobs:
   build-tox:
@@ -24,7 +29,7 @@ jobs:
     - name: publish image to quay.io
       run: buildah push ${image_name}
   env:
-    image_name: quay.io/kpfleming/apaa-test-images:tox
+    image_name: quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-tox
   build-pdns:
     runs-on: ubuntu-20.04
     needs: build-tox
@@ -41,5 +46,5 @@ jobs:
     - name: publish image to quay.io
       run: buildah push ${image_name}
   env:
-    base_image: quay.io/kpfleming/apaa-test-images:tox
-    image_name: quay.io/kpfleming/apaa-test-images:pdns-${{ matrix.pdns }}
+    base_image: quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-tox
+    image_name: quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-pdns-${{ matrix.pdns }}

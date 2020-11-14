@@ -1,12 +1,13 @@
-name: CI
+name: CI-PR
 
 on:
-  push:
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
     branches:
     - develop
-    - 'branch-[1-9]+.[0-9]+'
-    tags:
-    - 'v[1-9]+.[0-9]+.[0-9]+'
     paths:
     - 'pdns_auth_zone.py'
     - 'pdns_auth_tsigkey.py'
@@ -14,11 +15,14 @@ on:
     - 'tests/test-paz-*.yml'
     - 'tests/test-patk-*.yml'
     - 'tests/start_server.sh'
-    - '.github/workflows/ci.yml'
+    - '.github/workflows/ci-pr.yml'
   workflow_run:
-    workflows: ["build-image"]
+    workflows: ["build-image-pr"]
     types:
       - completed
+
+env:
+  pr_prefix: pr${{ github.event.pull_request.number }}
 
 jobs:
   test:
@@ -29,7 +33,7 @@ jobs:
         python: [py36, py37, py38, py39]
       fail-fast: false
     container:
-      image: docker://quay.io/kpfleming/apaa-test-images:pdns-${{ matrix.pdns }}
+      image: docker://quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-pdns-${{ matrix.pdns }}
     steps:
     - name: checkout code
       uses: actions/checkout@v2

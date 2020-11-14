@@ -6,8 +6,6 @@ scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 pydeps=(build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev)
 
-image=quay.io/kpfleming/apaa-test-images:tox
-
 c=$(buildah from debian:buster)
 
 buildcmd() {
@@ -41,13 +39,7 @@ buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
-if buildah images --quiet ${image}; then
-    buildah rmi ${image}
+if buildah images --quiet ${image_name}; then
+    buildah rmi ${image_name}
 fi
-buildah commit --squash --rm ${c} ${image}
-
-if [ -z "${GITHUB_WORKFLOW}" ]; then
-    echo New image is ${image}.
-else
-    echo "new_image=${image}" >> $GITHUB_ENV
-fi
+buildah commit --squash --rm ${c} ${image_name}

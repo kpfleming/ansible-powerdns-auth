@@ -1,0 +1,27 @@
+name: clean-image-pr
+
+on:
+  pull_request:
+    types:
+    - closed
+    branches:
+    - develop
+
+env:
+  pr_prefix: pr${{ github.event.pull_request.number }}
+
+jobs:
+  clean-tox:
+    runs-on: ubuntu-20.04
+    steps:
+  env:
+    image_name: quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-tox
+  clean-pdns:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        pdns: [4.2, 4.3, master]
+    steps:
+  env:
+    base_image: quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-tox
+    image_name: quay.io/kpfleming/apaa-test-images:${{ env.pr_prefix }}-pdns-${{ matrix.pdns }}
