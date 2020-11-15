@@ -1,7 +1,11 @@
-name: CI
+name: CI (PR)
 
 on:
-  push:
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
     branches:
     - develop
     paths:
@@ -9,7 +13,7 @@ on:
     - 'api-swagger.json'
     - 'tests/test-*.yml'
     - 'tests/start_server.sh'
-    - '.github/workflows/ci.yml'
+    - '.github/workflows/ci-pr.yml'
 
 jobs:
   preflight:
@@ -35,7 +39,7 @@ jobs:
         python: [py36, py37, py38, py39]
       fail-fast: false
     container:
-      image: docker://quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:main
+      image: docker://quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:pr${{ github.event.pull_request.number }}
     steps:
     - name: checkout code
       uses: actions/checkout@v2

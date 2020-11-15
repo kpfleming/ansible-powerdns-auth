@@ -11,9 +11,7 @@ fi
 scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 
-image=quay.io/kpfleming/apaa-test-images:pdns-${pdns}
-
-c=$(buildah from quay.io/kpfleming/apaa-test-images:tox)
+c=$(buildah from ${base_image})
 
 buildcmd() {
     buildah run --network host ${c} -- "$@"
@@ -41,13 +39,7 @@ buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
-if buildah images --quiet ${image}; then
-    buildah rmi ${image}
+if buildah images --quiet ${image_name}; then
+    buildah rmi ${image_name}
 fi
-buildah commit --squash --rm ${c} ${image}
-
-if [ -z "${GITHUB_WORKFLOW}" ]; then
-    echo New image is ${image}.
-else
-    echo "new_image=${image}" >> $GITHUB_ENV
-fi
+buildah commit --squash --rm ${c} ${image_name}

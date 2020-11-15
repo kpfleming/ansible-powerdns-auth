@@ -1,4 +1,4 @@
-name: lint
+name: Lint checks
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-20.04
     container:
-      image: docker://quay.io/kpfleming/apaa-test-images:pdns-master
+      image: docker://quay.io/apaa-test-images/pdns-master:main
     steps:
     - name: checkout code
       uses: actions/checkout@v2

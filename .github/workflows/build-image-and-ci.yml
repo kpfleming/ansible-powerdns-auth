@@ -1,0 +1,65 @@
+name: Build Image and CI
+
+on:
+  push:
+    branches:
+    - develop
+    paths:
+    - 'tox.ini'
+    - 'tests/make_*_container.sh'
+    - '.github/workflows/build-image-and-ci.yml'
+  schedule:
+    - cron: "15 4 * * 6"
+
+jobs:
+  build-tox:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: build tox image
+      run: tests/make_tox_container.sh
+    - name: login to quay.io
+      run: buildah login -u="${{ secrets.QUAY_BOT_NAME }}" -p="${{ secrets.QUAY_BOT_PASSWORD }}" quay.io
+    - name: publish image to quay.io
+      run: buildah push ${image_name}
+    env:
+      image_name: quay.io/apaa-test-images/tox:main
+  build-pdns:
+    runs-on: ubuntu-20.04
+    needs: build-tox
+    strategy:
+      matrix:
+        pdns: [4.2, 4.3, master]
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: build pdns image
+      run: tests/make_pdns_container.sh ${{ matrix.pdns }}
+    - name: login to quay.io
+      run: buildah login -u="${{ secrets.QUAY_BOT_NAME }}" -p="${{ secrets.QUAY_BOT_PASSWORD }}" quay.io
+    - name: publish image to quay.io
+      run: buildah push ${image_name}
+    env:
+      pdns_version: ${{ matrix.pdns }}
+      base_image: quay.io/apaa-test-images/tox:main
+      image_name: quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:main
+  test:
+    runs-on: ubuntu-20.04
+    needs: build-pdns
+    strategy:
+      matrix:
+        pdns: [4.2, 4.3, master]
+        python: [py36, py37, py38, py39]
+      fail-fast: false
+    container:
+      image: docker://quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:main
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: start pdns_server
+      run: tests/start_server.sh
+    - name: run tests
+      run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
+    env:
+      pdns_version: ${{ matrix.pdns }}
