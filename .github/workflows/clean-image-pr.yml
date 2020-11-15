@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - name: delete image tag
-      run: 'curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" https://quay.io/api/v1/repository/apaa-test-images/tox/tag/pr${{ github.event.pull_request.number }}'
+      run: curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" "https://quay.io/api/v1/repository/apaa-test-images/tox/tag/pr${{ github.event.pull_request.number }}"
   clean-pdns:
     runs-on: ubuntu-20.04
     strategy:
@@ -20,4 +20,4 @@ jobs:
         pdns: [4.2, 4.3, master]
     steps:
     - name: delete image tag
-      run: 'curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" https://quay.io/api/v1/repository/apaa-test-images/pdns-${{ matrix.pdns }}/tag/pr${{ github.event.pull_request.number }}'
+      run: curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" "https://quay.io/api/v1/repository/apaa-test-images/pdns-${{ matrix.pdns }}/tag/pr${{ github.event.pull_request.number }}"
