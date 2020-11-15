@@ -1,8 +1,7 @@
 #!/usr/bin/python
+# SPDX-FileCopyrightText: 2020 Kevin P. Fleming <kevin@km6g.us>
+# SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
-
-# Copyright: (c) 2020, Kevin P. Fleming <kevin@km6g.us>
-# Apache License 2.0 (see LICENSE)
 
 ANSIBLE_METADATA = {
     "metadata_version": "1.1",
