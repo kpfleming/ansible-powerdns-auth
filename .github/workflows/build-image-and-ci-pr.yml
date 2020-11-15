@@ -7,7 +7,7 @@ on:
     - reopened
     - synchronize
     branches:
-    - develop
+    - main
     paths:
     - 'tox.ini'
     - 'tests/make_*_container.sh'

@@ -3,7 +3,7 @@ name: Lint checks
 on:
   pull_request:
     branches:
-    - develop
+    - main
     paths:
     - 'pdns_auth_zone.py'
     - '.github/workflows/lint.yml'

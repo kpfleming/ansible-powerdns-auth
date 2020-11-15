@@ -3,7 +3,7 @@ name: Build Image and CI
 on:
   push:
     branches:
-    - develop
+    - main
     paths:
     - 'tox.ini'
     - 'tests/make_*_container.sh'

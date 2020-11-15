@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-    - develop
+    - main
     paths:
     - '*.py'
     - 'api-swagger.json'
@@ -20,6 +20,7 @@ jobs:
     - id: skip_check
       uses: dorny/paths-filter@v2
       with:
+        base: main
         filters: |
           image_files:
           - 'tox.ini'
