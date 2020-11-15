@@ -53,16 +53,23 @@ options:
     type: str
     required: false
     default: 'http://localhost:8081'
-  api_key:
+  api_spec_url:
     description:
-      - Key (token) used to authenticate to the API endpoint in the server.
+      - URL of the OpenAPI (Swagger) API spec endpoint in the server.
+      - Ignored when C(api_spec_file) is C(present).
     type: str
-    required: true
+    required: false
+    default: 'http://localhost:8081/api/docs'
   api_spec_file:
     description:
       - Path to a file containing the OpenAPI (Swagger) specification for the
         API version implemented by the server.
     type: path
+    required: false
+  api_key:
+    description:
+      - Key (token) used to authenticate to the API endpoint in the server.
+    type: str
     required: true
   algorithm:
     description:
@@ -85,45 +92,29 @@ author:
 EXAMPLES = """
 %YAML 1.2
 ---
-# create and populate a file which holds the API specification
-- name: temp file to hold spec
-  tempfile:
-    state: file
-    suffix: '.json'
-    register: temp_file
-
-- name: populate spec file
-  copy:
-    src: api-swagger.json
-    dest: "{{ temp_file.path }}"
-
 - name: check that key exists
   pdns_auth_tsigkey:
     name: key1
     state: exists
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: create key with default algorithm
   pdns_auth_tsigkey:
     name: key2
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: remove key
   pdns_auth_tsigkey:
     name: key2
     state: absent
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: create key with algorithm and content
   pdns_auth_tsigkey:
     name: key3
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
     algorithm: hmac-sha256
     key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
 """
@@ -235,14 +226,18 @@ def main():
             "type": "str",
             "default": "http://localhost:8081",
         },
+        "api_spec_url": {
+            "type": "str",
+            "default": "http://localhost:8081/api/docs",
+        },
+        "api_spec_file": {
+            "type": "path",
+            "required": False,
+        },
         "api_key": {
             "type": "str",
             "required": True,
             "no_log": True,
-        },
-        "api_spec_file": {
-            "type": "path",
-            "required": True,
         },
         "algorithm": {
             "type": "str",
@@ -306,11 +301,16 @@ def main():
         url.netloc, module.params["api_key"], param_name="X-API-Key", param_in="header"
     )
 
-    spec = load_file(module.params["api_spec_file"])
-    spec["host"] = url.netloc
-    spec["schemes"] = [url.scheme]
+    if module.params["api_spec_file"]:
+        spec = load_file(module.params["api_spec_file"])
+        spec["host"] = url.netloc
+        spec["schemes"] = [url.scheme]
 
-    raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
+        raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
+    else:
+        raw_api = SwaggerClient.from_url(
+            module.params["api_spec_url"], http_client=http_client
+        )
 
     # create an APIWrapper to proxy the raw_api object
     # and curry the server_id into all API calls

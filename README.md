@@ -32,7 +32,6 @@ Examples:
     name: d2.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: 'api-swagger.json'
     properties:
       kind: 'Native'
       nameservers:
@@ -46,7 +45,6 @@ Examples:
     name: d2.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: 'api-swagger.json'
     properties:
       kind: 'Master'
 
@@ -55,7 +53,6 @@ Examples:
     name: d2.example.
     state: absent
     api_key: 'foobar'
-    api_spec_file: 'api-swagger.json'
 ```
 
 ## pdns_auth_tsigkey.py
@@ -71,21 +68,18 @@ Examples:
     name: key2
     state: present
     api_key: 'foobar'
-    api_spec_file: 'api-swagger.json'
 
 - name: remove key
   pdns_auth_tsigkey:
     name: key2
     state: absent
     api_key: 'foobar'
-    api_spec_file: 'api-swagger.json'
 
 - name: create key with algorithm and content
   pdns_auth_tsigkey:
     name: key3
     state: present
     api_key: 'foobar'
-    api_spec_file: 'api-swagger.json'
     algorithm: hmac-sha256
     key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
 ```
@@ -93,11 +87,14 @@ Examples:
 ## Notes
 
 In PowerDNS Authoritative Server releases prior to 4.4.0, the server
-is not able to provide the OpenAPI/Swagger specification which this
-module requires. In order to use this module, you'll need to copy
+is not able to provide the OpenAPI/Swagger specification which these
+modules require. In order to use these modules, you'll need to copy
 `api-swagger.json` to your Ansible control host (in the `files`
 directory of the role or playbook), and use tasks similar to the ones
 below to place a copy on the host where the module will be invoked.
+
+You'll also need to specify `api_spec_file` in each task which invokes
+one of these modules.
 
 ```
 - name: temp file to hold spec

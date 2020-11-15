@@ -60,16 +60,23 @@ options:
     type: str
     required: false
     default: 'http://localhost:8081'
-  api_key:
+  api_spec_url:
     description:
-      - Key (token) used to authenticate to the API endpoint in the server.
+      - URL of the OpenAPI (Swagger) API spec endpoint in the server.
+      - Ignored when C(api_spec_file) is C(present).
     type: str
-    required: true
+    required: false
+    default: 'http://localhost:8081/api/docs'
   api_spec_file:
     description:
       - Path to a file containing the OpenAPI (Swagger) specification for the
         API version implemented by the server.
     type: path
+    required: false
+  api_key:
+    description:
+      - Key (token) used to authenticate to the API endpoint in the server.
+    type: str
     required: true
   properties:
     description:
@@ -213,24 +220,11 @@ author:
 EXAMPLES = """
 %YAML 1.2
 ---
-# create and populate a file which holds the API specification
-- name: temp file to hold spec
-  tempfile:
-    state: file
-    suffix: '.json'
-    register: temp_file
-
-- name: populate spec file
-  copy:
-    src: api-swagger.json
-    dest: "{{ temp_file.path }}"
-
 - name: check that zone exists
   pdns_auth_zone:
     name: d1.example.
     state: exists
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: check that zone exists on a non-default server
   pdns_auth_zone:
@@ -238,28 +232,24 @@ EXAMPLES = """
     state: exists
     api_key: 'foobar'
     api_url: 'http://pdns.server.example:80'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: send NOTIFY to slave servers for zone
   pdns_auth_zone:
     name: d1.example.
     state: notify
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: retrieve zone from master server
   pdns_auth_zone:
     name: d1.example.
     state: retrieve
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: create native zone
   pdns_auth_zone:
     name: d2.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
     properties:
       kind: 'Native'
       nameservers:
@@ -273,7 +263,6 @@ EXAMPLES = """
     name: d2.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
     properties:
       kind: 'Master'
 
@@ -282,14 +271,12 @@ EXAMPLES = """
     name: d2.example.
     state: absent
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
 
 - name: create slave zone
   pdns_auth_zone:
     name: d3.example.
     state: present
     api_key: 'foobar'
-    api_spec_file: "{{ temp_file.path }}"
     properties:
       kind: 'Slave'
       masters:
@@ -968,14 +955,17 @@ def main():
             "type": "str",
             "default": "http://localhost:8081",
         },
+        "api_spec_url": {
+            "type": "str",
+            "default": "http://localhost:8081/api/docs",
+        },
+        "api_spec_file": {
+            "type": "path",
+        },
         "api_key": {
             "type": "str",
             "required": True,
             "no_log": True,
-        },
-        "api_spec_file": {
-            "type": "path",
-            "required": True,
         },
         "properties": {
             "type": "dict",
@@ -1145,11 +1135,16 @@ def main():
         url.netloc, module.params["api_key"], param_name="X-API-Key", param_in="header"
     )
 
-    spec = load_file(module.params["api_spec_file"])
-    spec["host"] = url.netloc
-    spec["schemes"] = [url.scheme]
+    if module.params["api_spec_file"]:
+        spec = load_file(module.params["api_spec_file"])
+        spec["host"] = url.netloc
+        spec["schemes"] = [url.scheme]
 
-    raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
+        raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
+    else:
+        raw_api = SwaggerClient.from_url(
+            module.params["api_spec_url"], http_client=http_client
+        )
 
     # create an APIWrapper to proxy the raw_api object
     # and curry the server_id and zone_id into all API

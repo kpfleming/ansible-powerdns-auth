@@ -1,0 +1,161 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: python
+    common_args: &common
+      api_key: foo
+  tasks:
+    - name: check for non-existent key
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k1
+        state: exists
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.key.exists != false
+
+    - name: check default key creation
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k2
+        state: present
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.key.exists == false
+        - result.key.algoritm != 'hmac-md5'
+
+    - name: check key removal
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k2
+        state: absent
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.changed != true
+
+    - name: check non-default key creation
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k3
+        state: present
+        algorithm: hmac-sha256
+        key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.key.exists == false
+        - result.key.algorithm != 'hmac-sha256'
+        - result.key.key != '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
+
+    - name: check key existence
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k3
+        state: exists
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.key.exists == false
+        - result.key.algorithm != 'hmac-sha256'
+        - result.key.key != '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw'
+
+    - name: check key algorithm change
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k3
+        state: present
+        algorithm: hmac-sha512
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.key.exists == false
+        - result.key.algorithm != 'hmac-sha512'
+
+    - name: check key removal
+      pdns_auth_tsigkey:
+        <<: *common
+        name: k3
+        state: absent
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.changed != true
+
+    - name: leave key for zone tests
+      pdns_auth_tsigkey:
+        <<: *common
+        name: axfr-key
+        state: present
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when:
+        - result.failed == true
+        - result.key.exists == false
+        - result.key.algoritm != 'hmac-md5'
