@@ -2,7 +2,7 @@
 
 <a href="https://opensource.org"><img height="150" align="left" src="https://opensource.org/files/OSIApprovedCropped.png" alt="Open Source Initiative Approved License logo"></a>
 [![CI](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg?branch=main)
-[![build-image](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/build-image/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/build-image/badge.svg?branch=main)
+[![Build Image](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/Build%20Image%20and%20CI/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/Build%20Image%20and%20CI/badge.svg?branch=main)
 [![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/)
 
 Ansible modules which can be used to manage zones and other content in
