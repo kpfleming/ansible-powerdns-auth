@@ -17,6 +17,8 @@ jobs:
     outputs:
       should_skip: ${{ steps.skip_check.outputs.image_files }}
     steps:
+    - name: checkout code
+      uses: actions/checkout@v2
     - id: skip_check
       uses: dorny/paths-filter@v2
       with:
