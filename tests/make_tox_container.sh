@@ -30,7 +30,7 @@ done
 
 buildcmd sh -c "rm -rf /usr/local/bin/python3.?m*"
 
-buildcmd pip3.8 install tox
+buildcmd pip3.9 install tox
 buildah copy ${c} ${scriptdir}/../tox.ini /root/tox.ini
 buildcmd tox -eALL --notest --workdir /root/tox
 
