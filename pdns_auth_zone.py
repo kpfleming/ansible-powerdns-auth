@@ -60,13 +60,13 @@ options:
     type: str
     required: false
     default: 'http://localhost:8081'
-  api_spec_url:
+  api_spec_path:
     description:
-      - URL of the OpenAPI (Swagger) API spec endpoint in the server.
+      - Path of the OpenAPI (Swagger) API spec document in C(api_url).
       - Ignored when C(api_spec_file) is C(present).
     type: str
     required: false
-    default: 'http://localhost:8081/api/docs'
+    default: '/api/docs'
   api_spec_file:
     description:
       - Path to a file containing the OpenAPI (Swagger) specification for the
@@ -955,9 +955,9 @@ def main():
             "type": "str",
             "default": "http://localhost:8081",
         },
-        "api_spec_url": {
+        "api_spec_path": {
             "type": "str",
-            "default": "http://localhost:8081/api/docs",
+            "default": "/api/docs",
         },
         "api_spec_file": {
             "type": "path",
@@ -1143,7 +1143,12 @@ def main():
         raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
     else:
         raw_api = SwaggerClient.from_url(
-            module.params["api_spec_url"], http_client=http_client
+            module.params["api_url"] + module.params["api_spec_path"],
+            http_client=http_client,
+            request_headers={
+                "Accept": "application/json",
+                "X-API-Key": module.params["api_key"],
+            },
         )
 
     # create an APIWrapper to proxy the raw_api object
