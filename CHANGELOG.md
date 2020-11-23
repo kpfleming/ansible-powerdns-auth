@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2020-11-23
+
+### Changed
+
+- Support for direct reading of the Swagger spec from the server (instead
+of a local file) has been added; this feature will be available in PowerDNS
+Authoritative Server 4.4.0.
+
 ## [1.3.0] - 2020-08-19
 
 ### Changed
@@ -61,7 +69,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.3.0...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.0...v1.2.1
