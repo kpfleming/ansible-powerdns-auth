@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Support for creation of SOA and NS records during zone creation, eliminating
+requirement to set server configuration properties to synthesize the records.
+
 ## [1.4.0] - 2020-11-23
 
 ### Changed

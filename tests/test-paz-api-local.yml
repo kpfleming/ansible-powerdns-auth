@@ -40,6 +40,42 @@
         msg: "success"
       failed_when: result.failed != true
 
+    - name: check for failure during zone creation without properties
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: present
+      ignore_errors: true
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when: result.failed != true
+
+    - name: check for failure during zone creation without soa
+      pdns_auth_zone:
+        <<: *common
+        name: d2.example.
+        state: present
+        properties:
+          kind: 'Native'
+      ignore_errors: true
+      register: result
+
+    - name: display result
+      debug:
+        var: "result"
+
+    - name: check result
+      debug:
+        msg: "success"
+      failed_when: result.failed != true
+
     - name: check 'Native' zone creation
       pdns_auth_zone:
         <<: *common
@@ -49,6 +85,9 @@
           kind: 'Native'
           nameservers:
             - 'ns.example.'
+          soa:
+            mname: 'localhost.'
+            rname: 'hostmaster.localhost.'
         metadata:
           allow_axfr_from:
             - 'AUTO-NS'
@@ -129,8 +168,6 @@
         <<: *common
         name: d2.example.
         state: present
-        properties:
-          kind: 'Master'
         metadata:
           allow_axfr_from:
             - 'AUTO-NS'

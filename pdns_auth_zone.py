@@ -95,10 +95,73 @@ options:
         type: str
       nameservers:
         description:
-          - List of nameserver names listed in SOA record for zone.
+          - List of nameserver names to be listed in NS records for zone.
             Only used when I(kind=Native) or I(kind=Master).
+            Only used when zone is being created (I(state=present) and zone is not present).
+          - Must be absolute names (ending with '.').
         type: list
         elements: str
+      ttl:
+        description:
+          - Time to live for SOA and NS records.
+            Only used when I(kind=Native) or I(kind=Master).
+            Only used when zone is being created (I(state=present) and zone is not present).
+        type: int
+        required: false
+        default: 86400
+      soa:
+        description:
+          - SOA record fields.
+            Only used when I(kind=Native) or I(kind=Master).
+            Only used when zone is being created (I(state=present) and zone is not present).
+        type: complex
+        contains:
+          mname:
+            description:
+              - DNS name (absolute, ending with '.') of primary name server for the zone.
+            type: str
+            required: true
+          rname:
+            description:
+              - Email address of the 'responsible party' for the zone, formatted as a
+                DNS name (absolute, ending with '.').
+            type: str
+            required: true
+          serial:
+            description:
+              - Initial serial number.
+            type: int
+            required: false
+            default: 1
+          refresh:
+            description:
+              - Number of seconds after which secondary name servers should query the primary
+                for the SOA record, to detect zone changes.
+            type: int
+            required: false
+            default: 86400
+          retry:
+            description:
+              - Number of seconds after which secondary name servers should retry to request
+                the serial number from the primary if the primary does not respond.
+              - Must be less than I(refresh).
+            type: int
+            required: false
+            default: 7200
+          expire:
+            description:
+              - Number of seconds after which secondary name servers should stop answering
+                requests for this zone if the primary does not respond.
+              - Must be bigger than the sum of I(refresh) and I(retry).
+            type: int
+            required: false
+            default: 3600000
+          ttl:
+            description:
+              - Time to live for purposes of negative caching.
+            type: int
+            required: false
+            default: 172800
       masters:
         description:
           - List of IPv4 or IPv6 addresses which are masters for this zone.
@@ -254,6 +317,9 @@ EXAMPLES = """
       kind: 'Native'
       nameservers:
         - 'ns1.example.'
+      soa:
+        mname: 'localhost.'
+        rname: 'hostmaster.localhost.'
     metadata:
       allow_axfr_from: ['AUTO-NS']
       axfr_source: '127.0.0.1'
@@ -982,6 +1048,43 @@ def main():
                     "type": "list",
                     "elements": "str",
                 },
+                "ttl": {
+                    "type": "int",
+                    "default": 86400,
+                },
+                "soa": {
+                    "type": "dict",
+                    "options": {
+                        "mname": {
+                            "type": "str",
+                            "required": True,
+                        },
+                        "rname": {
+                            "type": "str",
+                            "required": True,
+                        },
+                        "serial": {
+                            "type": "int",
+                            "default": 1,
+                        },
+                        "refresh": {
+                            "type": "int",
+                            "default": 86400,
+                        },
+                        "retry": {
+                            "type": "int",
+                            "default": 7200,
+                        },
+                        "expire": {
+                            "type": "int",
+                            "default": 3600000,
+                        },
+                        "ttl": {
+                            "type": "int",
+                            "default": 172800,
+                        },
+                    },
+                },
                 "masters": {
                     "type": "list",
                     "elements": "str",
@@ -1229,20 +1332,63 @@ def main():
             "name": zone,
         }
 
-        if module.params["properties"]:
-            props = module.params["properties"]
+        if not module.params["properties"]:
+            module.fail_json(
+                msg="'properties' must be specified for zone creation", **result
+            )
 
-            if props["kind"]:
-                zone_struct["kind"] = props["kind"]
+        props = module.params["properties"]
 
-                if props["kind"] != "Slave":
-                    zone_struct["nameservers"] = props["nameservers"]
+        zone_struct["kind"] = props["kind"]
 
-                if props["kind"] == "Slave":
-                    zone_struct["masters"] = props["masters"]
+        if props["kind"] != "Slave":
+            if not props["soa"]:
+                module.fail_json(
+                    msg="'properties -> soa' must be specified for zone creation",
+                    **result,
+                )
 
-            if props["account"]:
-                zone_struct["account"] = props["account"]
+            # supply an empty nameserver list since NS records will be supplied in the rrsets
+            zone_struct["nameservers"] = []
+
+            zone_struct["rrsets"] = [
+                {
+                    "name": zone,
+                    "type": "SOA",
+                    "ttl": str(props["ttl"]),
+                    "records": [
+                        {
+                            "disabled": False,
+                            "content": " ".join(
+                                [
+                                    props["soa"]["mname"],
+                                    props["soa"]["rname"],
+                                    str(props["soa"]["serial"]),
+                                    str(props["soa"]["refresh"]),
+                                    str(props["soa"]["retry"]),
+                                    str(props["soa"]["expire"]),
+                                    str(props["soa"]["ttl"]),
+                                ]
+                            ),
+                        },
+                    ],
+                },
+                {
+                    "name": zone,
+                    "type": "NS",
+                    "ttl": str(props["ttl"]),
+                    "records": [
+                        {"disabled": False, "content": ns}
+                        for ns in props["nameservers"]
+                    ],
+                },
+            ]
+
+        if props["kind"] == "Slave":
+            zone_struct["masters"] = props["masters"]
+
+        if props["account"]:
+            zone_struct["account"] = props["account"]
 
         if module.params["metadata"]:
             for setter in ZoneMetadata.setters(module.params["metadata"]):
