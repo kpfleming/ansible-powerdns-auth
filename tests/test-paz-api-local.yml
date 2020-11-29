@@ -106,7 +106,7 @@
         - result.changed != true
         - result.zone.name != d2.example.
         - result.zone.kind != 'Native'
-        - result.zone.nameservers[0] != 'ns.example.'
+        - result.zone.nameservers[0] != 'ns2.example.'
         - result.zone.metadata.allow_axfr_from[0] != 'AUTO-NS'
         - result.zone.metadata.ixfr != true
         - result.zone.metadata.axfr_source != '127.0.0.1'
