@@ -5,6 +5,8 @@ on:
     branches:
     - main
     paths:
+    - 'tox.ini'
+    - 'pdns_auth_tsigkey.py'
     - 'pdns_auth_zone.py'
     - '.github/workflows/lint.yml'
 

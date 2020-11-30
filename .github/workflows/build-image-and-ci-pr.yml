@@ -46,9 +46,21 @@ jobs:
       pdns_version: ${{ matrix.pdns }}
       base_image: quay.io/apaa-test-images/tox:pr${{ github.event.pull_request.number }}
       image_name: quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:pr${{ github.event.pull_request.number }}
-  test:
+  lint:
     runs-on: ubuntu-20.04
     needs: build-pdns
+    container:
+      image: docker://quay.io/apaa-test-images/pdns-master:main
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+    - name: run lint tests
+      run: tox -elint-action --workdir /root/tox
+      env:
+        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
+  test:
+    runs-on: ubuntu-20.04
+    needs: lint
     strategy:
       matrix:
         pdns: [4.2, 4.3, master]
