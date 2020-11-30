@@ -38,7 +38,7 @@ Examples:
         - 'ns1.example.'
       soa:
         mname: 'localhost.'
-		rname: 'hostmaster.localhost.'
+        rname: 'hostmaster.localhost.'
    metadata:
       allow_axfr_from: ['AUTO-NS']
       axfr_source: '127.0.0.1'
