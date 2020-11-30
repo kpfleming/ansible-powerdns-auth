@@ -53,9 +53,7 @@ jobs:
     - name: checkout code
       uses: actions/checkout@v2
     - name: run lint tests
-      run: tox -elint-action --workdir /root/tox
-      env:
-        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
+      run: tox -elint --workdir /root/tox
   test:
     runs-on: ubuntu-20.04
     needs: lint
