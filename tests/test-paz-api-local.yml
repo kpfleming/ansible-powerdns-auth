@@ -10,8 +10,8 @@
     - name: check for non-existent zone
       pdns_auth_zone:
         <<: *common
-        name: d1.example.
-        state: exists
+        name: "d1.example."
+        state: "exists"
       register: result
 
     - name: display result
@@ -26,8 +26,8 @@
     - name: check notify for non-existent zone
       pdns_auth_zone:
         <<: *common
-        name: d1.example.
-        state: notify
+        name: "d1.example."
+        state: "notify"
       ignore_errors: true
       register: result
 
@@ -43,8 +43,8 @@
     - name: check for failure during zone creation without properties
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: present
+        name: "d2.example."
+        state: "present"
       ignore_errors: true
       register: result
 
@@ -60,10 +60,10 @@
     - name: check for failure during zone creation without soa
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: present
+        name: "d2.example."
+        state: "present"
         properties:
-          kind: 'Native'
+          kind: "Native"
       ignore_errors: true
       register: result
 
@@ -76,23 +76,23 @@
         msg: "success"
       failed_when: result.failed != true
 
-    - name: check 'Native' zone creation
+    - name: check "Native" zone creation
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: present
+        name: "d2.example."
+        state: "present"
         properties:
-          kind: 'Native'
+          kind: "Native"
           nameservers:
-            - 'ns.example.'
+            - "ns.example."
           soa:
-            mname: 'localhost.'
-            rname: 'hostmaster.localhost.'
+            mname: "localhost."
+            rname: "hostmaster.localhost."
         metadata:
           allow_axfr_from:
-            - 'AUTO-NS'
+            - "AUTO-NS"
           ixfr: true
-          axfr_source: '127.0.0.1'
+          axfr_source: "127.0.0.1"
       register: result
 
     - name: display result
@@ -104,27 +104,26 @@
         msg: "success"
       failed_when:
         - result.changed != true
-        - result.zone.name != d2.example.
-        - result.zone.kind != 'Native'
-        - result.zone.nameservers[0] != 'ns.example.'
-        - result.zone.metadata.allow_axfr_from[0] != 'AUTO-NS'
+        - result.zone.name != "d2.example."
+        - result.zone.kind != "Native"
+        - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
         - result.zone.metadata.ixfr != true
-        - result.zone.metadata.axfr_source != '127.0.0.1'
+        - result.zone.metadata.axfr_source != "127.0.0.1"
 
     - name: check that zone properties and metadata did not change
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: present
+        name: "d2.example."
+        state: "present"
         properties:
-          kind: 'Native'
+          kind: "Native"
           nameservers:
-            - 'ns.example.'
+            - "ns.example."
         metadata:
           allow_axfr_from:
-            - 'AUTO-NS'
+            - "AUTO-NS"
           ixfr: true
-          axfr_source: '127.0.0.1'
+          axfr_source: "127.0.0.1"
       register: result
 
     - name: display result
@@ -136,20 +135,19 @@
         msg: "success"
       failed_when:
         - result.changed != false
-        - result.zone.name != d2.example.
-        - result.zone.kind != 'Native'
-        - result.zone.nameservers[0] != 'ns.example.'
-        - result.zone.metadata.allow_axfr_from[0] != 'AUTO-NS'
+        - result.zone.name != "d2.example."
+        - result.zone.kind != "Native"
+        - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
         - result.zone.metadata.ixfr != true
-        - result.zone.metadata.axfr_source != '127.0.0.1'
+        - result.zone.metadata.axfr_source != "127.0.0.1"
 
-    - name: check zone kind change from 'Native' to 'Master'
+    - name: check zone kind change from "Native" to "Master"
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: present
+        name: "d2.example."
+        state: "present"
         properties:
-          kind: 'Master'
+          kind: "Master"
       register: result
 
     - name: display result
@@ -161,22 +159,22 @@
         msg: "success"
       failed_when:
         - result.changed != true
-        - result.zone.kind != 'Master'
+        - result.zone.kind != "Master"
 
     - name: check zone metadata change
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: present
+        name: "d2.example."
+        state: "present"
         metadata:
           allow_axfr_from:
-            - 'AUTO-NS'
-            - '::'
+            - "AUTO-NS"
+            - "::"
           ixfr: false
-          axfr_source: '127.0.0.8'
+          axfr_source: "127.0.0.8"
           slave_renotify: true
           tsig_allow_axfr:
-            - 'axfr-key'
+            - "axfr-key"
       register: result
 
     - name: display result
@@ -188,18 +186,18 @@
         msg: "success"
       failed_when:
         - result.changed != true
-        - result.zone.metadata.allow_axfr_from[0] != 'AUTO-NS'
-        - result.zone.metadata.allow_axfr_from[1] != '::'
+        - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
+        - result.zone.metadata.allow_axfr_from[1] != "::"
         - result.zone.metadata.ixfr != false
-        - result.zone.metadata.axfr_source != '127.0.0.8'
+        - result.zone.metadata.axfr_source != "127.0.0.8"
         - result.zone.metadata.slave_renotify != true
-        - result.zone.tsig_allow_axfr[0] != 'axfr-key'
+        - result.zone.tsig_allow_axfr[0] != "axfr-key"
 
     - name: check notify for zone
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: notify
+        name: "d2.example."
+        state: "notify"
       register: result
 
     - name: display result
@@ -215,8 +213,8 @@
     - name: check zone removal
       pdns_auth_zone:
         <<: *common
-        name: d2.example.
-        state: absent
+        name: "d2.example."
+        state: "absent"
       register: result
 
     - name: display result
@@ -229,19 +227,19 @@
       failed_when:
         - result.changed != true
 
-    - name: check 'Slave' zone creation
+    - name: check "Slave" zone creation
       pdns_auth_zone:
         <<: *common
-        name: d3.example.
-        state: present
+        name: "d3.example."
+        state: "present"
         properties:
-          kind: 'Slave'
+          kind: "Slave"
           masters:
-            - '1.1.1.1'
-            - '::1'
+            - "1.1.1.1"
+            - "::1"
         metadata:
           axfr_master_tsig:
-            - 'axfr-key'
+            - "axfr-key"
       register: result
 
     - name: display result
@@ -253,28 +251,28 @@
         msg: "success"
       failed_when:
         - result.changed != true
-        - result.zone.name != d3.example.
-        - result.zone.kind != 'Slave'
-        - result.zone.masters[0] != '1.1.1.1'
-        - result.zone.masters[1] != '::1'
-        - result.zone.axfr_master_tsig[0] != 'axfr-key'
+        - result.zone.name != "d3.example."
+        - result.zone.kind != "Slave"
+        - result.zone.masters[0] != "1.1.1.1"
+        - result.zone.masters[1] != "::1"
+        - result.zone.axfr_master_tsig[0] != "axfr-key"
 
     - name: check slave zone retrieval
       pdns_auth_zone:
         <<: *common
-        name: d3.example.
-        state: retrieve
+        name: "d3.example."
+        state: "retrieve"
 
-    - name: check 'Slave' master change
+    - name: check "Slave" master change
       pdns_auth_zone:
         <<: *common
-        name: d3.example.
-        state: present
+        name: "d3.example."
+        state: "present"
         properties:
-          kind: 'Slave'
+          kind: "Slave"
           masters:
-            - '2.2.2.2'
-            - '::1'
+            - "2.2.2.2"
+            - "::1"
       register: result
 
     - name: display result
@@ -286,14 +284,14 @@
         msg: "success"
       failed_when:
         - result.changed != true
-        - result.zone.masters[0] != '2.2.2.2'
-        - result.zone.masters[1] != '::1'
+        - result.zone.masters[0] != "2.2.2.2"
+        - result.zone.masters[1] != "::1"
 
     - name: check zone removal
       pdns_auth_zone:
         <<: *common
-        name: d3.example.
-        state: absent
+        name: "d3.example."
+        state: "absent"
       register: result
 
     - name: display result
