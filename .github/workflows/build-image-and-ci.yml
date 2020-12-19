@@ -30,7 +30,7 @@ jobs:
     needs: build-tox
     strategy:
       matrix:
-        pdns: [4.2, 4.3, master]
+        pdns: [4.3, 4.4, master]
     steps:
     - name: checkout code
       uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        pdns: [4.2, 4.3, master]
+        pdns: [4.3, 4.4, master]
         python: [py36, py37, py38, py39]
       fail-fast: false
     container:
