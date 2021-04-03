@@ -11,6 +11,8 @@ fi
 scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 
+${scriptdir}/buildah_fix.sh
+
 c=$(buildah from ${base_image})
 
 buildcmd() {
