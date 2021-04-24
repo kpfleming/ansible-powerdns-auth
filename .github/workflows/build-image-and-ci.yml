@@ -18,7 +18,7 @@ jobs:
     - name: checkout code
       uses: actions/checkout@v2
     - name: improve buildah performance
-      run: apt install --yes fuse-overlayfs
+      run: sudo apt-get install --yes fuse-overlayfs
     - name: build tox image
       run: tests/make_tox_container.sh
     - name: login to quay.io
@@ -37,7 +37,7 @@ jobs:
     - name: checkout code
       uses: actions/checkout@v2
     - name: improve buildah performance
-      run: apt install --yes fuse-overlayfs
+      run: sudo apt-get install --yes fuse-overlayfs
     - name: build pdns image
       run: tests/make_pdns_container.sh ${{ matrix.pdns }}
     - name: login to quay.io
