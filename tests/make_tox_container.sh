@@ -20,7 +20,9 @@ buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
 for pyver in 3.6.13 3.7.10 3.8.10 3.9.5 3.10.0b1; do
-    wget -O - https://www.python.org/ftp/python/${pyver}/Python-${pyver}.tgz | buildcmd tar xzf -
+    # strip off any beta or rc suffix to get version directory
+    verdir=$(echo $pyver | sed -e 's/^\([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\).*$/\1/')
+    wget -O - https://www.python.org/ftp/python/${verdir}/Python-${pyver}.tgz | buildcmd tar xzf -
     buildah config --workingdir /root/Python-${pyver} ${c}
     buildcmd ./configure --disable-shared
     buildcmd make -j2 altinstall
