@@ -19,7 +19,7 @@ buildcmd apt-get update --quiet=2
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
-for pyver in 3.6.13 3.7.10 3.8.10 3.9.5 3.10.0b2; do
+for pyver in 3.6.13 3.7.10 3.8.10 3.9.5 3.10.0b3; do
     # strip off any beta or rc suffix to get version directory
     verdir=$(echo $pyver | sed -e 's/^\([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\).*$/\1/')
     wget -O - https://www.python.org/ftp/python/${verdir}/Python-${pyver}.tgz | buildcmd tar xzf -
