@@ -34,7 +34,7 @@ jobs:
     if: ${{ needs.preflight.outputs.should_skip != 'true' }}
     strategy:
       matrix:
-        pdns: [4.3, 4.4, master]
+        pdns: [4.3, 4.4, 4.5, master]
         python: [py36, py37, py38, py39, py310]
       fail-fast: false
     container:
