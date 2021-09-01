@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2021-08-31
+
+### Changed
+
+- Added testing against PowerDNS Authoritative Server 4.5.x.
+
+- Added testing against Python 3.10 release candidates.
+
+## [1.6.0] - 2021-04-20
+
+### Changed
+
+- Removed testing against PowerDNS Authoritative Server 4.2.x, which is no longer
+supported.
+
+- Added testing against PowerDNS Authoritative Server 4.4.x, which includes HTTP
+support for obtaining the API schema.
+
+- Corrected flaws in test playbooks.
+
 ## [1.5.0] - 2020-11-29
 
 ### Changed
@@ -76,8 +96,10 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.5.0...HEAD
-[1.4.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.4.0...v1.5.0
+[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.7.0...HEAD[
+[1.7.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.6.0...v1.7.0
+[1.6.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.1...v1.2.2
