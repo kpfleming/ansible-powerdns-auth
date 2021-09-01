@@ -5,6 +5,7 @@ set -ex
 scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 pydeps=(build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev)
+pyversions=(3.6.14 3.7.11 3.8.12 3.9.7 3.10.0rc1)
 
 c=$(buildah from debian:buster)
 
@@ -19,18 +20,19 @@ buildcmd apt-get update --quiet=2
 buildcmd apt-get install --yes --quiet=2 git
 
 buildcmd apt-get install --yes --quiet=2 ${pydeps[@]}
-for pyver in 3.6.14 3.7.11 3.8.12 3.9.7 3.10.0rc1; do
+
+for pyver in ${pyversions[@]}; do
     # strip off any beta or rc suffix to get version directory
     verdir=$(echo $pyver | sed -e 's/^\([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\).*$/\1/')
-    wget -O - https://www.python.org/ftp/python/${verdir}/Python-${pyver}.tgz | buildcmd tar xzf -
-    buildah config --workingdir /root/Python-${pyver} ${c}
-    buildcmd ./configure --disable-shared
-    buildcmd make -j2 altinstall
-    buildah config --workingdir /root ${c}
-    buildcmd rm -rf /root/Python-${pyver}
+    wget --quiet --output-document - https://www.python.org/ftp/python/${verdir}/Python-${pyver}.tgz | tar xz
 done
 
+buildah copy ${c} ${scriptdir}/pybuild.sh /pybuild.sh
+
+printf "%s\n" "${pyversions[@]}" | xargs --verbose -I pyver --max-procs 2 buildah run --network host --volume $(pwd)/Python-pyver:/pyver ${c} -- /pybuild.sh /pyver
+
 buildcmd sh -c "rm -rf /usr/local/bin/python3.?m*"
+buildcmd sh -c "rm -rf /usr/local/bin/python3.??m*"
 
 buildcmd pip3.9 install tox
 buildah copy ${c} ${scriptdir}/../tox.ini /root/tox.ini
