@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         pdns: [4.3, 4.4, 4.5, master]
-        python: [py36, py37, py38, py39, py310]
+        python: [py38, py39, py310]
       fail-fast: false
     container:
       image: docker://quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:main
