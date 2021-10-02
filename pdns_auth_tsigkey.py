@@ -150,7 +150,7 @@ key:
 
 import sys
 
-assert sys.version_info >= (3, 6), "This module requires Python 3.6 or newer."
+assert sys.version_info >= (3, 8), "This module requires Python 3.8 or newer."
 
 from ansible.module_utils.basic import AnsibleModule
 
