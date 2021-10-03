@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2021-10-02
+
+### Changed
+
+- Removed support for Python 3.6 and 3.7, as Ansible will require 3.8 soon.
+
+- Pinned 'jsonschema' to versions below 4 to maintain compatibiity with
+the pinned version of `swagger-spec-validator'.
+
 ## [1.7.0] - 2021-08-31
 
 ### Changed
@@ -96,7 +105,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.7.0...HEAD[
+[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.4.0...v1.5.0
