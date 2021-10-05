@@ -5,7 +5,7 @@ set -ex
 scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
 pdns=${1}
 pydeps=(build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev)
-pyversions=(3.8.12 3.9.7 3.10.0rc1)
+pyversions=(3.8.12 3.9.7 3.10.0)
 
 c=$(buildah from debian:buster)
 
