@@ -636,8 +636,7 @@ class Metadata(object):
         user_meta = cls.meta_defaults()
 
         for k, v in {m["kind"]: m["metadata"] for m in api_meta}.items():
-            meta_object = cls.by_kind(k)
-            if meta_object:
+            if meta_object := cls.by_kind(k):
                 meta_object.user_meta_from_api(user_meta, v)
 
         return user_meta
@@ -647,8 +646,7 @@ class Metadata(object):
         res = []
 
         for meta, value in user_meta.items():
-            m = cls.by_meta(meta)
-            if m and not m.immutable:
+            if (m := cls.by_meta(meta)) and not m.immutable:
                 res.append(
                     lambda api_client, m=m, value=value: m.set(
                         value or m.default(), api_client
@@ -842,8 +840,7 @@ class ZoneMetadata(object):
         user_meta = cls.meta_defaults()
 
         for k, v in api_zone.items():
-            meta_object = cls.by_kind(k)
-            if meta_object:
+            if meta_object := cls.by_kind(k):
                 meta_object.user_meta_from_api(user_meta, v)
 
         return user_meta
@@ -853,8 +850,7 @@ class ZoneMetadata(object):
         res = []
 
         for meta, value in user_meta.items():
-            m = cls.by_meta(meta)
-            if m and not m.immutable:
+            if (m := cls.by_meta(meta)) and not m.immutable:
                 res.append(
                     lambda zone_struct, m=m, value=value: m.set(
                         value or m.default(), zone_struct
