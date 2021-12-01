@@ -7,44 +7,91 @@ on:
     paths:
     - '*.py'
     - 'api-swagger.json'
+    - 'tox.ini'
     - 'tests/test-*.yml'
+    - 'tests/make_*_container.sh'
     - 'tests/start_server.sh'
     - '.github/workflows/ci.yml'
+    - '.github/actions/*/action.yml'
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
+    branches:
+    - main
+    paths:
+    - '*.py'
+    - 'api-swagger.json'
+    - 'tox.ini'
+    - 'tests/test-*.yml'
+    - 'tests/make_*_container.sh'
+    - 'tests/start_server.sh'
+    - '.github/workflows/ci.yml'
+    - '.github/actions/*/action.yml'
+
+env:
+  registry_base: 'quay.io/apaa-test-images'
 
 jobs:
   preflight:
     runs-on: ubuntu-20.04
     outputs:
-      should_skip: ${{ steps.skip_check.outputs.image_files }}
+      need_image: ${{ steps.preflight.outputs.need_image }}
+      image_tag: ${{ steps.preflight.outputs.image_tag }}
+      # workaround to make registry_base available in jobs
+      registry_base: ${{ env.registry_base }}
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
-    - id: skip_check
-      uses: dorny/paths-filter@v2
+    - uses: actions/checkout@v2
+    - id: preflight
+      uses: ./.github/actions/ci-preflight
+  image-tox:
+    runs-on: ubuntu-20.04
+    needs:
+    - preflight
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/make-tox-image
+      if: needs.preflight.outputs.need_image == 'true'
       with:
-        base: main
-        filters: |
-          image_files:
-          - 'tox.ini'
-          - 'tests/make_*_container.sh'
-          - '.github/workflows/build-image-and-ci-pr.yml'
+        image_name: ${{ needs.preflight.outputs.registry_base }}/tox:${{ needs.preflight.outputs.image_tag }}
+        quay_username: ${{ secrets.QUAY_BOT_NAME }}
+        quay_password: ${{ secrets.QUAY_BOT_PASSWORD }}
+  image-pdns:
+    runs-on: ubuntu-20.04
+    needs:
+    - preflight
+    - image-tox
+    strategy:
+      matrix:
+        pdns: [4.3, 4.4, 4.5, master]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/make-pdns-image
+      if: needs.preflight.outputs.need_image == 'true'
+      with:
+        pdns_version: ${{ matrix.pdns }}
+        base_image: ${{ needs.preflight.outputs.registry_base }}/tox:${{ needs.preflight.outputs.image_tag }}
+        image_name: ${{ needs.preflight.outputs.registry_base }}/pdns-${{ matrix.pdns }}:${{ needs.preflight.outputs.image_tag }}
+        quay_username: ${{ secrets.QUAY_BOT_NAME }}
+        quay_password: ${{ secrets.QUAY_BOT_PASSWORD }}
   test:
     runs-on: ubuntu-20.04
-    needs: preflight
-    if: ${{ needs.preflight.outputs.should_skip != 'true' }}
+    needs:
+    - preflight
+    - image-pdns
     strategy:
       matrix:
         pdns: [4.3, 4.4, 4.5, master]
         python: [py38, py39, py310]
       fail-fast: false
     container:
-      image: docker://quay.io/apaa-test-images/pdns-${{ matrix.pdns }}:main
+      image: docker://${{ needs.preflight.outputs.registry_base }}/pdns-${{ matrix.pdns }}:${{ needs.preflight.outputs.image_tag }}
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     - name: start pdns_server
       run: tests/start_server.sh
     - name: run tests
       run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
-    env:
-      pdns_version: ${{ matrix.pdns }}
+      env:
+        pdns_version: ${{ matrix.pdns }}

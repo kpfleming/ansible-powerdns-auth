@@ -1,0 +1,26 @@
+name: "Preflight checks for CI"
+outputs:
+  need_image:
+    value: ${{ steps.skip_check.outputs.image_files }}
+  image_tag:
+    value: ${{ steps.main.outputs.image_tag }}${{ steps.pr.outputs.image_tag }}
+runs:
+  using: "composite"
+  steps:
+  - id: skip_check
+    uses: dorny/paths-filter@v2
+    with:
+      filters: |
+        image_files:
+        - 'tox.ini'
+        - 'tests/make_*_container.sh'
+        - '.github/actions/make-tox-image/action.yml'
+        - '.github/actions/make-pdns-image/action.yml'
+  - id: main
+    run: echo "::set-output name=image_tag::main"
+    shell: bash
+    if: github.event_name != 'pull_request'
+  - id: pr
+    run: echo "::set-output name=image_tag::pr${{ github.event.pull_request.number }}"
+    shell: bash
+    if: github.event_name == 'pull_request'

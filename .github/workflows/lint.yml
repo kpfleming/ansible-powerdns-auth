@@ -9,6 +9,7 @@ on:
     - 'pdns_auth_tsigkey.py'
     - 'pdns_auth_zone.py'
     - '.github/workflows/lint.yml'
+    - '.github/actions/lint/action.yml'
 
 jobs:
   lint:
@@ -16,9 +17,7 @@ jobs:
     container:
       image: docker://quay.io/apaa-test-images/pdns-master:main
     steps:
-    - name: checkout code
-      uses: actions/checkout@v2
-    - name: run lint tests
-      run: tox -elint-action --workdir /root/tox
-      env:
-        LINTLY_API_KEY: ${{ secrets.LINTLY_TOKEN }}
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/lint
+      with:
+        lintly_token: ${{ secrets.LINTLY_TOKEN }}

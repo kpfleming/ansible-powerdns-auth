@@ -1,0 +1,12 @@
+name: "Run linter checks"
+inputs:
+  lintly_token:
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - name: run lint tests
+    run: tox -elint-action --workdir /root/tox
+    shell: bash
+    env:
+      LINTLY_API_KEY: ${{ inputs.lintly_token }}

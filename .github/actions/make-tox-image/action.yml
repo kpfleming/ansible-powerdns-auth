@@ -1,0 +1,22 @@
+name: "Build tox image"
+inputs:
+  image_name:
+    required: true
+  quay_username:
+    required: true
+  quay_password:
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - name: build image
+    run: tests/make_tox_container.sh
+    shell: bash
+    env:
+      image_name: ${{ inputs.image_name }}
+  - name: login to quay.io
+    run: buildah login -u="${{ inputs.quay_username }}" -p="${{ inputs.quay_password }}" quay.io
+    shell: bash
+  - name: publish image to quay.io
+    run: buildah push ${{ inputs.image_name }}
+    shell: bash

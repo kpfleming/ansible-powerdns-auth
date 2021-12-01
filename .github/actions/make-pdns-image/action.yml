@@ -1,0 +1,27 @@
+name: "Build PowerDNS AUthoritative Server image"
+inputs:
+  base_image:
+    required: true
+  image_name:
+    required: true
+  quay_username:
+    required: true
+  quay_password:
+    required: true
+  pdns_version:
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - name: build pdns image
+    run: tests/make_pdns_container.sh ${{ inputs.pdns_version }}
+    shell: bash
+    env:
+      base_image: ${{ inputs.base_image }}
+      image_name: ${{ inputs.image_name }}
+  - name: login to quay.io
+    run: buildah login -u="${{ inputs.quay_username }}" -p="${{ inputs.quay_password }}" quay.io
+    shell: bash
+  - name: publish image to quay.io
+    run: buildah push ${{ inputs.image_name }}
+    shell: bash
