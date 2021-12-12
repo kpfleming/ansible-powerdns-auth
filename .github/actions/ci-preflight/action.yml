@@ -1,7 +1,7 @@
 name: "Preflight checks for CI"
 outputs:
   need_image:
-    value: ${{ steps.skip_check.outputs.image_files }}
+    value: ${{ steps.skip_check.outputs.image_files || (github.event_name == 'schedule') }}
   image_tag:
     value: ${{ steps.main.outputs.image_tag }}${{ steps.pr.outputs.image_tag }}
 runs:
@@ -13,9 +13,8 @@ runs:
       filters: |
         image_files:
         - 'tox.ini'
-        - 'tests/make_*_container.sh'
-        - '.github/actions/make-tox-image/action.yml'
-        - '.github/actions/make-pdns-image/action.yml'
+        - 'workflow-support/make_*_image.sh'
+        - '.github/actions/make-*-image/action.yml'
   - id: main
     run: echo "::set-output name=image_tag::main"
     shell: bash

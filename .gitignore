@@ -1,1 +1,3 @@
 .tox
+*.tar.gz
+src/galaxy.yml

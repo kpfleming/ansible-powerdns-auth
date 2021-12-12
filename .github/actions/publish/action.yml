@@ -1,0 +1,15 @@
+name: "Publish to Ansible Galaxy"
+inputs:
+  galaxy_token:
+    required: true
+  tag:
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - name: publish collection
+    run: tox -epublish-action --workdir /root/tox
+    shell: bash
+    env:
+      ANSIBLE_GALAXY_TOKEN: ${{ inputs.galaxy_token }}
+      TAG: ${{ inputs.tag }}

@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        pdns: [4.3, 4.4, 4.5, master]
+        pdns: [4.3, 4.4, 4.5, 4.6, master]
     steps:
     - name: delete image tag
       run: 'curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" https://quay.io/api/v1/repository/apaa-test-images/pdns-${{ matrix.pdns }}/tag/pr${{ github.event.pull_request.number }}'

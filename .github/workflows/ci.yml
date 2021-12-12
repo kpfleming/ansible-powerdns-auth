@@ -8,9 +8,9 @@ on:
     - '*.py'
     - 'api-swagger.json'
     - 'tox.ini'
-    - 'tests/test-*.yml'
-    - 'tests/make_*_container.sh'
-    - 'tests/start_server.sh'
+    - 'workflow-support/test-*.yml'
+    - 'workflow-support/make_*_image.sh'
+    - 'workflow-support/start_server.sh'
     - '.github/workflows/ci.yml'
     - '.github/actions/*/action.yml'
   pull_request:
@@ -24,11 +24,13 @@ on:
     - '*.py'
     - 'api-swagger.json'
     - 'tox.ini'
-    - 'tests/test-*.yml'
-    - 'tests/make_*_container.sh'
-    - 'tests/start_server.sh'
+    - 'workflow-support/test-*.yml'
+    - 'workflow-support/make_*_image.sh'
+    - 'workflow-support/start_server.sh'
     - '.github/workflows/ci.yml'
     - '.github/actions/*/action.yml'
+  schedule:
+    - cron: "35 4 * * 6"
 
 env:
   registry_base: 'quay.io/apaa-test-images'
@@ -64,7 +66,7 @@ jobs:
     - image-tox
     strategy:
       matrix:
-        pdns: [4.3, 4.4, 4.5, master]
+        pdns: [4.3, 4.4, 4.5, 4.6, master]
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/actions/make-pdns-image
@@ -82,7 +84,7 @@ jobs:
     - image-pdns
     strategy:
       matrix:
-        pdns: [4.3, 4.4, 4.5, master]
+        pdns: [4.3, 4.4, 4.5, 4.6, master]
         python: [py38, py39, py310]
       fail-fast: false
     container:
@@ -90,7 +92,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: start pdns_server
-      run: tests/start_server.sh
+      run: workflow-support/start_server.sh
     - name: run tests
       run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
       env:

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2021-12-12
+
+### Changed
+
+- Converted to an Ansible Galaxy Collection, published as `kpfleming.powerdns_auth`.
+  Existing users will need to change their playbooks to refer to the new module
+  name, but there are no behavior changes.
+
+- Added testing against PowerDNS Authoritative Server 4.6.x.
+
 ## [1.8.0] - 2021-10-02
 
 ### Changed
@@ -105,14 +115,15 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.8.0...HEAD
-[1.8.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.7.0...v1.8.0
-[1.7.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.6.0...v1.7.0
-[1.6.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.5.0...v1.6.0
-[1.5.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.4.0...v1.5.0
-[1.4.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.3.0...v1.4.0
-[1.3.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.2...v1.3.0
-[1.2.2]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.1...v1.2.2
-[1.2.1]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.2.0...v1.2.1
-[1.2.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/kpfleming/ansible-pdns-auth-api/compare/v1.0.0...v1.1.0
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.8.0...v2.0.0
+[1.8.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.7.0...v1.8.0
+[1.7.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.6.0...v1.7.0
+[1.6.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.4.0...v1.5.0
+[1.4.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.2.2...v1.3.0
+[1.2.2]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.0.0...v1.1.0

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# SPDX-FileCopyrightText: 2020 Kevin P. Fleming <kevin@km6g.us>
+# SPDX-FileCopyrightText: 2021 Kevin P. Fleming <kevin@km6g.us>
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
 

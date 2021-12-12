@@ -9,14 +9,23 @@ inputs:
 runs:
   using: "composite"
   steps:
+  - name: check cache for previous image builds
+    id: imagefiles
+    uses: actions/cache@v2
+    with:
+      path: tox.ini
+      key: ${{ hashfiles('tox.ini', 'workflow-support/make_tox_image.sh', '.github/actions/make-tox-image/action.yml') }}
   - name: build image
-    run: tests/make_tox_container.sh
+    if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
+    run: workflow-support/make_tox_image.sh
     shell: bash
     env:
       image_name: ${{ inputs.image_name }}
   - name: login to quay.io
+    if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
     run: buildah login -u="${{ inputs.quay_username }}" -p="${{ inputs.quay_password }}" quay.io
     shell: bash
   - name: publish image to quay.io
+    if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
     run: buildah push ${{ inputs.image_name }}
     shell: bash

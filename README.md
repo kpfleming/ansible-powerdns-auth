@@ -1,113 +1,64 @@
-# ansible-pdns-auth-api
+# ansible-powerdns-auth
 
 <a href="https://opensource.org"><img height="150" align="left" src="https://opensource.org/files/OSIApprovedCropped.png" alt="Open Source Initiative Approved License logo"></a>
-[![CI](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-api/actions?query=workflow%3ACI)
-[![Build Image](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/Build%20Image%20and%20CI/badge.svg)](https://github.com/kpfleming/ansible-pdns-auth-api/actions?query=workflow%3A%22Build+Image+and+CI%22)
+[![CI](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3ACI)
+[![Build Image](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/Build%20Image%20and%20CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3A%22Build+Image+and+CI%22)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-3812/)
 
-Ansible modules which can be used to manage zones and other content in
+This repo contains the `kpfleming.powerdns_auth` Ansible Collection. The collection includes modules to work with
 [PowerDNS Authoritative servers.](https://www.powerdns.com/auth.html)
 
 Open Source software: Apache License 2.0
 
 ## &nbsp;
 
-## pdns_auth_zone.py
+## External requirements
 
-This module can be used to create, remove, and manage zones. It can
-also trigger some zone-related actions: NOTIFY and AXFR. Put the
-module file into a suitable 'library' directory for your Ansible
-installation, role, or playbook.
+The modules require the [Bravado](https://pypi.org/project/bravado/)
+package for parsing the Swagger/OpenAPI specification of the PowerDNS
+Authoritative Server API.
 
-Note that if any 'metadata' attributes are specified when `state` is
-set to `present`, *all* metadata attributes on the zone will be
-updated or removed, depending on their defaults. As a result, you
-must specify *all* metadata attributes that you wish to have set
-on the zone.
+## Included content
 
-Examples:
-```
-- name: create native zone
-  pdns_auth_zone:
-    name: d2.example.
-    state: present
-    api_key: 'foobar'
-    properties:
-      kind: 'Native'
-      nameservers:
-        - 'ns1.example.'
-      soa:
-        mname: 'localhost.'
-        rname: 'hostmaster.localhost.'
-   metadata:
-      allow_axfr_from: ['AUTO-NS']
-      axfr_source: '127.0.0.1'
+* Modules:
+  * PowerDNS Authoritative Server:
+    - kpfleming.powerdns_auth.tsigkey: manage TSIG keys
+    - kpfleming.powerdns_auth.zone: manage zones
 
-- name: change native zone to master
-  pdns_auth_zone:
-    name: d2.example.
-    state: present
-    api_key: 'foobar'
-    properties:
-      kind: 'Master'
+## Using this collection
 
-- name: delete zone
-  pdns_auth_zone:
-    name: d2.example.
-    state: absent
-    api_key: 'foobar'
+In order to use this collection, you need to install it using the
+`ansible-galaxy` CLI:
+
+    ansible-galaxy collection install kpfleming.powerdns_auth
+
+You can also include it in a `requirements.yml` file and install it
+via `ansible-galaxy collection install -r requirements.yml` using the
+format:
+
+```yaml
+collections:
+  - name: kpfleming.powerdns_auth
 ```
 
-## pdns_auth_tsigkey.py
+See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
-This module can be used to create, remove, and manage TSIG keys.  Put
-the module file into a suitable 'library' directory for your Ansible
-installation, role, or playbook.
+## Contributing to this collection
 
-Examples:
-```
-- name: create key with default algorithm
-  pdns_auth_tsigkey:
-    name: key2
-    state: present
-    api_key: 'foobar'
+If you want to develop new content for this collection or improve what
+is already here, the easiest way to work on the collection is to clone
+it into one of the configured
+[`COLLECTIONS_PATH`](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths),
+and work on it there.
 
-- name: remove key
-  pdns_auth_tsigkey:
-    name: key2
-    state: absent
-    api_key: 'foobar'
+You can find more information in the [developer guide for
+collections](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections),
+and in the [Ansible Community
+Guide](https://docs.ansible.com/ansible/latest/community/index.html).
 
-- name: create key with algorithm and content
-  pdns_auth_tsigkey:
-    name: key3
-    state: present
-    api_key: 'foobar'
-    algorithm: hmac-sha256
-    key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
-```
+## More information
 
-## Notes
-
-In PowerDNS Authoritative Server releases prior to 4.4.0, the server
-is not able to provide the OpenAPI/Swagger specification which these
-modules require. In order to use these modules, you'll need to copy
-`api-swagger.json` to your Ansible control host (in the `files`
-directory of the role or playbook), and use tasks similar to the ones
-below to place a copy on the host where the module will be invoked.
-
-You'll also need to specify `api_spec_file` in each task which invokes
-one of these modules.
-
-```
-- name: temp file to hold spec
-  tempfile:
-    state: file
-    suffix: '.json'
-    register: temp_file
-
-- name: populate spec file
-  copy:
-    src: api-swagger.json
-    dest: "{{ temp_file.path }}"
-```
+- [Ansible Collection overview](https://github.com/ansible-collections/overview)
+- [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
+- [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
+- [Ansible Collections Checklist](https://github.com/ansible-collections/overview/blob/master/collection_requirements.rst)

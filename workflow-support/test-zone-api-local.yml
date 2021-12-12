@@ -8,7 +8,7 @@
       api_spec_file: ../api-swagger.json
   tasks:
     - name: check for non-existent zone
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d1.example."
         state: "exists"
@@ -24,7 +24,7 @@
       failed_when: result.zone.exists != false
 
     - name: check notify for non-existent zone
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d1.example."
         state: "notify"
@@ -41,7 +41,7 @@
       failed_when: result.failed != true
 
     - name: check for failure during zone creation without properties
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "present"
@@ -58,7 +58,7 @@
       failed_when: result.failed != true
 
     - name: check for failure during zone creation without soa
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "present"
@@ -77,7 +77,7 @@
       failed_when: result.failed != true
 
     - name: check "Native" zone creation
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "present"
@@ -111,7 +111,7 @@
         - result.zone.metadata.axfr_source != "127.0.0.1"
 
     - name: check that zone properties and metadata did not change
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "present"
@@ -142,7 +142,7 @@
         - result.zone.metadata.axfr_source != "127.0.0.1"
 
     - name: check zone kind change from "Native" to "Master"
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "present"
@@ -162,7 +162,7 @@
         - result.zone.kind != "Master"
 
     - name: check zone metadata change
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "present"
@@ -194,7 +194,7 @@
         - result.zone.tsig_allow_axfr[0] != "axfr-key"
 
     - name: check notify for zone
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "notify"
@@ -211,7 +211,7 @@
         - result.changed != true
 
     - name: check zone removal
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d2.example."
         state: "absent"
@@ -228,7 +228,7 @@
         - result.changed != true
 
     - name: check "Slave" zone creation
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d3.example."
         state: "present"
@@ -258,13 +258,13 @@
         - result.zone.axfr_master_tsig[0] != "axfr-key"
 
     - name: check slave zone retrieval
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d3.example."
         state: "retrieve"
 
     - name: check "Slave" master change
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d3.example."
         state: "present"
@@ -288,7 +288,7 @@
         - result.zone.masters[1] != "::1"
 
     - name: check zone removal
-      pdns_auth_zone:
+      kpfleming.powerdns_auth.zone:
         <<: *common
         name: "d3.example."
         state: "absent"

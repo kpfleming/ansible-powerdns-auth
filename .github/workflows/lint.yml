@@ -15,7 +15,7 @@ jobs:
   lint:
     runs-on: ubuntu-20.04
     container:
-      image: docker://quay.io/apaa-test-images/pdns-master:main
+      image: docker://quay.io/apaa-test-images/tox:main
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/actions/lint
