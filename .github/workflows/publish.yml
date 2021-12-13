@@ -15,4 +15,4 @@ jobs:
     - uses: ./.github/actions/publish
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
-        tag: ${{ env.GITHUB_REF_NAME }}
+        tag: ${{ github.ref_name }}
