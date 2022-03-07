@@ -15,12 +15,12 @@ runs:
         - 'tox.ini'
         - 'workflow-support/make_*_image.sh'
         - '.github/actions/make-*-image/action.yml'
-    if: github.event_name != 'schedule'
+    if: github.event_name == 'pull_request'
   - id: main
     run: echo "::set-output name=image_tag::main"
     shell: bash
-    if: github.event_name != 'pull_request'
+    if: (github.event_name != 'pull_request') || !steps.skip_check.outputs.image_files
   - id: pr
     run: echo "::set-output name=image_tag::pr${{ github.event.pull_request.number }}"
     shell: bash
-    if: github.event_name == 'pull_request'
+    if: (github.event_name == 'pull_request') && steps.skip_check.outputs.image_files
