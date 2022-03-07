@@ -17,7 +17,7 @@ jobs:
     container:
       image: docker://quay.io/apaa-test-images/tox:main
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ./.github/actions/lint
       with:
         lintly_token: ${{ secrets.LINTLY_TOKEN }}
