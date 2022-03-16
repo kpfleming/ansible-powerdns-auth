@@ -4,7 +4,7 @@ set -ex
 
 if [ -z "${1}" ]; then
     echo "Must specify a PowerDNS Auth version (or 'master')."
-    echo "Examples: 4.4, 4.5, master."
+    echo "Examples: 4.5, 4.6, master."
     exit 1
 fi
 

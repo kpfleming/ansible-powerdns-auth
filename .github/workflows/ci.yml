@@ -66,7 +66,7 @@ jobs:
     - image-tox
     strategy:
       matrix:
-        pdns: [4.3, 4.4, 4.5, 4.6, master]
+        pdns: [4.4, 4.5, 4.6, master]
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/make-pdns-image
@@ -84,7 +84,7 @@ jobs:
     - image-pdns
     strategy:
       matrix:
-        pdns: [4.3, 4.4, 4.5, 4.6, master]
+        pdns: [4.4, 4.5, 4.6, master]
         python: [py38, py39, py310]
       fail-fast: false
     container:
