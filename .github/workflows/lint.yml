@@ -8,6 +8,7 @@ on:
     - 'tox.ini'
     - 'pdns_auth_tsigkey.py'
     - 'pdns_auth_zone.py'
+    - 'workflow-support/*.sh'
     - '.github/workflows/lint.yml'
     - '.github/actions/lint/action.yml'
 

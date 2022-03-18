@@ -8,22 +8,23 @@ if [ -z "${1}" ]; then
     exit 1
 fi
 
-scriptdir=$(realpath $(dirname ${BASH_SOURCE[0]}))
+scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 pdns=${1}
 
-c=$(buildah from ${base_image})
+# shellcheck disable=SC2154 # base_image set in external environment
+c=$(buildah from "${base_image}")
 
 buildcmd() {
-    buildah run --network host ${c} -- "$@"
+    buildah run --network host "${c}" -- "$@"
 }
 
-buildah config --workingdir /root ${c}
+buildah config --workingdir /root "${c}"
 
 buildcmd apt-get update --quiet=2
 buildcmd apt-get install --yes --quiet=2 gnupg sqlite3
 
-buildah copy ${c} ${scriptdir}/apt-repo-pdns-auth-${pdns}.list /etc/apt/sources.list.d
-buildah copy ${c} ${scriptdir}/apt-pref-pdns /etc/apt/preferences.d
+buildah copy "${c}" "${scriptdir}/apt-repo-pdns-auth-${pdns}.list" /etc/apt/sources.list.d
+buildah copy "${c}" "${scriptdir}/apt-pref-pdns" /etc/apt/preferences.d
 if [ "${pdns}" == "master" ]; then
     curl --silent --location https://repo.powerdns.com/CBC8B383-pub.asc | buildcmd apt-key add
 else
@@ -39,7 +40,8 @@ buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
 buildcmd rm -rf /root/.cache
 
-if buildah images --quiet ${image_name}; then
-    buildah rmi ${image_name}
+# shellcheck disable=SC2154 # image_name set in external environment
+if buildah images --quiet "${image_name}"; then
+    buildah rmi "${image_name}"
 fi
-buildah commit --squash --rm ${c} ${image_name}
+buildah commit --squash --rm "${c}" "${image_name}"
