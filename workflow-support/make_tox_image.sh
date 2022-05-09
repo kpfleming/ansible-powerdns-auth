@@ -6,7 +6,7 @@ scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 export pdns="${1}"
 lintdeps=(shellcheck)
 pydeps=(build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev)
-pyversions=(3.8.13 3.9.11 3.10.3)
+pyversions=(3.8.13 3.9.11 3.10.3 3.11.0b1)
 
 c=$(buildah from debian:buster)
 

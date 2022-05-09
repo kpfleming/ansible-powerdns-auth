@@ -7,8 +7,12 @@
   vars:
     tag: "0.0.0"
     collection_dir: "../src"
+    ansible_python_interpreter: python
 
   tasks:
+    - debug:
+        var: ansible_python_interpreter
+
     - name: Template out the galaxy.yml file.
       ansible.builtin.template:
         src: templates/galaxy.yml.j2

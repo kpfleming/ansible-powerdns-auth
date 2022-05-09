@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         pdns: [4.4, 4.5, 4.6, master]
-        python: [py38, py39, py310]
+        python: [py38, py39, py310, py311]
       fail-fast: false
     container:
       image: docker://${{ needs.preflight.outputs.registry_base }}/pdns-${{ matrix.pdns }}:${{ needs.preflight.outputs.image_tag }}
