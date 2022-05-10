@@ -15,7 +15,6 @@ runs:
         - 'tox.ini'
         - 'workflow-support/make_*_image.sh'
         - '.github/actions/make-*-image/action.yml'
-    if: github.event_name == 'pull_request'
   - id: main
     run: echo "::set-output name=image_tag::main"
     shell: bash
