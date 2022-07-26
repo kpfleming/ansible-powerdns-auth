@@ -4,7 +4,9 @@
 [![CI](https://github.com/kpfleming/ansible-powerdns-auth/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3ACI)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-3812/)
 [![License - Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-9400d3.svg)](https://spdx.org/licenses/Apache-2.0.html)
-[![Code Style - Black](https://img.shields.io/badge/Code%20Style-Black-000000.svg)](https://github.com/psf/black) [![Types - Mypy](https://img.shields.io/badge/Types-Mypy-blue.svg)](https://github.com/python/mypy) [![Imports - isort](https://img.shields.io/badge/Imports-isort-ef8336.svg)](https://github.com/pycqa/isort)
+[![Code Style - Black](https://img.shields.io/badge/Code%20Style-Black-000000.svg)](https://github.com/psf/black)
+[![Types - Mypy](https://img.shields.io/badge/Types-Mypy-blue.svg)](https://github.com/python/mypy)
+[![Imports - isort](https://img.shields.io/badge/Imports-isort-ef8336.svg)](https://github.com/pycqa/isort)
 
 This repo contains the `kpfleming.powerdns_auth` Ansible Collection. The collection includes modules to work with
 [PowerDNS Authoritative servers.](https://www.powerdns.com/auth.html)
