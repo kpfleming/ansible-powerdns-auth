@@ -1,14 +1,15 @@
 # ansible-powerdns-auth
 
 <a href="https://opensource.org"><img height="150" align="left" src="https://opensource.org/files/OSIApprovedCropped.png" alt="Open Source Initiative Approved License logo"></a>
-[![CI](https://github.com/kpfleming/ansible-powerdns-auth/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3ACI)
-[![Build Image](https://github.com/kpfleming/ansible-powerdns-auth/workflows/Build%20Image%20and%20CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3A%22Build+Image+and+CI%22)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-3812/)
+[![CI](https://github.com/kpfleming/ansible-powerdns-auth/workflows/CI/badge.svg){ loading=lazy }](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3ACI)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg){ loading=lazy }](https://www.python.org/downloads/release/python-3812/)
+[![License - Apache 2.0](https://img.shields.io/badge/License-Apache-2.0-9400d3.svg){ loading=lazy }](https://spdx.org/licenses/Apache-2.0.html)
+[![Code Style - Black](https://img.shields.io/badge/code%20style-black-000000.svg){ loading=lazy }](https://github.com/psf/black) [![Types - Mypy](https://img.shields.io/badge/Types-Mypy-blue.svg){ loading=lazy }](https://github.com/python/mypy) [![Imports - isort](https://img.shields.io/badge/Imports-isort-ef8336.svg){ loading=lazy }](https://github.com/pycqa/isort)
 
 This repo contains the `kpfleming.powerdns_auth` Ansible Collection. The collection includes modules to work with
 [PowerDNS Authoritative servers.](https://www.powerdns.com/auth.html)
 
-Open Source software: Apache License 2.0
+Open Source software: [Apache License 2.0](https://spdx.org/licenses/Apache-2.0.html)
 
 ## &nbsp;
 
