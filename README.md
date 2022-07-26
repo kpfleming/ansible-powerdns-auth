@@ -1,8 +1,8 @@
 # ansible-powerdns-auth
 
 <a href="https://opensource.org"><img height="150" align="left" src="https://opensource.org/files/OSIApprovedCropped.png" alt="Open Source Initiative Approved License logo"></a>
-[![CI](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3ACI)
-[![Build Image](https://github.com/kpfleming/ansible-pdns-auth-zone/workflows/Build%20Image%20and%20CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3A%22Build+Image+and+CI%22)
+[![CI](https://github.com/kpfleming/ansible-powerdns-auth/workflows/CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3ACI)
+[![Build Image](https://github.com/kpfleming/ansible-powerdns-auth/workflows/Build%20Image%20and%20CI/badge.svg)](https://github.com/kpfleming/ansible-powerdns-auth/actions?query=workflow%3A%22Build+Image+and+CI%22)
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-3812/)
 
 This repo contains the `kpfleming.powerdns_auth` Ansible Collection. The collection includes modules to work with
