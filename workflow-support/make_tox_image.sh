@@ -6,7 +6,7 @@ scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 export pdns="${1}"
 lintdeps=(shellcheck)
 pydeps=(build-essential libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev)
-pyversions=(3.8.13 3.9.13 3.10.6 3.11.0b5)
+pyversions=(3.8.13 3.9.13 3.10.6 3.11.0rc1)
 
 c=$(buildah from debian:buster)
 
@@ -37,7 +37,7 @@ done
 buildcmd sh -c "rm -rf /usr/local/bin/python3.?m*"
 buildcmd sh -c "rm -rf /usr/local/bin/python3.??m*"
 
-buildcmd pip3.9 install tox
+buildcmd pip3.10 install tox
 buildah copy "${c}" "${scriptdir}/../tox.ini" /root/tox.ini
 buildcmd tox -eALL --notest --workdir /root/tox
 
