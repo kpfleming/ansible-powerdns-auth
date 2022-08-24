@@ -13,7 +13,14 @@ pdns=${1}
 
 lintdeps=(shellcheck)
 
-c=$(buildah from quay.io/km6g-ci-images/python:main)
+case "${pdns}" in
+    4.4)
+	c=$(buildah from quay.io/km6g-ci-images/python:buster-main)
+	;;
+    *)
+	c=$(buildah from quay.io/km6g-ci-images/python:bullseye-main)
+	;;
+esac
 
 buildcmd() {
     buildah run --network host "${c}" -- "$@"
