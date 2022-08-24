@@ -1,4 +1,4 @@
-name: "Build PowerDNS AUthoritative Server image"
+name: "Build PowerDNS Authoritative Server image"
 inputs:
   base_image:
     required: true
@@ -18,10 +18,10 @@ runs:
     uses: actions/cache@v3
     with:
       path: tox.ini
-      key: ${{ github.ref_name }}-${{ inputs.pdns_version }}-${{ hashfiles('tox.ini', 'workflow-support/make_*_image.sh', '.github/actions/make-*-image/action.yml') }}
+      key: ${{ github.ref_name }}-${{ inputs.pdns_version }}-${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', '.github/actions/make-ci-image/action.yml') }}
   - name: build pdns image
     if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
-    run: workflow-support/make_pdns_image.sh ${{ inputs.pdns_version }}
+    run: workflow-support/make_ci_image.sh ${{ inputs.pdns_version }}
     shell: bash
     env:
       base_image: ${{ inputs.base_image }}

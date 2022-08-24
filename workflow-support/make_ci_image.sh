@@ -11,26 +11,23 @@ fi
 scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 pdns=${1}
 
-# shellcheck disable=SC2154 # base_image set in external environment
-c=$(buildah from "${base_image}")
+lintdeps=(shellcheck)
+
+c=$(buildah from quay.io/km6g-ci-images/python:main)
 
 buildcmd() {
     buildah run --network host "${c}" -- "$@"
 }
 
-buildah config --workingdir /root "${c}"
-
-buildcmd apt-get update --quiet=2
-buildcmd apt-get install --yes --quiet=2 gnupg sqlite3
-
+buildcmd mkdir /etc/apt/keyrings
 buildah copy "${c}" "${scriptdir}/apt-repo-pdns-auth-${pdns}.list" /etc/apt/sources.list.d
 buildah copy "${c}" "${scriptdir}/apt-pref-pdns" /etc/apt/preferences.d
-if [ "${pdns}" == "master" ]; then
-    curl --silent --location https://repo.powerdns.com/CBC8B383-pub.asc | buildcmd apt-key add
-else
-    curl --silent --location https://repo.powerdns.com/FD380FBB-pub.asc | buildcmd apt-key add
-fi
+buildah copy "${c}" "${scriptdir}/CBC8B383-pub.asc" /etc/apt/keyrings
+buildah copy "${c}" "${scriptdir}/FD380FBB-pub.asc" /etc/apt/keyrings
+
 buildcmd apt-get update --quiet=2
+buildcmd apt-get install --yes --quiet=2 "${lintdeps[@]}"
+buildcmd apt-get install --yes --quiet=2 gnupg sqlite3
 buildcmd apt-get install --yes --quiet=2 pdns-server pdns-backend-sqlite3
 buildcmd apt-get purge --yes --quiet=2 pdns-backend-bind
 buildcmd sqlite3 /run/pdns.sqlite3 '.read /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql'
@@ -38,6 +35,10 @@ buildcmd sqlite3 /run/pdns.sqlite3 '.read /usr/share/doc/pdns-backend-sqlite3/sc
 buildcmd apt-get autoremove --yes --purge
 buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
+
+buildah copy "${c}" "${scriptdir}/../tox.ini" /root/tox.ini
+buildcmd tox -eALL --notest --workdir /root/tox
+
 buildcmd rm -rf /root/.cache
 
 # shellcheck disable=SC2154 # image_name set in external environment
