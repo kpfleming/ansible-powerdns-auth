@@ -2,7 +2,7 @@
 ---
 - hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: false
 
   vars:
     ansible_python_interpreter: python
@@ -10,104 +10,104 @@
       api_key: foo
 
   tasks:
-    - debug:
+    - ansible.builtin.debug:
         var: ansible_python_interpreter
 
     - name: check for non-existent zone
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d1.example."
-        state: "exists"
+        name: d1.example.
+        state: exists
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when: result.zone.exists != false
 
     - name: check notify for non-existent zone
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d1.example."
-        state: "notify"
+        name: d1.example.
+        state: notify
       ignore_errors: true
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when: result.failed != true
 
     - name: check for failure during zone creation without properties
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "present"
+        name: d2.example.
+        state: present
       ignore_errors: true
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when: result.failed != true
 
     - name: check for failure during zone creation without soa
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "present"
+        name: d2.example.
+        state: present
         properties:
-          kind: "Native"
+          kind: Native
       ignore_errors: true
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when: result.failed != true
 
     - name: check "Native" zone creation
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "present"
+        name: d2.example.
+        state: present
         properties:
-          kind: "Native"
+          kind: Native
           nameservers:
-            - "ns.example."
+            - ns.example.
           soa:
-            mname: "localhost."
-            rname: "hostmaster.localhost."
+            mname: localhost.
+            rname: hostmaster.localhost.
         metadata:
           allow_axfr_from:
-            - "AUTO-NS"
+            - AUTO-NS
           ixfr: true
-          axfr_source: "127.0.0.1"
+          axfr_source: 127.0.0.1
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
         - result.zone.name != "d2.example."
@@ -119,26 +119,26 @@
     - name: check that zone properties and metadata did not change
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "present"
+        name: d2.example.
+        state: present
         properties:
-          kind: "Native"
+          kind: Native
           nameservers:
-            - "ns.example."
+            - ns.example.
         metadata:
           allow_axfr_from:
-            - "AUTO-NS"
+            - AUTO-NS
           ixfr: true
-          axfr_source: "127.0.0.1"
+          axfr_source: 127.0.0.1
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != false
         - result.zone.name != "d2.example."
@@ -150,19 +150,19 @@
     - name: check zone kind change from "Native" to "Master"
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "present"
+        name: d2.example.
+        state: present
         properties:
-          kind: "Master"
+          kind: Master
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
         - result.zone.kind != "Master"
@@ -170,26 +170,26 @@
     - name: check zone metadata change
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "present"
+        name: d2.example.
+        state: present
         metadata:
           allow_axfr_from:
-            - "AUTO-NS"
+            - AUTO-NS
             - "::"
           ixfr: false
-          axfr_source: "127.0.0.8"
+          axfr_source: 127.0.0.8
           slave_renotify: true
           tsig_allow_axfr:
-            - "axfr-key"
+            - axfr-key
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
         - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
@@ -202,59 +202,59 @@
     - name: check notify for zone
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "notify"
+        name: d2.example.
+        state: notify
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
 
     - name: check zone removal
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d2.example."
-        state: "absent"
+        name: d2.example.
+        state: absent
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
 
     - name: check "Slave" zone creation
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d3.example."
-        state: "present"
+        name: d3.example.
+        state: present
         properties:
-          kind: "Slave"
+          kind: Slave
           masters:
-            - "1.1.1.1"
-            - "::1"
+            - 1.1.1.1
+            - ::1
         metadata:
           axfr_master_tsig:
-            - "axfr-key"
+            - axfr-key
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
         - result.zone.name != "d3.example."
@@ -266,28 +266,28 @@
     - name: check slave zone retrieval
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d3.example."
-        state: "retrieve"
+        name: d3.example.
+        state: retrieve
 
     - name: check "Slave" master change
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d3.example."
-        state: "present"
+        name: d3.example.
+        state: present
         properties:
-          kind: "Slave"
+          kind: Slave
           masters:
-            - "2.2.2.2"
-            - "::1"
+            - 2.2.2.2
+            - ::1
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true
         - result.zone.masters[0] != "2.2.2.2"
@@ -296,16 +296,16 @@
     - name: check zone removal
       kpfleming.powerdns_auth.zone:
         <<: *common
-        name: "d3.example."
-        state: "absent"
+        name: d3.example.
+        state: absent
       register: result
 
     - name: display result
-      debug:
-        var: "result"
+      ansible.builtin.debug:
+        var: result
 
     - name: check result
-      debug:
-        msg: "success"
+      ansible.builtin.debug:
+        msg: success
       failed_when:
         - result.changed != true

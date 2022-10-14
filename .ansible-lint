@@ -1,0 +1,13 @@
+%YAML 1.2
+---
+skip_list:
+  - name[casing]
+  - name[play]
+  - no-changed-when
+  - template-instead-of-copy
+  - unnamed-task
+  - var-spacing
+  - yaml[line-length]
+
+kinds:
+  - playbook: "**/workflow-support/*.yml"
