@@ -16,7 +16,7 @@ jobs:
   lint:
     runs-on: ubuntu-20.04
     container:
-      image: docker://quay.io/km6g-ci-images/ansible-powerdns-auth/pdns-master-main
+      image: docker://quay.io/km6g-ci-images/ansible-powerdns-auth:pdns-master-main
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/lint
