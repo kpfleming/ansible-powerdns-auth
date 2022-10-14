@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Added testing against Python 3.11 beta releases.
+- Added testing against Python 3.11 pre-releases.
+- Removed testing against PowerDNS Authoritative Server 4.3.x.
+- Many CI improvements, including linting of test playbooks.
 
 ## [2.0.0] - 2021-12-12
 
