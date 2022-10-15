@@ -17,13 +17,24 @@ jobs:
     steps:
     - id: details
       uses: kpfleming/composite-actions/image-details@main
+  preflight:
+    runs-on: ubuntu-20.04
+    needs:
+    - image_details
+    outputs:
+      versions: ${{ steps.get_versions.outputs.versions }}
+    steps:
+    - uses: actions/checkout@v3
+    - id: get_versions
+      run: cat workflow-support/pdns-versions.json >> $GITHUB_OUTPUT
   clean-image:
     runs-on: ubuntu-20.04
     needs:
     - image_details
+    - preflight
     strategy:
       matrix:
-        pdns: [4.4, 4.5, 4.6, master]
+        pdns: ${{ fromJSON(needs.preflight.outputs.versions).pdns }}
     steps:
     - uses: kpfleming/composite-actions/delete-pr-image@main
       with:
