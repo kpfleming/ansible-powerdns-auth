@@ -11,9 +11,8 @@ jobs:
     outputs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
-    - uses: actions/checkout@v3
     - id: details
-      uses: ./.github/actions/image-details
+      uses: kpfleming/composite-actions/image-details@main
   publish:
     runs-on: ubuntu-20.04
     needs:
@@ -21,8 +20,7 @@ jobs:
     container:
       image: ${{ needs.image_details.outputs.image_base }}:pdns-master-main
     steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/actions/publish
+    - uses: kpfleming/composite-actions/galaxy-publish-tox@main
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         tag: ${{ github.ref_name }}

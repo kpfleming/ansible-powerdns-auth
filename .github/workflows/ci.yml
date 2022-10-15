@@ -40,9 +40,8 @@ jobs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
       base_image: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/python
     steps:
-    - uses: actions/checkout@v3
     - id: details
-      uses: ./.github/actions/image-details
+      uses: kpfleming/composite-actions/image-details@main
   preflight:
     runs-on: ubuntu-20.04
     needs:
@@ -51,9 +50,8 @@ jobs:
       need_image: ${{ steps.preflight.outputs.need_image }}
       image_tag: ${{ steps.preflight.outputs.image_tag }}
     steps:
-    - uses: actions/checkout@v3
     - id: preflight
-      uses: ./.github/actions/ci-preflight
+      uses: kpfleming/composite-actions/ci-preflight@main
   ci-image:
     runs-on: ubuntu-20.04
     needs:

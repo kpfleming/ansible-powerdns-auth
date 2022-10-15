@@ -15,9 +15,8 @@ jobs:
       registry_account: ${{ steps.details.outputs.registry_account }}
       repo_name: ${{ steps.details.outputs.repo_name }}
     steps:
-    - uses: actions/checkout@v3
     - id: details
-      uses: ./.github/actions/image-details
+      uses: kpfleming/composite-actions/image-details@main
   clean-image:
     runs-on: ubuntu-20.04
     needs:

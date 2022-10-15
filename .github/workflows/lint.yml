@@ -18,9 +18,8 @@ jobs:
     outputs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
-    - uses: actions/checkout@v3
     - id: details
-      uses: ./.github/actions/image-details
+      uses: kpfleming/composite-actions/image-details@main
   lint:
     runs-on: ubuntu-20.04
     needs:
@@ -28,7 +27,4 @@ jobs:
     container:
       image: ${{ needs.image_details.outputs.image_base }}:pdns-master-main
     steps:
-    - uses: actions/checkout@v3
-    - uses: ./.github/actions/lint
-      with:
-        lintly_token: ${{ secrets.LINTLY_TOKEN }}
+    - uses: kpfleming/composite-actions/lint-tox@main
