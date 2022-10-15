@@ -2,23 +2,19 @@
 
 set -ex
 
-if [ -z "${1}" ]; then
-    echo "Must specify a PowerDNS Auth version (or 'master')."
-    echo "Examples: 4.5, 4.6, master."
-    exit 1
-fi
-
 scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
-pdns=${1}
+base_image=${1}
+image_name=${2}
+pdns=${3}
 
 lintdeps=(shellcheck)
 
 case "${pdns}" in
     4.4)
-	c=$(buildah from quay.io/km6g-ci-images/python:buster-main)
+	c=$(buildah from "${base_image}":buster-main)
 	;;
     *)
-	c=$(buildah from quay.io/km6g-ci-images/python:bullseye-main)
+	c=$(buildah from "${base_image}":bullseye-main)
 	;;
 esac
 
@@ -49,7 +45,6 @@ buildcmd tox -eALL --notest --workdir /root/tox
 
 buildcmd rm -rf /root/.cache
 
-# shellcheck disable=SC2154 # image_name set in external environment
 if buildah images --quiet "${image_name}"; then
     buildah rmi "${image_name}"
 fi

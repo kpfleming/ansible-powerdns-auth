@@ -8,11 +8,23 @@ on:
     - main
 
 jobs:
+  image_details:
+    runs-on: ubuntu-20.04
+    outputs:
+      image_registry: ${{ steps.details.outputs.image_registry }}
+      registry_account: ${{ steps.details.outputs.registry_account }}
+      repo_name: ${{ steps.details.outputs.repo_name }}
+    steps:
+    - uses: actions/checkout@v3
+    - id: details
+      uses: ./.github/actions/image-details
   clean-image:
     runs-on: ubuntu-20.04
+    needs:
+    - image_details
     strategy:
       matrix:
         pdns: [4.4, 4.5, 4.6, master]
     steps:
     - name: delete image tag
-      run: 'curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" https://quay.io/api/v1/repository/km6g-ci-images/ansible-powerdns-auth/tag/pdns-${{ matrix.pdns }}-pr${{ github.event.pull_request.number }}'
+      run: 'curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" https://${{ needs.image_details.outputs.image_registry }}/api/v1/repository/${{ needs.image_details.outputs.registry_account }}/${{ needs.image_details.outputs.repo_name }}/tag/pdns-${{ matrix.pdns }}-pr${{ github.event.pull_request.number }}'

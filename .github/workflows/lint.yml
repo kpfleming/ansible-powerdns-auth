@@ -13,10 +13,20 @@ on:
     - '.github/actions/lint/action.yml'
 
 jobs:
+  image_details:
+    runs-on: ubuntu-20.04
+    outputs:
+      image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
+    steps:
+    - uses: actions/checkout@v3
+    - id: details
+      uses: ./.github/actions/image-details
   lint:
     runs-on: ubuntu-20.04
+    needs:
+    - image_details
     container:
-      image: docker://quay.io/km6g-ci-images/ansible-powerdns-auth:pdns-master-main
+      image: ${{ needs.image_details.outputs.image_base }}:pdns-master-main
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/lint

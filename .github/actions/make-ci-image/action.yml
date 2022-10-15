@@ -4,9 +4,11 @@ inputs:
     required: true
   image_name:
     required: true
-  quay_username:
+  image_registry:
     required: true
-  quay_password:
+  registry_username:
+    required: true
+  registry_password:
     required: true
   pdns_version:
     required: true
@@ -19,18 +21,15 @@ runs:
     with:
       path: tox.ini
       key: ${{ github.ref_name }}-${{ inputs.pdns_version }}-${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', '.github/actions/make-ci-image/action.yml') }}
-  - name: build pdns image
+  - name: build image
     if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
-    run: workflow-support/make_ci_image.sh ${{ inputs.pdns_version }}
+    run: workflow-support/make_ci_image.sh ${{ inputs.base_image }} ${{ inputs.image_name }} ${{ inputs.pdns_version }}
     shell: bash
-    env:
-      base_image: ${{ inputs.base_image }}
-      image_name: ${{ inputs.image_name }}
-  - name: login to quay.io
+  - name: login to registry
     if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
-    run: buildah login -u="${{ inputs.quay_username }}" -p="${{ inputs.quay_password }}" quay.io
+    run: buildah login -u="${{ inputs.registry_username }}" -p="${{ inputs.registry_password }}" ${{ inputs.image_registry }}
     shell: bash
-  - name: publish image to quay.io
+  - name: publish image to registry
     if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
     run: buildah push ${{ inputs.image_name }}
     shell: bash

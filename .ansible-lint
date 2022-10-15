@@ -1,5 +1,10 @@
 %YAML 1.2
 ---
+exclude_paths:
+  - .cache
+  - .github
+  - src/galaxy.yml
+
 skip_list:
   - name[casing]
   - name[play]
