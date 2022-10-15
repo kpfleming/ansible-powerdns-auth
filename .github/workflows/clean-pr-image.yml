@@ -25,5 +25,10 @@ jobs:
       matrix:
         pdns: [4.4, 4.5, 4.6, master]
     steps:
-    - name: delete image tag
-      run: 'curl -s -X DELETE -H "Authorization: Bearer ${{ secrets.QUAY_API_TOKEN }}" https://${{ needs.image_details.outputs.image_registry }}/api/v1/repository/${{ needs.image_details.outputs.registry_account }}/${{ needs.image_details.outputs.repo_name }}/tag/pdns-${{ matrix.pdns }}-pr${{ github.event.pull_request.number }}'
+    - uses: kpfleming/composite-actions/clean-pr-image@main
+      with:
+        image_registry: ${{ needs.image_details.outputs.image_registry }}
+        registry_account: ${{ needs.image_details.outputs.registry_account }}
+        registry_token: ${{ secrets.QUAY_API_TOKEN }}
+        repo_name: ${{ needs.image_details.outputs.repo_name }}
+        tag_prefix: pdns-${{ matrix.pdns }}-
