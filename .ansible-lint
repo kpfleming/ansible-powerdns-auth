@@ -4,6 +4,7 @@ exclude_paths:
   - .cache
   - .github
   - src/galaxy.yml
+  - workflow-support/image_files.yml
 
 skip_list:
   - name[casing]
