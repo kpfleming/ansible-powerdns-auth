@@ -1,4 +1,4 @@
-name: Cleanup PR Images
+name: Delete PR Image
 
 on:
   pull_request:
@@ -25,7 +25,7 @@ jobs:
       matrix:
         pdns: [4.4, 4.5, 4.6, master]
     steps:
-    - uses: kpfleming/composite-actions/clean-pr-image@main
+    - uses: kpfleming/composite-actions/delete-pr-image@main
       with:
         image_registry: ${{ needs.image_details.outputs.image_registry }}
         registry_account: ${{ needs.image_details.outputs.registry_account }}
