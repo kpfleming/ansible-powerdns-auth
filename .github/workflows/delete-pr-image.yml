@@ -26,7 +26,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - id: get_versions
-      run: cat workflow-support/pdns-versions.json >> $GITHUB_OUTPUT
+      run: cat workflow-support/versions.json >> $GITHUB_OUTPUT
   clean-image:
     runs-on: ubuntu-20.04
     needs:

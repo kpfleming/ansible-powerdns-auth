@@ -20,7 +20,7 @@ runs:
     uses: actions/cache@v3
     with:
       path: tox.ini
-      key: ${{ github.ref_name }}-${{ inputs.pdns_version }}-${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', '.github/actions/make-ci-image/action.yml') }}
+      key: ${{ github.ref_name }}-${{ inputs.pdns_version }}-${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/versions.json') }}
   - name: build image
     if: (steps.imagefiles.outputs.cache-hit != 'true') || (github.event_name == 'schedule')
     run: workflow-support/make_ci_image.sh ${{ inputs.base_image }} ${{ inputs.image_name }} ${{ inputs.pdns_version }}

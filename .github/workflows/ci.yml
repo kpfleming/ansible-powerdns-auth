@@ -11,7 +11,7 @@ on:
     - 'workflow-support/test-*.yml'
     - 'workflow-support/make_ci_image.sh'
     - 'workflow-support/start_server.sh'
-    - 'workflow-support/pdns-versions.json'
+    - 'workflow-support/versions.json'
     - '.github/workflows/ci.yml'
     - '.github/actions/*/action.yml'
   pull_request:
@@ -28,7 +28,7 @@ on:
     - 'workflow-support/test-*.yml'
     - 'workflow-support/make_ci_image.sh'
     - 'workflow-support/start_server.sh'
-    - 'workflow-support/pdns-versions.json'
+    - 'workflow-support/versions.json'
     - '.github/workflows/ci.yml'
     - '.github/actions/*/action.yml'
   schedule:
@@ -56,7 +56,7 @@ jobs:
     - id: preflight
       uses: kpfleming/composite-actions/ci-preflight@main
     - id: get_versions
-      run: cat workflow-support/pdns-versions.json >> $GITHUB_OUTPUT
+      run: cat workflow-support/versions.json >> $GITHUB_OUTPUT
   ci-image:
     runs-on: ubuntu-20.04
     needs:
@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         pdns: ${{ fromJSON(needs.preflight.outputs.versions).pdns }}
-        python: [py38, py39, py310, py311]
+        python: ${{ fromJSON(needs.preflight.outputs.versions).python }}
       fail-fast: false
     container:
       image: ${{ needs.image_details.outputs.image_base }}:pdns-${{ matrix.pdns }}-${{ needs.preflight.outputs.image_tag }}
