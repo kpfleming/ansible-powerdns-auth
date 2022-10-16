@@ -5,12 +5,10 @@ on:
     branches:
     - main
     paths:
+    - '*.py'
     - 'tox.ini'
-    - 'pdns_auth_tsigkey.py'
-    - 'pdns_auth_zone.py'
     - 'workflow-support/*.sh'
     - '.github/workflows/lint.yml'
-    - '.github/actions/lint/action.yml'
 
 jobs:
   image_details:
@@ -25,6 +23,6 @@ jobs:
     needs:
     - image_details
     container:
-      image: ${{ needs.image_details.outputs.image_base }}:pdns-master-main
+      image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
     - uses: kpfleming/composite-actions/lint-tox@main

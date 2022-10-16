@@ -3,38 +3,42 @@
 set -ex
 
 scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
-base_image=${1}
-image_name=${2}
-pdns=${3}
+base_image=${1}; shift
+image_name=${1}; shift
 
-lintdeps=(shellcheck)
+pdns_build=(build-essential autoconf automake ragel bison flex libboost-all-dev pkg-config python3-venv libluajit-5.1-dev libssl-dev libsqlite3-dev git sqlite3)
+pdns_run=(libsqlite3-0 libluajit-5.1-2)
+lint_deps=(shellcheck)
 
-case "${pdns}" in
-    4.4)
-	c=$(buildah from "${base_image}":buster-main)
-	;;
-    *)
-	c=$(buildah from "${base_image}":bullseye-main)
-	;;
-esac
+c=$(buildah from "${base_image}":bullseye-main)
 
 buildcmd() {
     buildah run --network host "${c}" -- "$@"
 }
 
-buildcmd mkdir /etc/apt/keyrings
-buildah copy "${c}" "${scriptdir}/apt-repo-pdns-auth-${pdns}.list" /etc/apt/sources.list.d
-buildah copy "${c}" "${scriptdir}/apt-pref-pdns" /etc/apt/preferences.d
-buildah copy "${c}" "${scriptdir}/CBC8B383-pub.asc" /etc/apt/keyrings
-buildah copy "${c}" "${scriptdir}/FD380FBB-pub.asc" /etc/apt/keyrings
-
 buildcmd apt-get update --quiet=2
-buildcmd apt-get install --yes --quiet=2 "${lintdeps[@]}"
-buildcmd apt-get install --yes --quiet=2 gnupg sqlite3
-buildcmd apt-get install --yes --quiet=2 pdns-server pdns-backend-sqlite3
-buildcmd apt-get purge --yes --quiet=2 pdns-backend-bind
-buildcmd sqlite3 /run/pdns.sqlite3 '.read /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql'
+buildcmd apt-get install --yes --quiet=2 "${pdns_build[@]}" "${pdns_run[@]}"
+buildcmd apt-get install --yes --quiet=2 "${lint_deps[@]}"
 
+for pdns_ver in "${@}"; do
+    case "${pdns_ver}" in
+	master)
+	    pdns_url=https://github.com/PowerDNS/pdns/archive/refs/heads/master.tar.gz
+	    pdns_dir=pdns-master
+	    ;;
+	*)
+	    pdns_url=https://github.com/PowerDNS/pdns/archive/refs/heads/rel/auth-"${pdns_ver}".x.tar.gz
+	    pdns_dir=pdns-rel-auth-"${pdns_ver}".x
+	    ;;
+    esac
+
+    wget --quiet --output-document - "${pdns_url}" | tar --extract --gzip
+    buildah run --network host --volume "${scriptdir}:/scriptdir" --volume "$(pwd)/${pdns_dir}:/${pdns_dir}" "${c}" -- /scriptdir/pdns_build.sh "/${pdns_dir}" "${pdns_ver}"
+
+    rm -rf "${pdns_dir}"
+done
+
+buildcmd apt-get remove --yes --purge "${pdns_build[@]}"
 buildcmd apt-get autoremove --yes --purge
 buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"

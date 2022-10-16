@@ -8,38 +8,14 @@ on:
     - main
 
 jobs:
-  image_details:
+  clean-image:
     runs-on: ubuntu-20.04
-    outputs:
-      image_registry: ${{ steps.details.outputs.image_registry }}
-      registry_account: ${{ steps.details.outputs.registry_account }}
-      repo_name: ${{ steps.details.outputs.repo_name }}
     steps:
     - id: details
       uses: kpfleming/composite-actions/image-details@main
-  preflight:
-    runs-on: ubuntu-20.04
-    needs:
-    - image_details
-    outputs:
-      versions: ${{ steps.get_versions.outputs.versions }}
-    steps:
-    - uses: actions/checkout@v3
-    - id: get_versions
-      run: cat workflow-support/versions.json >> $GITHUB_OUTPUT
-  clean-image:
-    runs-on: ubuntu-20.04
-    needs:
-    - image_details
-    - preflight
-    strategy:
-      matrix:
-        pdns: ${{ fromJSON(needs.preflight.outputs.versions).pdns }}
-    steps:
     - uses: kpfleming/composite-actions/delete-pr-image@main
       with:
-        image_registry: ${{ needs.image_details.outputs.image_registry }}
-        registry_account: ${{ needs.image_details.outputs.registry_account }}
+        image_registry: ${{ steps.details.outputs.image_registry }}
+        registry_account: ${{ steps.details.outputs.registry_account }}
         registry_token: ${{ secrets.QUAY_API_TOKEN }}
-        repo_name: ${{ needs.image_details.outputs.repo_name }}
-        tag_prefix: pdns-${{ matrix.pdns }}-
+        repo_name: ${{ steps.details.outputs.repo_name }}

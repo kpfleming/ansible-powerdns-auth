@@ -18,7 +18,7 @@ jobs:
     needs:
     - image_details
     container:
-      image: ${{ needs.image_details.outputs.image_base }}:pdns-master-main
+      image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
     - uses: kpfleming/composite-actions/galaxy-publish-tox@main
       with:

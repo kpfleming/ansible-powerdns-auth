@@ -13,7 +13,6 @@ on:
     - 'workflow-support/start_server.sh'
     - 'workflow-support/versions.json'
     - '.github/workflows/ci.yml'
-    - '.github/actions/*/action.yml'
   pull_request:
     types:
     - opened
@@ -30,29 +29,22 @@ on:
     - 'workflow-support/start_server.sh'
     - 'workflow-support/versions.json'
     - '.github/workflows/ci.yml'
-    - '.github/actions/*/action.yml'
   schedule:
     - cron: "35 4 * * 6"
 
 jobs:
-  image_details:
+  preflight:
     runs-on: ubuntu-20.04
     outputs:
       image_registry: ${{ steps.details.outputs.image_registry }}
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
       base_image: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/python
-    steps:
-    - id: details
-      uses: kpfleming/composite-actions/image-details@main
-  preflight:
-    runs-on: ubuntu-20.04
-    needs:
-    - image_details
-    outputs:
       need_image: ${{ steps.preflight.outputs.need_image }}
       image_tag: ${{ steps.preflight.outputs.image_tag }}
       versions: ${{ steps.get_versions.outputs.versions }}
     steps:
+    - id: details
+      uses: kpfleming/composite-actions/image-details@main
     - id: preflight
       uses: kpfleming/composite-actions/ci-preflight@main
     - id: get_versions
@@ -60,26 +52,22 @@ jobs:
   ci-image:
     runs-on: ubuntu-20.04
     needs:
-    - image_details
     - preflight
-    strategy:
-      matrix:
-        pdns: ${{ fromJSON(needs.preflight.outputs.versions).pdns }}
     steps:
     - uses: actions/checkout@v3
-    - uses: ./.github/actions/make-ci-image
+    - uses: kpfleming/composite-actions/make-ci-image@main
       if: needs.preflight.outputs.need_image == 'true'
       with:
-        pdns_version: ${{ matrix.pdns }}
-        base_image: ${{ needs.image_details.outputs.base_image }}
-        image_name: ${{ needs.image_details.outputs.image_base }}:pdns-${{ matrix.pdns }}-${{ needs.preflight.outputs.image_tag }}
-        image_registry: ${{ needs.image_details.outputs.image_registry }}
+        files_hash: ${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/versions.json') }}
+        build_args: ${{ join(fromJSON(needs.preflight.outputs.versions).pdns, ' ') }}
+        base_image: ${{ needs.preflight.outputs.base_image }}
+        image_name: ${{ needs.preflight.outputs.image_base }}:${{ needs.preflight.outputs.image_tag }}
+        image_registry: ${{ needs.preflight.outputs.image_registry }}
         registry_username: ${{ secrets.QUAY_BOT_NAME }}
         registry_password: ${{ secrets.QUAY_BOT_PASSWORD }}
   test:
     runs-on: ubuntu-20.04
     needs:
-    - image_details
     - preflight
     - ci-image
     strategy:
@@ -88,11 +76,11 @@ jobs:
         python: ${{ fromJSON(needs.preflight.outputs.versions).python }}
       fail-fast: false
     container:
-      image: ${{ needs.image_details.outputs.image_base }}:pdns-${{ matrix.pdns }}-${{ needs.preflight.outputs.image_tag }}
+      image: ${{ needs.preflight.outputs.image_base }}:${{ needs.preflight.outputs.image_tag }}
     steps:
     - uses: actions/checkout@v3
     - name: start pdns_server
-      run: workflow-support/start_server.sh
+      run: workflow-support/start_server.sh ${{ matrix.pdns }}
     - name: run tests
       run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
       env:
