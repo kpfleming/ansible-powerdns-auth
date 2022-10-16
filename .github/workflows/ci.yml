@@ -58,7 +58,7 @@ jobs:
     - uses: kpfleming/composite-actions/make-ci-image@main
       if: needs.preflight.outputs.need_image == 'true'
       with:
-        files_hash: ${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/versions.json') }}
+        files_hash: ${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/pdns_build.sh', 'workflow-support/versions.json') }}
         build_args: ${{ join(fromJSON(needs.preflight.outputs.versions).pdns, ' ') }}
         base_image: ${{ needs.preflight.outputs.base_image }}
         image_name: ${{ needs.preflight.outputs.image_base }}:${{ needs.preflight.outputs.image_tag }}
