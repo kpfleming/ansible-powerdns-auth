@@ -2,4 +2,4 @@ image_files:
   - 'tox.ini'
   - 'workflow-support/make_ci_image.sh'
   - 'workflow-support/pdns_build.sh'
-  - 'versions.json'
+  - 'workflow-support/versions.json'
