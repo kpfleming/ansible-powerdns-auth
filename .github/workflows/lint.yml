@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths:
-    - '*.py'
+    - 'src/**.py'
     - 'tox.ini'
     - 'workflow-support/*.sh'
     - '.github/workflows/lint.yml'
