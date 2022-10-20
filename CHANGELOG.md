@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2022-10-20
+
 - Added testing against Python 3.11 pre-releases.
+- Added testing against PowerDNS Authoritative Server 4.7.x.
 - Removed testing against PowerDNS Authoritative Server 4.3.x.
 - Many CI improvements, including linting of test playbooks.
+- Build PowerDNS Authoritative Server from source instead of using
+  packages, to reduce the size of the CI container image.
+- Removed support for 'local file' API specification, since all
+  supported versions of PowerDNS Authoritative Server supply the
+  specification over HTTP.
 
 ## [2.0.0] - 2021-12-12
 
@@ -119,7 +127,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v2.0.0...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.0.0...HEAD
+[2.0.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.8.0...v2.0.0
 [1.8.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v1.6.0...v1.7.0
