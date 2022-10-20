@@ -68,28 +68,3 @@ Examples:
     algorithm: hmac-sha256
     key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
 ```
-
-## Notes
-
-In PowerDNS Authoritative Server releases prior to 4.4.0, the server
-is not able to provide the OpenAPI/Swagger specification which these
-modules require. In order to use these modules, you'll need to copy
-`api-swagger.json` to your Ansible control host (in the `files`
-directory of the role or playbook), and use tasks similar to the ones
-below to place a copy on the host where the module will be invoked.
-
-You'll also need to specify `api_spec_file` in each task which invokes
-one of these modules.
-
-```
-- name: temp file to hold spec
-  tempfile:
-    state: file
-    suffix: '.json'
-    register: temp_file
-
-- name: populate spec file
-  copy:
-    src: api-swagger.json
-    dest: "{{ temp_file.path }}"
-```

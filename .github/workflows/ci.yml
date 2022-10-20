@@ -6,7 +6,6 @@ on:
     - main
     paths:
     - '*.py'
-    - 'api-swagger.json'
     - 'tox.ini'
     - 'workflow-support/test-*.yml'
     - 'workflow-support/make_ci_image.sh'
@@ -22,7 +21,6 @@ on:
     - main
     paths:
     - '*.py'
-    - 'api-swagger.json'
     - 'tox.ini'
     - 'workflow-support/test-*.yml'
     - 'workflow-support/make_ci_image.sh'
@@ -83,5 +81,3 @@ jobs:
       run: workflow-support/start_server.sh ${{ matrix.pdns }}
     - name: run tests
       run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
-      env:
-        pdns_version: ${{ matrix.pdns }}

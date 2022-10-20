@@ -56,16 +56,9 @@ options:
   api_spec_path:
     description:
       - Path of the OpenAPI (Swagger) API spec document in C(api_url).
-      - Ignored when C(api_spec_file) is C(present).
     type: str
     required: false
     default: '/api/docs'
-  api_spec_file:
-    description:
-      - Path to a file containing the OpenAPI (Swagger) specification for the
-        API version implemented by the server.
-    type: path
-    required: false
   api_key:
     description:
       - Key (token) used to authenticate to the API endpoint in the server.
@@ -230,10 +223,6 @@ def main():
             "type": "str",
             "default": "/api/docs",
         },
-        "api_spec_file": {
-            "type": "path",
-            "required": False,
-        },
         "api_key": {
             "type": "str",
             "required": True,
@@ -260,7 +249,6 @@ def main():
     try:
         from bravado.requests_client import RequestsClient
         from bravado.client import SwaggerClient
-        from bravado.swagger_model import load_file
         from bravado.exception import (
             HTTPBadRequest,
             HTTPNotFound,
@@ -301,21 +289,14 @@ def main():
         url.netloc, module.params["api_key"], param_name="X-API-Key", param_in="header"
     )
 
-    if module.params["api_spec_file"]:
-        spec = load_file(module.params["api_spec_file"])
-        spec["host"] = url.netloc
-        spec["schemes"] = [url.scheme]
-
-        raw_api = SwaggerClient.from_spec(spec, http_client=http_client)
-    else:
-        raw_api = SwaggerClient.from_url(
-            module.params["api_url"] + module.params["api_spec_path"],
-            http_client=http_client,
-            request_headers={
-                "Accept": "application/json",
-                "X-API-Key": module.params["api_key"],
-            },
-        )
+    raw_api = SwaggerClient.from_url(
+        module.params["api_url"] + module.params["api_spec_path"],
+        http_client=http_client,
+        request_headers={
+            "Accept": "application/json",
+            "X-API-Key": module.params["api_key"],
+        },
+    )
 
     # create an APIWrapper to proxy the raw_api object
     # and curry the server_id into all API calls

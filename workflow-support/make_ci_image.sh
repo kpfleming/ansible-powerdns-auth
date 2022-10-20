@@ -44,7 +44,6 @@ buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
 
 buildah copy "${c}" "${scriptdir}/../tox.ini" /root/tox.ini
-buildah config --env pdns_version=dummy "${c}"
 buildcmd tox -eALL --notest --workdir /root/tox
 
 buildcmd rm -rf /root/.cache
