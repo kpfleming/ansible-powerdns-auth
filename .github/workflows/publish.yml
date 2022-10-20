@@ -7,14 +7,14 @@ on:
 
 jobs:
   image_details:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
     - id: details
       uses: kpfleming/composite-actions/image-details@main
   publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
     - image_details
     container:
