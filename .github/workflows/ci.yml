@@ -79,3 +79,5 @@ jobs:
       run: workflow-support/start_server.sh ${{ matrix.pdns }}
     - name: run tests
       run: tox -e${{ matrix.python }}-ansible --workdir /root/tox
+      env:
+        pdns_version: ${{ matrix.pdns }}

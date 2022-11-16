@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Added support for 'catalog zones' feature available in PowerDNS
+  Authoritative Server 4.7.x.
+
 ## [3.0.0] - 2022-10-20
+
+### Changed
 
 - Added testing against Python 3.11 pre-releases.
 - Added testing against PowerDNS Authoritative Server 4.7.x.

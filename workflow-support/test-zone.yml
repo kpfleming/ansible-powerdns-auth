@@ -6,6 +6,7 @@
 
   vars:
     ansible_python_interpreter: python
+    pdns_version: "{{ lookup('ansible.builtin.env', 'pdns_version') }}"
     common_args: &common
       api_key: foo
 
@@ -309,3 +310,84 @@
         msg: success
       failed_when:
         - result.changed != true
+
+    - when: (pdns_version == 'master') or (pdns_version is version('4.7', '>='))
+      block:
+        - name: check "Producer" zone creation
+          register: result
+          kpfleming.powerdns_auth.zone:
+            <<: *common
+            name: catalog1.example.
+            state: present
+            properties:
+              kind: Producer
+              nameservers:
+                - invalid.
+              soa:
+                mname: invalid.
+                rname: hostmaster.invalid.
+
+        - name: display result
+          ansible.builtin.debug:
+            var: result
+
+        - name: check result
+          ansible.builtin.debug:
+            msg: success
+          failed_when:
+            - result.changed != true
+            - result.zone.name != "catalog1.example."
+            - result.zone.kind != "Producer"
+
+        - name: check notify for zone
+          register: result
+          kpfleming.powerdns_auth.zone:
+            <<: *common
+            name: catalog1.example.
+            state: notify
+
+        - name: display result
+          ansible.builtin.debug:
+            var: result
+
+        - name: check result
+          ansible.builtin.debug:
+            msg: success
+          failed_when:
+            - result.changed != true
+
+        - name: check "Consumer" zone creation
+          register: result
+          kpfleming.powerdns_auth.zone:
+            <<: *common
+            name: catalog2.example.
+            state: present
+            properties:
+              kind: Slave
+              masters:
+                - 1.1.1.1
+                - ::1
+            metadata:
+              axfr_master_tsig:
+                - axfr-key
+
+        - name: display result
+          ansible.builtin.debug:
+            var: result
+
+        - name: check result
+          ansible.builtin.debug:
+            msg: success
+          failed_when:
+            - result.changed != true
+            - result.zone.name != "catalog2.example."
+            - result.zone.kind != "Consumer"
+            - result.zone.masters[0] != "1.1.1.1"
+            - result.zone.masters[1] != "::1"
+            - result.zone.axfr_master_tsig[0] != "axfr-key"
+
+        - name: check "Consumer" zone retrieval
+          kpfleming.powerdns_auth.zone:
+            <<: *common
+            name: catalog2.example.
+            state: retrieve

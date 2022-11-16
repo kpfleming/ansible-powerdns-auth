@@ -79,7 +79,8 @@ options:
       kind:
         description:
           - Zone kind.
-        choices: [ 'Native', 'Master', 'Slave' ]
+          - I(kind=Producer) and I(kind=Consumer) are only supported in server version 4.7.0 or later.
+        choices: [ 'Native', 'Master', 'Slave', 'Producer', 'Consumer' ]
         type: str
         required: true
       account:
@@ -89,7 +90,7 @@ options:
       nameservers:
         description:
           - List of nameserver names to be listed in NS records for zone.
-            Only used when I(kind=Native) or I(kind=Master).
+            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
             Only used when zone is being created (I(state=present) and zone is not present).
           - Must be absolute names (ending with '.').
         type: list
@@ -97,7 +98,7 @@ options:
       ttl:
         description:
           - Time to live for SOA and NS records.
-            Only used when I(kind=Native) or I(kind=Master).
+            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
             Only used when zone is being created (I(state=present) and zone is not present).
         type: int
         required: false
@@ -105,7 +106,7 @@ options:
       soa:
         description:
           - SOA record fields.
-            Only used when I(kind=Native) or I(kind=Master).
+            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
             Only used when zone is being created (I(state=present) and zone is not present).
         type: complex
         contains:
@@ -158,7 +159,7 @@ options:
       masters:
         description:
           - List of IPv4 or IPv6 addresses which are masters for this zone.
-            Only used when I(kind=Slave).
+            Only used when I(kind=Slave) or I(kind=Consumer).
         type: list
         elements: str
   metadata:
@@ -363,7 +364,7 @@ zone:
       description: Kind
       returned: when present
       type: str
-      choices: [ Native, Master, Slave ]
+      choices: [ Native, Master, Slave, Producer, Consumer ]
     serial:
       description: Serial number from SOA record
       returned: when present
@@ -373,7 +374,7 @@ zone:
       returned: when present
       type: bool
     masters:
-      description: IP addresses of masters (only for slave zones)
+      description: IP addresses of masters (only for Slave and Consumer zones)
       returned: when present
       type: list
       elements: str
@@ -1024,7 +1025,7 @@ def main():
             "options": {
                 "kind": {
                     "type": "str",
-                    "choices": ["Native", "Master", "Slave"],
+                    "choices": ["Native", "Master", "Slave", "Producer", "Consumer"],
                     "required": True,
                 },
                 "account": {
@@ -1283,9 +1284,10 @@ def main():
 
     # if NOTIFY was requested, process it and exit
     if state == "notify":
-        if zone_info["kind"] == "Native":
+        if zone_info["kind"] not in ["Master", "Producer"]:
             module.fail_json(
-                msg="NOTIFY cannot be requested for 'Native' zones", **result
+                msg=f"NOTIFY cannot be requested for '{zone_info['kind']}' zones",
+                **result,
             )
 
         api_client.zones.notifyZone()
@@ -1294,9 +1296,10 @@ def main():
 
     # if retrieval was requested, process it and exit
     if state == "retrieve":
-        if zone_info["kind"] != "Slave":
+        if zone_info["kind"] not in ["Slave", "Consumer"]:
             module.fail_json(
-                msg="Retrieval can only be requested for 'Slave' zones", **result
+                msg=f"Retrieval can only be requested for '{zone_info['kind']}' zones",
+                **result,
             )
 
         api_client.zones.axfrRetrieveZone()
@@ -1319,7 +1322,7 @@ def main():
 
         zone_struct["kind"] = props["kind"]
 
-        if props["kind"] != "Slave":
+        if props["kind"] in ["Native", "Master", "Producer"]:
             if not props["soa"]:
                 module.fail_json(
                     msg="'properties -> soa' must be specified for zone creation",
@@ -1362,7 +1365,7 @@ def main():
                 },
             ]
 
-        if props["kind"] == "Slave":
+        if props["kind"] in ["Slave", "Consumer"]:
             zone_struct["masters"] = props["masters"]
 
         if props["account"]:
@@ -1394,7 +1397,7 @@ def main():
                 if zone_info["kind"] != props["kind"]:
                     zone_struct["kind"] = props["kind"]
 
-                if props["kind"] == "Slave":
+                if props["kind"] in ["Slave", "Consumer"]:
                     if props["masters"]:
                         mp_masters = sorted(props["masters"])
                         zi_masters = sorted(zone_info["masters"])
