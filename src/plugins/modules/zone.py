@@ -369,6 +369,10 @@ zone:
       description: Serial number from SOA record
       returned: when present
       type: int
+    account:
+      description: Account label
+      returned: always
+      type: str
     dnssec:
       description: Flag indicating whether zone is signed with DNSSEC
       returned: when present
