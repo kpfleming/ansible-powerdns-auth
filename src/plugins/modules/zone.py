@@ -87,6 +87,13 @@ options:
         description:
           - Optional string used for local policy.
         type: str
+      catalog:
+        description:
+          - Optional zone name, indicating that this zone should be a member of the specified
+            catalog zone.
+          - Must be an absolute zone name (ending with '.').
+          - Only supported in server version 4.7.0 or later.
+        type: str
       nameservers:
         description:
           - List of nameserver names to be listed in NS records for zone.
@@ -372,6 +379,10 @@ zone:
     account:
       description: Account label
       returned: always
+      type: str
+    catalog:
+      description: Name of catalog zone containing this zone
+      returned: when present
       type: str
     dnssec:
       description: Flag indicating whether zone is signed with DNSSEC
@@ -993,6 +1004,9 @@ def build_zone_result(api_client):
         },
     }
 
+    if "catalog" in api_zone:
+        z["catalog"] = api_zone["catalog"]
+
     return api_zone, z
 
 
@@ -1033,6 +1047,9 @@ def main():
                     "required": True,
                 },
                 "account": {
+                    "type": "str",
+                },
+                "catalog": {
                     "type": "str",
                 },
                 "nameservers": {
@@ -1375,6 +1392,9 @@ def main():
         if props["account"]:
             zone_struct["account"] = props["account"]
 
+        if props["catalog"]:
+            zone_struct["catalog"] = props["catalog"]
+
         if module.params["metadata"]:
             for setter in ZoneMetadata.setters(module.params["metadata"]):
                 setter(zone_struct)
@@ -1412,6 +1432,10 @@ def main():
             if props["account"]:
                 if zone_info["account"] != props["account"]:
                     zone_struct["account"] = props["account"]
+
+            if props["catalog"]:
+                if zone_info["catalog"] != props["catalog"]:
+                    zone_struct["catalog"] = props["catalog"]
 
         if module.params["metadata"]:
             for updater in ZoneMetadata.updaters(
