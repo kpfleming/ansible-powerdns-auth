@@ -90,6 +90,7 @@
         state: present
         properties:
           kind: Native
+          account: test-account1
           nameservers:
             - ns.example.
           soa:
@@ -113,6 +114,7 @@
         - result.changed != true
         - result.zone.name != "d2.example."
         - result.zone.kind != "Native"
+        - result.zone.account != "test-account1"
         - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
         - result.zone.metadata.ixfr != true
         - result.zone.metadata.axfr_source != "127.0.0.1"
@@ -144,6 +146,7 @@
         - result.changed != false
         - result.zone.name != "d2.example."
         - result.zone.kind != "Native"
+        - result.zone.account != "test-account1"
         - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
         - result.zone.metadata.ixfr != true
         - result.zone.metadata.axfr_source != "127.0.0.1"
