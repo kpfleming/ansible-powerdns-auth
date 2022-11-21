@@ -394,3 +394,37 @@
             <<: *common
             name: catalog2.example.
             state: retrieve
+
+        - name: create zone for catalog
+          kpfleming.powerdns_auth.zone:
+            <<: *common
+            name: d4.example.
+            state: present
+            properties:
+              kind: Master
+              nameservers:
+                - ns.example.
+              soa:
+                mname: localhost.
+                rname: hostmaster.localhost.
+
+        - name: check zone catalog property change
+          register: result
+          kpfleming.powerdns_auth.zone:
+            <<: *common
+            name: d4.example.
+            state: present
+            properties:
+              kind: Master
+              catalog: catalog1.example.
+
+        - name: display result
+          ansible.builtin.debug:
+            var: result
+
+        - name: check result
+          ansible.builtin.debug:
+            msg: success
+          failed_when:
+            - result.changed != true
+            - result.zone.catalog != "catalog1.example."
