@@ -14,7 +14,7 @@ jobs:
   image_details:
     runs-on: ubuntu-22.04
     outputs:
-      image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
+      image_base: ${{ steps.details.outputs.image_base }}
     steps:
     - id: details
       uses: kpfleming/composite-actions/image-details@main
