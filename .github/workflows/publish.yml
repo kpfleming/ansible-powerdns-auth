@@ -12,7 +12,7 @@ jobs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
     - id: details
-      uses: kpfleming/composite-actions/image-details@main
+      uses: kpfleming/composite-actions/image-details@v1
   publish:
     runs-on: ubuntu-22.04
     needs:
@@ -20,7 +20,7 @@ jobs:
     container:
       image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
-    - uses: kpfleming/composite-actions/galaxy-publish-tox@main
+    - uses: kpfleming/composite-actions/galaxy-publish-tox@v1
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         tag: ${{ github.ref_name }}

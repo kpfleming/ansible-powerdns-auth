@@ -37,18 +37,18 @@ jobs:
       versions: ${{ steps.get_versions.outputs.versions }}
     steps:
     - id: details
-      uses: kpfleming/composite-actions/image-details@main
+      uses: kpfleming/composite-actions/image-details@v1
       with:
         base_image: python:bullseye-main
     - uses: actions/checkout@v3
     - id: preflight
-      uses: kpfleming/composite-actions/ci-preflight@main
+      uses: kpfleming/composite-actions/ci-preflight@v1
       with:
         files_hash: ${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/pdns_build.sh', 'workflow-support/versions.json') }}
         base_image_hash: ${{ steps.details.outputs.base_image_hash }}
     - id: get_versions
       run: cat workflow-support/versions.json >> $GITHUB_OUTPUT
-    - uses: kpfleming/composite-actions/make-ci-image@main
+    - uses: kpfleming/composite-actions/make-ci-image@v1
       if: steps.preflight.outputs.need_image == 'true'
       with:
         build_args: ${{ join(fromJSON(steps.get_versions.outputs.versions).pdns, ' ') }}
