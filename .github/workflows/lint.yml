@@ -17,7 +17,7 @@ jobs:
       image_base: ${{ steps.details.outputs.image_base }}
     steps:
     - id: details
-      uses: kpfleming/composite-actions/image-details@v1
+      uses: kpfleming/composite-actions/image-details@v2
   lint:
     runs-on: ubuntu-22.04
     needs:
@@ -25,4 +25,4 @@ jobs:
     container:
       image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
-    - uses: kpfleming/composite-actions/lint-tox@v1
+    - uses: kpfleming/composite-actions/lint-tox@v2
