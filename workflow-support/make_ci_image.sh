@@ -6,7 +6,7 @@ scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 base_image=${1}; shift
 image_name=${1}; shift
 
-pdns_build=(build-essential autoconf automake ragel bison flex libboost-all-dev pkg-config python3-venv libluajit-5.1-dev libssl-dev libsqlite3-dev git sqlite3)
+pdns_build=(build-essential autoconf automake ragel bison flex libboost-all-dev pkg-config python3-venv libluajit-5.1-dev libssl-dev libsqlite3-dev sqlite3)
 pdns_run=(libsqlite3-0 libluajit-5.1-2)
 lint_deps=(shellcheck)
 
