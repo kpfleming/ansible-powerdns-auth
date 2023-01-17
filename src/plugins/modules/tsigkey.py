@@ -3,6 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
 
+import sys
+from functools import wraps
+from urllib.parse import urlparse
+
+from ansible.module_utils.basic import AnsibleModule
+
+assert sys.version_info >= (3, 8), "This module requires Python 3.8 or newer."
+
 ANSIBLE_METADATA = {
     "metadata_version": "1.1",
     "status": ["preview"],
@@ -69,7 +77,13 @@ options:
       - The message digest algorithm, as specified by RFC 2845 and its updates,
         which will be used to validate requests including this key.
       - Required when C(state) is C(present).
-    choices: [ 'hmac-md5', 'hmac-sha1', 'hmac-sha224', 'hmac-sha256', 'hmac-sha384',  'hmac-sha512' ]
+    choices: [ 'hmac-md5',
+               'hmac-sha1',
+               'hmac-sha224',
+               'hmac-sha256',
+               'hmac-sha384',
+               'hmac-sha512',
+             ]
     type: str
     required: false
     default: 'hmac-md5'
@@ -141,21 +155,12 @@ key:
       type: str
 """
 
-import sys
-
-assert sys.version_info >= (3, 8), "This module requires Python 3.8 or newer."
-
-from ansible.module_utils.basic import AnsibleModule
-
-from urllib.parse import urlparse
-from functools import wraps
-
 module = None
 result = None
 api_exceptions_to_catch = ()
 
 
-def APIExceptionHandler(func):
+def api_exception_handler(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         try:
@@ -169,33 +174,33 @@ def APIExceptionHandler(func):
     return wrapper
 
 
-class APITSIGKeyWrapper(object):
+class APITSIGKeyWrapper:
     def __init__(self, raw_api, server_id):
         self.raw_api = raw_api
         self.server_id = server_id
 
-    @APIExceptionHandler
-    def createTSIGKey(self, **kwargs):
+    @api_exception_handler
+    def createTSIGKey(self, **kwargs):  # noqa: N802
         return self.raw_api.createTSIGKey(server_id=self.server_id, **kwargs).result()
 
-    @APIExceptionHandler
-    def deleteTSIGKey(self, **kwargs):
+    @api_exception_handler
+    def deleteTSIGKey(self, **kwargs):  # noqa: N802
         return self.raw_api.deleteTSIGKey(server_id=self.server_id, **kwargs).result()
 
-    @APIExceptionHandler
-    def getTSIGKey(self, **kwargs):
+    @api_exception_handler
+    def getTSIGKey(self, **kwargs):  # noqa: N802
         return self.raw_api.getTSIGKey(server_id=self.server_id, **kwargs).result()
 
-    @APIExceptionHandler
-    def listTSIGKeys(self):
+    @api_exception_handler
+    def listTSIGKeys(self):  # noqa: N802
         return self.raw_api.listTSIGKeys(server_id=self.server_id).result()
 
-    @APIExceptionHandler
-    def putTSIGKey(self, **kwargs):
+    @api_exception_handler
+    def putTSIGKey(self, **kwargs):  # noqa: N802
         return self.raw_api.putTSIGKey(server_id=self.server_id, **kwargs).result()
 
 
-class APIWrapper(object):
+class APIWrapper:
     def __init__(self, raw_api, server_id):
         self.tsigkey = APITSIGKeyWrapper(raw_api.tsigkey, server_id)
 
@@ -247,19 +252,17 @@ def main():
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     try:
-        from bravado.requests_client import RequestsClient
         from bravado.client import SwaggerClient
         from bravado.exception import (
             HTTPBadRequest,
-            HTTPNotFound,
             HTTPConflict,
-            HTTPUnprocessableEntity,
             HTTPInternalServerError,
+            HTTPNotFound,
+            HTTPUnprocessableEntity,
         )
+        from bravado.requests_client import RequestsClient
     except ImportError:
-        module.fail_json(
-            msg="The pdns_auth_tsigkey module requires the 'bravado' package."
-        )
+        module.fail_json(msg="The pdns_auth_tsigkey module requires the 'bravado' package.")
 
     global api_exceptions_to_catch
     api_exceptions_to_catch = (
@@ -286,7 +289,10 @@ def main():
 
     http_client = RequestsClient()
     http_client.set_api_key(
-        url.netloc, module.params["api_key"], param_name="X-API-Key", param_in="header"
+        url.netloc,
+        module.params["api_key"],
+        param_name="X-API-Key",
+        param_in="header",
     )
 
     raw_api = SwaggerClient.from_url(
@@ -310,9 +316,7 @@ def main():
     # this is required to translate the user-friendly key name into
     # the key_id required for subsequent API calls
 
-    partial_key_info = [
-        k for k in api_client.tsigkey.listTSIGKeys() if k["name"] == key
-    ]
+    partial_key_info = [k for k in api_client.tsigkey.listTSIGKeys() if k["name"] == key]
 
     if len(partial_key_info) == 0:
         if (state == "exists") or (state == "absent"):
@@ -361,18 +365,14 @@ def main():
         # options and update it if necessary
         key_struct = {}
 
-        if module.params["algorithm"]:
-            if module.params["algorithm"] != key_info["algorithm"]:
-                key_struct["algorithm"] = module.params["algorithm"]
+        if (mod_alg := module.params["algorithm"]) and mod_alg != key_info["algorithm"]:
+            key_struct["algorithm"] = mod_alg
 
-        if module.params["key"]:
-            if module.params["key"] != key_info["key"]:
-                key_struct["key"] = module.params["key"]
+        if (mod_key := module.params["key"]) and mod_key != key_info["key"]:
+            key_struct["key"] = mod_key
 
         if len(key_struct):
-            key_info = api_client.tsigkey.putTSIGKey(
-                tsigkey_id=key_id, tsigkey=key_struct
-            )
+            key_info = api_client.tsigkey.putTSIGKey(tsigkey_id=key_id, tsigkey=key_struct)
             result["changed"] = True
 
         if result["changed"]:

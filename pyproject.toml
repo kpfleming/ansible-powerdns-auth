@@ -1,0 +1,41 @@
+[tool.black]
+line-length = 100
+target-version = ['py38']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | \venv
+  | _build
+  | build
+  | dist
+  | .tox
+)/
+'''
+
+[tool.ruff]
+src = ["src"]
+format = "grouped"
+target-version = "py38"
+line-length = 100
+select = [
+  "A",
+  "B",
+#  "C",
+  "COM",
+  "DTZ",
+  "E",
+  "F",
+  "I",
+  "ISC",
+  "N",
+  "PT",
+  "Q",
+  "RET",
+  "RUF",
+  "SIM",
+  "UP",
+  "W292",
+  "YTT",
+]

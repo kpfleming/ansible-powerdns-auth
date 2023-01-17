@@ -3,6 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
 
+import sys
+from functools import wraps
+from urllib.parse import urlparse
+
+from ansible.module_utils.basic import AnsibleModule
+
+assert sys.version_info >= (3, 8), "This module requires Python 3.8 or newer."
+
 ANSIBLE_METADATA = {
     "metadata_version": "1.1",
     "status": ["preview"],
@@ -73,13 +81,15 @@ options:
     required: true
   properties:
     description:
-      - Zone properties. Ignored when I(state=exists), I(state=absent), I(state=notify), or I(state=retrieve).
+      - Zone properties. Ignored when I(state=exists), I(state=absent), I(state=notify),
+        or I(state=retrieve).
     type: complex
     contains:
       kind:
         description:
           - Zone kind.
-          - I(kind=Producer) and I(kind=Consumer) are only supported in server version 4.7.0 or later.
+          - I(kind=Producer) and I(kind=Consumer) are only supported in server version
+            4.7.0 or later.
         choices: [ 'Native', 'Master', 'Slave', 'Producer', 'Consumer' ]
         type: str
         required: true
@@ -171,12 +181,14 @@ options:
         elements: str
   metadata:
     description:
-      - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify), or I(state=retrieve).
+      - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify),
+        or I(state=retrieve).
     type: complex
     contains:
       allow_axfr_from:
         description:
-          - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR requests will be accepted.
+          - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR
+            requests will be accepted.
         type: list
         elements: str
       allow_dnsupdate_from:
@@ -186,7 +198,8 @@ options:
         elements: str
       also_notify:
         description:
-          - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
+          - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive
+            NOTIFY for updates.
         type: list
         elements: str
       api_rectify:
@@ -400,7 +413,8 @@ zone:
       contains:
         allow_axfr_from:
           description:
-            - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR requests will be accepted.
+            - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR
+              requests will be accepted.
           type: list
           elements: str
         allow_dnsupdate_from:
@@ -410,7 +424,8 @@ zone:
           elements: str
         also_notify:
           description:
-            - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive NOTIFY for updates.
+            - List of IPv4 and/or IPv6 addresses (with optional port numbers) which will receive
+              NOTIFY for updates.
           type: list
           elements: str
         api_rectify:
@@ -445,7 +460,8 @@ zone:
           type: bool
         lua_axfr_script:
           description:
-            - Script to be used to edit incoming AXFR requests; use 'NONE' to override a globally configured script.
+            - Script to be used to edit incoming AXFR requests; use 'NONE' to override a globally
+              configured script.
           type: str
         notify_dnsupdate:
           description:
@@ -504,22 +520,12 @@ zone:
           elements: str
 """
 
-import sys
-
-assert sys.version_info >= (3, 8), "This module requires Python 3.8 or newer."
-
-from ansible.module_utils.basic import AnsibleModule
-
-from urllib.parse import urlparse
-from functools import wraps
-
-
 module = None
 result = None
 api_exceptions_to_catch = ()
 
 
-def APIExceptionHandler(func):
+def api_exception_handler(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         try:
@@ -533,91 +539,90 @@ def APIExceptionHandler(func):
     return wrapper
 
 
-class APIZonesWrapper(object):
+class APIZonesWrapper:
     def __init__(self, raw_api, server_id, zone_id):
         self.raw_api = raw_api
         self.server_id = server_id
         self.zone_id = zone_id
 
-    @APIExceptionHandler
-    def axfrRetrieveZone(self):
+    @api_exception_handler
+    def axfrRetrieveZone(self):  # noqa: N802
         return self.raw_api.axfrRetrieveZone(
-            server_id=self.server_id, zone_id=self.zone_id
+            server_id=self.server_id,
+            zone_id=self.zone_id,
         ).result()
 
-    @APIExceptionHandler
-    def createZone(self, **kwargs):
-        return self.raw_api.createZone(
-            server_id=self.server_id, rrsets=False, **kwargs
-        ).result()
+    @api_exception_handler
+    def createZone(self, **kwargs):  # noqa: N802
+        return self.raw_api.createZone(server_id=self.server_id, rrsets=False, **kwargs).result()
 
-    @APIExceptionHandler
-    def deleteZone(self):
-        return self.raw_api.deleteZone(
-            server_id=self.server_id, zone_id=self.zone_id
-        ).result()
+    @api_exception_handler
+    def deleteZone(self):  # noqa: N802
+        return self.raw_api.deleteZone(server_id=self.server_id, zone_id=self.zone_id).result()
 
-    @APIExceptionHandler
-    def listZone(self):
+    @api_exception_handler
+    def listZone(self):  # noqa: N802
         return self.raw_api.listZone(
-            server_id=self.server_id, zone_id=self.zone_id, rrsets=False
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+            rrsets=False,
         ).result()
 
-    @APIExceptionHandler
-    def listZones(self, **kwargs):
+    @api_exception_handler
+    def listZones(self, **kwargs):  # noqa: N802
         return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
 
-    @APIExceptionHandler
-    def notifyZone(self):
-        return self.raw_api.notifyZone(
-            server_id=self.server_id, zone_id=self.zone_id
-        ).result()
+    @api_exception_handler
+    def notifyZone(self):  # noqa: N802
+        return self.raw_api.notifyZone(server_id=self.server_id, zone_id=self.zone_id).result()
 
-    @APIExceptionHandler
-    def putZone(self, **kwargs):
+    @api_exception_handler
+    def putZone(self, **kwargs):  # noqa: N802
         return self.raw_api.putZone(
-            server_id=self.server_id, zone_id=self.zone_id, **kwargs
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+            **kwargs,
         ).result()
 
 
-class APIZoneMetadataWrapper(object):
+class APIZoneMetadataWrapper:
     def __init__(self, raw_api, server_id, zone_id):
         self.raw_api = raw_api
         self.server_id = server_id
         self.zone_id = zone_id
 
-    @APIExceptionHandler
-    def deleteMetadata(self, **kwargs):
+    @api_exception_handler
+    def deleteMetadata(self, **kwargs):  # noqa: N802
         return self.raw_api.deleteMetadata(
-            server_id=self.server_id, zone_id=self.zone_id, **kwargs
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+            **kwargs,
         ).result()
 
-    @APIExceptionHandler
-    def listMetadata(self):
-        return self.raw_api.listMetadata(
-            server_id=self.server_id, zone_id=self.zone_id
-        ).result()
+    @api_exception_handler
+    def listMetadata(self):  # noqa: N802
+        return self.raw_api.listMetadata(server_id=self.server_id, zone_id=self.zone_id).result()
 
-    @APIExceptionHandler
-    def modifyMetadata(self, **kwargs):
+    @api_exception_handler
+    def modifyMetadata(self, **kwargs):  # noqa: N802
         return self.raw_api.modifyMetadata(
-            server_id=self.server_id, zone_id=self.zone_id, **kwargs
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+            **kwargs,
         ).result()
 
 
-class APIWrapper(object):
+class APIWrapper:
     def __init__(self, raw_api, server_id, zone_id):
         self.zones = APIZonesWrapper(raw_api.zones, server_id, zone_id)
-        self.zonemetadata = APIZoneMetadataWrapper(
-            raw_api.zonemetadata, server_id, zone_id
-        )
+        self.zonemetadata = APIZoneMetadataWrapper(raw_api.zonemetadata, server_id, zone_id)
 
-    def setZoneID(self, zone_id):
+    def set_zone_id(self, zone_id):
         self.zones.zone_id = zone_id
         self.zonemetadata.zone_id = zone_id
 
 
-class Metadata(object):
+class Metadata:
     map_by_api_kind = {}
     map_by_meta = {}
 
@@ -657,9 +662,7 @@ class Metadata(object):
         for meta, value in user_meta.items():
             if (m := cls.by_meta(meta)) and not m.immutable:
                 res.append(
-                    lambda api_client, m=m, value=value: m.set(
-                        value or m.default(), api_client
-                    )
+                    lambda api_client, m=m, value=value: m.set(value or m.default(), api_client),
                 )
 
         return res
@@ -675,7 +678,7 @@ class Metadata(object):
                         old_user_meta.get(k),
                         new_user_meta.get(k) or v.default(),
                         api_client,
-                    )
+                    ),
                 )
 
         return res
@@ -688,10 +691,11 @@ class MetadataBinaryValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0] == "1"
 
-    def set(self, value, api_client):
+    def set(self, value, api_client):  # noqa: A003
         if value:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": ["1"]},
             )
 
     def update(self, oldval, newval, api_client):
@@ -700,7 +704,8 @@ class MetadataBinaryValue(Metadata):
 
         if newval:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": ["1"]},
             )
         else:
             api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
@@ -714,10 +719,11 @@ class MetadataBinaryPresence(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = True
 
-    def set(self, value, api_client):
+    def set(self, value, api_client):  # noqa: A003
         if value:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": [""]}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": [""]},
             )
 
     def update(self, oldval, newval, api_client):
@@ -726,7 +732,8 @@ class MetadataBinaryPresence(Metadata):
 
         if newval:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": [""]}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": [""]},
             )
         else:
             api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
@@ -740,15 +747,17 @@ class MetadataTernaryValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0] == "1"
 
-    def set(self, value, api_client):
+    def set(self, value, api_client):  # noqa: A003
         if value is not None:
             if value:
                 api_client.zonemetadata.modifyMetadata(
-                    metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
+                    metadata_kind=self.api_kind,
+                    metadata={"metadata": ["1"]},
                 )
             else:
                 api_client.zonemetadata.modifyMetadata(
-                    metadata_kind=self.api_kind, metadata={"metadata": ["0"]}
+                    metadata_kind=self.api_kind,
+                    metadata={"metadata": ["0"]},
                 )
 
     def update(self, oldval, newval, api_client):
@@ -758,11 +767,13 @@ class MetadataTernaryValue(Metadata):
         if newval is not None:
             if newval:
                 api_client.zonemetadata.modifyMetadata(
-                    metadata_kind=self.api_kind, metadata={"metadata": ["1"]}
+                    metadata_kind=self.api_kind,
+                    metadata={"metadata": ["1"]},
                 )
             else:
                 api_client.zonemetadata.modifyMetadata(
-                    metadata_kind=self.api_kind, metadata={"metadata": ["0"]}
+                    metadata_kind=self.api_kind,
+                    metadata={"metadata": ["0"]},
                 )
         else:
             api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
@@ -776,10 +787,11 @@ class MetadataListValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item
 
-    def set(self, value, api_client):
+    def set(self, value, api_client):  # noqa: A003
         if len(value) != 0:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": value}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": value},
             )
 
     def update(self, oldval, newval, api_client):
@@ -788,7 +800,8 @@ class MetadataListValue(Metadata):
 
         if len(newval) != 0:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": newval}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": newval},
             )
         else:
             api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
@@ -802,10 +815,11 @@ class MetadataStringValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0]
 
-    def set(self, value, api_client):
+    def set(self, value, api_client):  # noqa: A003
         if value:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": [value]}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": [value]},
             )
 
     def update(self, oldval, newval, api_client):
@@ -814,14 +828,15 @@ class MetadataStringValue(Metadata):
 
         if len(newval) != 0:
             api_client.zonemetadata.modifyMetadata(
-                metadata_kind=self.api_kind, metadata={"metadata": [newval]}
+                metadata_kind=self.api_kind,
+                metadata={"metadata": [newval]},
             )
         else:
             api_client.zonemetadata.deleteMetadata(metadata_kind=self.api_kind)
         return True
 
 
-class ZoneMetadata(object):
+class ZoneMetadata:
     map_by_zone_kind = {}
     map_by_meta = {}
 
@@ -861,9 +876,7 @@ class ZoneMetadata(object):
         for meta, value in user_meta.items():
             if (m := cls.by_meta(meta)) and not m.immutable:
                 res.append(
-                    lambda zone_struct, m=m, value=value: m.set(
-                        value or m.default(), zone_struct
-                    )
+                    lambda zone_struct, m=m, value=value: m.set(value or m.default(), zone_struct),
                 )
 
         return res
@@ -879,7 +892,7 @@ class ZoneMetadata(object):
                         old_user_meta.get(k),
                         new_user_meta.get(k) or v.default(),
                         zone_struct,
-                    )
+                    ),
                 )
 
         return res
@@ -892,7 +905,7 @@ class ZoneMetadataBinaryValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
-    def set(self, value, zone_struct):
+    def set(self, value, zone_struct):  # noqa: A003
         if value:
             zone_struct[self.zone_kind] = "1"
 
@@ -911,7 +924,7 @@ class ZoneMetadataTernaryValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
-    def set(self, value, zone_struct):
+    def set(self, value, zone_struct):  # noqa: A003
         if value is not None:
             if value:
                 zone_struct[self.zone_kind] = "1"
@@ -936,7 +949,7 @@ class ZoneMetadataListValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
-    def set(self, value, zone_struct):
+    def set(self, value, zone_struct):  # noqa: A003
         if value != []:
             zone_struct[self.zone_kind] = value
 
@@ -952,7 +965,7 @@ class ZoneMetadataStringValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
-    def set(self, value, zone_struct):
+    def set(self, value, zone_struct):  # noqa: A003
         if value != "":
             zone_struct[self.zone_kind] = value
 
@@ -1203,19 +1216,17 @@ def main():
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     try:
-        from bravado.requests_client import RequestsClient
         from bravado.client import SwaggerClient
         from bravado.exception import (
             HTTPBadRequest,
-            HTTPNotFound,
             HTTPConflict,
-            HTTPUnprocessableEntity,
             HTTPInternalServerError,
+            HTTPNotFound,
+            HTTPUnprocessableEntity,
         )
+        from bravado.requests_client import RequestsClient
     except ImportError:
-        module.fail_json(
-            msg="The pdns_auth_zone module requires the 'bravado' package."
-        )
+        module.fail_json(msg="The pdns_auth_zone module requires the 'bravado' package.")
 
     global api_exceptions_to_catch
     api_exceptions_to_catch = (
@@ -1242,7 +1253,10 @@ def main():
 
     http_client = RequestsClient()
     http_client.set_api_key(
-        url.netloc, module.params["api_key"], param_name="X-API-Key", param_in="header"
+        url.netloc,
+        module.params["api_key"],
+        param_name="X-API-Key",
+        param_in="header",
     )
 
     raw_api = SwaggerClient.from_url(
@@ -1275,13 +1289,9 @@ def main():
             # exit as there is nothing left to do
             module.exit_json(**result)
         elif state == "notify":
-            module.fail_json(
-                msg="NOTIFY cannot be requested for a non-existent zone", **result
-            )
+            module.fail_json(msg="NOTIFY cannot be requested for a non-existent zone", **result)
         elif state == "retrieve":
-            module.fail_json(
-                msg="Retrieval cannot be requested for a non-existent zone", **result
-            )
+            module.fail_json(msg="Retrieval cannot be requested for a non-existent zone", **result)
         else:
             # state must be 'present'
             zone_id = None
@@ -1289,7 +1299,7 @@ def main():
         #
         # get the full zone info and populate the result dict
         zone_id = partial_zone_info[0]["id"]
-        api_client.setZoneID(zone_id)
+        api_client.set_zone_id(zone_id)
         zone_info, result["zone"] = build_zone_result(api_client)
 
     # if only an existence check was requested,
@@ -1335,9 +1345,7 @@ def main():
         }
 
         if not module.params["properties"]:
-            module.fail_json(
-                msg="'properties' must be specified for zone creation", **result
-            )
+            module.fail_json(msg="'properties' must be specified for zone creation", **result)
 
         props = module.params["properties"]
 
@@ -1370,7 +1378,7 @@ def main():
                                     str(props["soa"]["retry"]),
                                     str(props["soa"]["expire"]),
                                     str(props["soa"]["ttl"]),
-                                ]
+                                ],
                             ),
                         },
                     ],
@@ -1379,10 +1387,7 @@ def main():
                     "name": zone,
                     "type": "NS",
                     "ttl": str(props["ttl"]),
-                    "records": [
-                        {"disabled": False, "content": ns}
-                        for ns in props["nameservers"]
-                    ],
+                    "records": [{"disabled": False, "content": ns} for ns in props["nameservers"]],
                 },
             ]
 
@@ -1402,7 +1407,7 @@ def main():
         partial_zone_info = api_client.zones.createZone(zone_struct=zone_struct)
 
         result["changed"] = True
-        api_client.setZoneID(partial_zone_info["id"])
+        api_client.set_zone_id(partial_zone_info["id"])
 
         if module.params["metadata"]:
             for setter in Metadata.setters(module.params["metadata"]):
@@ -1417,29 +1422,27 @@ def main():
         if module.params["properties"]:
             props = module.params["properties"]
 
-            if props["kind"]:
-                if zone_info["kind"] != props["kind"]:
-                    zone_struct["kind"] = props["kind"]
+            if prop_kind := props["kind"]:
+                if zone_info["kind"] != prop_kind:
+                    zone_struct["kind"] = prop_kind
 
-                if props["kind"] in ["Slave", "Consumer"]:
-                    if props["masters"]:
-                        mp_masters = sorted(props["masters"])
-                        zi_masters = sorted(zone_info["masters"])
+                if props["kind"] in ["Slave", "Consumer"] and props["masters"]:
+                    mp_masters = sorted(props["masters"])
+                    zi_masters = sorted(zone_info["masters"])
 
-                        if zi_masters != mp_masters:
-                            zone_struct["masters"] = props["masters"]
+                    if zi_masters != mp_masters:
+                        zone_struct["masters"] = props["masters"]
 
-            if props["account"]:
-                if zone_info["account"] != props["account"]:
-                    zone_struct["account"] = props["account"]
+            if (prop_account := props["account"]) and zone_info["account"] != prop_account:
+                zone_struct["account"] = prop_account
 
-            if props["catalog"]:
-                if zone_info["catalog"] != props["catalog"]:
-                    zone_struct["catalog"] = props["catalog"]
+            if (prop_catalog := props["catalog"]) and zone_info["catalog"] != prop_catalog:
+                zone_struct["catalog"] = prop_catalog
 
         if module.params["metadata"]:
             for updater in ZoneMetadata.updaters(
-                result["zone"]["metadata"], module.params["metadata"]
+                result["zone"]["metadata"],
+                module.params["metadata"],
             ):
                 updater(zone_struct)
 
@@ -1448,9 +1451,7 @@ def main():
             result["changed"] = True
 
         if module.params["metadata"]:
-            for updater in Metadata.updaters(
-                result["zone"]["metadata"], module.params["metadata"]
-            ):
+            for updater in Metadata.updaters(result["zone"]["metadata"], module.params["metadata"]):
                 if updater(api_client):
                     result["changed"] = True
 
