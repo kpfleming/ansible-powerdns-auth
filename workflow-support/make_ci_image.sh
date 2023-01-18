@@ -10,6 +10,9 @@ pdns_build=(build-essential autoconf automake ragel bison flex libboost-all-dev 
 pdns_run=(libsqlite3-0 libluajit-5.1-2)
 lint_deps=(shellcheck)
 
+toxenvs=(lint-action ci-action publish-action)
+cimatrix=(py38 py39 py310 py311)
+
 c=$(buildah from "${base_image}")
 
 buildcmd() {
@@ -38,13 +41,23 @@ for pdns_ver in "${@}"; do
     rm -rf "${pdns_dir}"
 done
 
+for env in "${toxenvs[@]}"; do
+    case "${env}" in
+	ci-action)
+	    for py in "${cimatrix[@]}"; do
+		buildcmd tox exec -e "${py}-${env}" -- pip list
+	    done
+	;;
+	*)
+	    buildcmd tox exec -e "${env}" -- pip list
+	;;
+    esac
+done
+
 buildcmd apt-get remove --yes --purge "${pdns_build[@]}"
 buildcmd apt-get autoremove --yes --purge
 buildcmd apt-get clean autoclean
 buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
-
-buildah copy "${c}" "${scriptdir}/../tox.ini" /root/tox.ini
-buildcmd tox -eALL --notest --workdir /root/tox
 
 buildcmd rm -rf /root/.cache
 
