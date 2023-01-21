@@ -9,6 +9,8 @@ on:
     - 'tox.ini'
     - 'workflow-support/*.sh'
     - '.github/workflows/lint.yml'
+  schedule:
+    - cron: "35 4 * * 6"
 
 jobs:
   image_details:

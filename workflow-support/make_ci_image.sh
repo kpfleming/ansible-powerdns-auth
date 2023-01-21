@@ -2,7 +2,10 @@
 
 set -ex
 
+projname="ansible-powerdns-auth"
+
 scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+containersrcdir="/__w/${projname}/${projname}"
 base_image=${1}; shift
 image_name=${1}; shift
 
@@ -15,13 +18,17 @@ cimatrix=(py38 py39 py310 py311)
 
 c=$(buildah from "${base_image}")
 
-buildcmd() {
+build_cmd() {
     buildah run --network host "${c}" -- "$@"
 }
 
-buildcmd apt-get update --quiet=2
-buildcmd apt-get install --yes --quiet=2 "${pdns_build[@]}" "${pdns_run[@]}"
-buildcmd apt-get install --yes --quiet=2 "${lint_deps[@]}"
+build_cmd_with_source() {
+    buildah run --network host --volume "$(realpath "${scriptdir}/.."):${containersrcdir}" --workingdir "${containersrcdir}" "${c}" -- "$@"
+}
+
+build_cmd apt-get update --quiet=2
+build_cmd apt-get install --yes --quiet=2 "${pdns_build[@]}" "${pdns_run[@]}"
+build_cmd apt-get install --yes --quiet=2 "${lint_deps[@]}"
 
 for pdns_ver in "${@}"; do
     case "${pdns_ver}" in
@@ -45,21 +52,21 @@ for env in "${toxenvs[@]}"; do
     case "${env}" in
 	ci-action)
 	    for py in "${cimatrix[@]}"; do
-		buildcmd tox exec -e "${py}-${env}" -- pip list
+		build_cmd_with_source tox exec -e "${py}-${env}" -- pip list
 	    done
 	;;
 	*)
-	    buildcmd tox exec -e "${env}" -- pip list
+	    build_cmd_with_source tox exec -e "${env}" -- pip list
 	;;
     esac
 done
 
-buildcmd apt-get remove --yes --purge "${pdns_build[@]}"
-buildcmd apt-get autoremove --yes --purge
-buildcmd apt-get clean autoclean
-buildcmd sh -c "rm -rf /var/lib/apt/lists/*"
+build_cmd apt-get remove --yes --purge "${pdns_build[@]}"
+build_cmd apt-get autoremove --yes --purge
+build_cmd apt-get clean autoclean
+build_cmd sh -c "rm -rf /var/lib/apt/lists/*"
 
-buildcmd rm -rf /root/.cache
+build_cmd rm -rf /root/.cache
 
 if buildah images --quiet "${image_name}"; then
     buildah rmi "${image_name}"
