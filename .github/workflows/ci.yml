@@ -54,6 +54,7 @@ jobs:
         build_args: ${{ join(fromJSON(steps.get_versions.outputs.versions).pdns, ' ') }}
         base_image: ${{ steps.details.outputs.base_image }}
         image_name: ${{ steps.details.outputs.image_base }}:${{ steps.preflight.outputs.image_tag }}
+        image_cache_key: ${{ steps.preflight.outputs.image_cache_key }}
         image_registry: ${{ steps.details.outputs.image_registry }}
         registry_username: ${{ secrets.QUAY_BOT_NAME }}
         registry_password: ${{ secrets.QUAY_BOT_PASSWORD }}
