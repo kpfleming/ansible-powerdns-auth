@@ -44,7 +44,7 @@ jobs:
     - id: preflight
       uses: kpfleming/composite-actions/ci-preflight@v1
       with:
-        files_hash: ${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/pdns_build.sh', 'workflow-support/versions.json') }}
+        files_hash: ${{ hashfiles('tox.ini', 'workflow-support/make_ci_image.sh', 'workflow-support/pdns_build.sh', 'workflow-support/versions.json', '.github/workflows/ci.yml') }}
         base_image_hash: ${{ steps.details.outputs.base_image_hash }}
     - id: get_versions
       run: cat workflow-support/versions.json >> $GITHUB_OUTPUT
