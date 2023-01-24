@@ -12,7 +12,9 @@ jobs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
     - id: details
-      uses: kpfleming/composite-actions/image-details@v1
+      uses: kpfleming/composite-actions/image-details@v2
+      with:
+        base_image: python:bullseye-main
   publish:
     runs-on: ubuntu-22.04
     needs:
@@ -21,7 +23,7 @@ jobs:
       image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
     - uses: actions/checkout@v3
-    - uses: kpfleming/composite-actions/galaxy-publish-tox@v1
+    - uses: kpfleming/composite-actions/galaxy-publish-tox@v2
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         tag: ${{ github.ref_name }}
