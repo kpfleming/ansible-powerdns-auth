@@ -21,6 +21,33 @@ The modules require the [Bravado](https://pypi.org/project/bravado/)
 package for parsing the Swagger/OpenAPI specification of the PowerDNS
 Authoritative Server API.
 
+As of PowerDNS Authoritative Server 4.7.x, the Swagger API
+specification is not completely compliant, and as a result the
+validation packages used by Bravado will not accept it. In order to
+work around this problem, older versions of the validation packages
+can be installed, like this:
+
+```shell
+pip install -r requirements.txt
+```
+
+This command can be executed in the environment on the Ansible
+controller if the roles will be used only on 'localhost'; if they will
+be used on Ansible-managed nodes, then the packages from the
+requirements file will need to be installed there:
+
+```yaml
+- name: manage dependencies needed for powerdns_auth modules
+  ansible.builtin.pip:
+    name:
+      - bravado
+      - jsonschema<4
+      - swagger-spec-validator==2.6.0
+```
+
+Add suitable parameters if the packages should be installed into a
+virtual environment on the managed node.
+
 ## Included content
 
 * Modules:
