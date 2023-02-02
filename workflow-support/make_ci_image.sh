@@ -2,10 +2,13 @@
 
 set -ex
 
-projname="ansible-powerdns-auth"
+# Arguments:
+#
+# 1: registry, name, and tag of base image
+# 2: registry, name, and tag of image to be created
 
 scriptdir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
-containersrcdir="/__w/${projname}/${projname}"
+containersrcdir="/__w/${GITHUB_REPOSITORY##*/}/${GITHUB_REPOSITORY##*/}"
 base_image=${1}; shift
 image_name=${1}; shift
 
