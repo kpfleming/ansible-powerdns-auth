@@ -179,6 +179,18 @@ options:
             Only used when I(kind=Slave) or I(kind=Consumer).
         type: list
         elements: str
+      master_tsig_key_ids:
+        description:
+          - The id of the TSIG keys used for master operation in this zone.
+            Only used when I(kind=Master) or I(kind=Producer).
+        type: list
+        elements: str
+      slave_tsig_key_ids:
+        description:
+          - The id of the TSIG keys used for slave operation in this zone.
+            Only used when I(kind=Slave) or I(kind=Consumer).
+        type: list
+        elements: str
   metadata:
     description:
       - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify),
@@ -403,6 +415,16 @@ zone:
       type: bool
     masters:
       description: IP addresses of masters (only for Slave and Consumer zones)
+      returned: when present
+      type: list
+      elements: str
+    master_tsig_key_ids:
+      description: The id of the TSIG keys used for master operation in this zone.
+      returned: when present
+      type: list
+      elements: str
+    slave_tsig_key_ids:
+      description: The id of the TSIG keys used for slave operation in this zone.
       returned: when present
       type: list
       elements: str
@@ -1107,6 +1129,14 @@ def main():
                     },
                 },
                 "masters": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "master_tsig_key_ids": {
+                    "type": "list",
+                    "elements": "str",
+                },
+                "slave_tsig_key_ids": {
                     "type": "list",
                     "elements": "str",
                 },
