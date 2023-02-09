@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.1] - 2023-02-09
+
+### Changed
+
+- Added module parameters for `master_tsig_key_ids` and `slave_tsig_key_ids` (contributed by @SrX in PR #128).
+
 ## [3.2.0] - 2022-11-21
 
 ### Changed
@@ -142,7 +148,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.0...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.1...HEAD
+[3.2.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v2.0.0...v3.0.0
