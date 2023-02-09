@@ -21,19 +21,6 @@
           - lookup('env','ANSIBLE_GALAXY_TOKEN') != ''
         fail_msg: ANSIBLE_GALAXY_TOKEN is not set.
 
-    - name: Ensure the ~/.ansible directory exists.
-      ansible.builtin.file:
-        path: ~/.ansible
-        state: directory
-        mode: u=rwx
-
-    - name: Write the Galaxy token to ~/.ansible/galaxy_token
-      ansible.builtin.copy:
-        content: |
-          token: "{{ lookup('env','ANSIBLE_GALAXY_TOKEN') }}"
-        dest: ~/.ansible/galaxy_token
-        mode: u=rw
-
   tasks:
     - name: Get collection details.
       ansible.builtin.include_vars:
@@ -46,4 +33,6 @@
           - ansible-galaxy
           - collection
           - publish
+          - --token
+          - "{{ lookup('env','ANSIBLE_GALAXY_TOKEN') }}"
           - "{{ collection_dir ~ '/' ~ details.namespace ~ '-' ~ details.name ~ '-' ~ tag ~ '.tar.gz' }}"
