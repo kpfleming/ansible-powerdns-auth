@@ -9,6 +9,7 @@ exclude_paths:
   - workflow-support/lint_paths.yml
 
 skip_list:
+  - meta-runtime[unsupported-version]
   - name[casing]
   - name[play]
   - no-changed-when

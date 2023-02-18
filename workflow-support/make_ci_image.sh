@@ -71,6 +71,8 @@ build_cmd sh -c "rm -rf /var/lib/apt/lists/*"
 
 build_cmd rm -rf /root/.cache
 
+build_cmd git config --system --add safe.directory "${containersrcdir}"
+
 if buildah images --quiet "${image_name}"; then
     buildah rmi "${image_name}"
 fi
