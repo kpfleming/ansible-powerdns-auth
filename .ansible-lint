@@ -3,13 +3,13 @@
 exclude_paths:
   - .cache
   - .github
+  - .pre-commit-config.yaml
   - src/galaxy.yml
   - workflow-support/image_files.yml
   - workflow-support/ci_paths.yml
   - workflow-support/lint_paths.yml
 
 skip_list:
-  - meta-runtime[unsupported-version]
   - name[casing]
   - name[play]
   - no-changed-when
