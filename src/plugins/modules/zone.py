@@ -1384,7 +1384,19 @@ def main():
         if props["kind"] in ["Native", "Master", "Producer"]:
             if not props["soa"]:
                 module.fail_json(
-                    msg="'properties -> soa' must be specified for zone creation",
+                    msg=(
+                        f"'properties -> soa' must be specified for '{zone_info['kind']}' zone"
+                        " creation"
+                    ),
+                    **result,
+                )
+
+            if not props["nameservers"]:
+                module.fail_json(
+                    msg=(
+                        f"'properties -> nameservers' must be specified for '{zone_info['kind']}'"
+                        " zone creation"
+                    ),
                     **result,
                 )
 
