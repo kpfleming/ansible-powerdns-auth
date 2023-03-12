@@ -1,0 +1,109 @@
+%YAML 1.2
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: python
+    pdns_version: "{{ lookup('ansible.builtin.env', 'pdns_version') }}"
+    common_args: &common
+      api_key: foo
+
+  tasks:
+    - name: check "Consumer" zone creation without slave-renotify
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d1.issue-136.example.
+        state: present
+        properties:
+          kind: Consumer
+          masters:
+            - 1.1.1.1
+            - ::1
+      register: result
+
+    - name: display result
+      ansible.builtin.debug:
+        var: result
+
+    - name: check result
+      ansible.builtin.debug:
+        msg: success
+      failed_when:
+        - result.zone.metadata.slave_renotify is None
+
+    - name: check "Consumer" zone creation with slave-renotify set to False
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d2.issue-136.example.
+        state: present
+        properties:
+          kind: Consumer
+          masters:
+            - 1.1.1.1
+            - ::1
+        metadata:
+          slave_renotify: false
+      register: result
+
+    - name: display result
+      ansible.builtin.debug:
+        var: result
+
+    - name: check result
+      ansible.builtin.debug:
+        msg: success
+      failed_when:
+        - '"slave_renotify" not in result.zone.metadata'
+        - result.zone.metadata.slave_renotify != false
+
+    - name: check "Consumer" zone creation with slave-renotify set to True
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d3.issue-136.example.
+        state: present
+        properties:
+          kind: Consumer
+          masters:
+            - 1.1.1.1
+            - ::1
+        metadata:
+          slave_renotify: true
+      register: result
+
+    - name: display result
+      ansible.builtin.debug:
+        var: result
+
+    - name: check result
+      ansible.builtin.debug:
+        msg: success
+      failed_when:
+        - '"slave_renotify" not in result.zone.metadata'
+        - result.zone.metadata.slave_renotify != true
+
+    - name: check "Consumer" zone creation with slave-renotify changed from 'not present' to False
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d1.issue-136.example.
+        state: present
+        properties:
+          kind: Consumer
+          masters:
+            - 1.1.1.1
+            - ::1
+        metadata:
+          slave_renotify: false
+      register: result
+
+    - name: display result
+      ansible.builtin.debug:
+        var: result
+
+    - name: check result
+      ansible.builtin.debug:
+        msg: success
+      failed_when:
+        - '"slave_renotify" not in result.zone.metadata'
+        - result.zone.metadata.slave_renotify != false
