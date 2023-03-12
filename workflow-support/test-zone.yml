@@ -366,7 +366,7 @@
             name: catalog2.example.
             state: present
             properties:
-              kind: Slave
+              kind: Consumer
               masters:
                 - 1.1.1.1
                 - ::1
