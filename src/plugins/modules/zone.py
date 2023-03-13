@@ -655,6 +655,9 @@ class Metadata:
         self.map_by_api_kind[self.api_kind] = self
         self.map_by_meta[self.meta] = self
 
+    def value_or_default(self, value):
+        return self.default() if value is None else value
+
     @classmethod
     def by_kind(cls, api_kind):
         return cls.map_by_api_kind.get(api_kind)
@@ -689,7 +692,10 @@ class Metadata:
         for meta, value in user_meta.items():
             if (m := cls.by_meta(meta)) and not m.immutable:
                 res.append(
-                    lambda api_client, m=m, value=value: m.set(value or m.default(), api_client),
+                    lambda api_client, m=m, value=value: m.set(
+                        m.value_or_default(value),
+                        api_client,
+                    ),
                 )
 
         return res
@@ -703,7 +709,7 @@ class Metadata:
                 res.append(
                     lambda api_client, k=k, v=v: v.update(
                         old_user_meta.get(k),
-                        new_user_meta.get(k) or v.default(),
+                        v.value_or_default(new_user_meta.get(k)),
                         api_client,
                     ),
                 )
@@ -874,6 +880,9 @@ class ZoneMetadata:
         self.map_by_zone_kind[self.zone_kind] = self
         self.map_by_meta[self.meta] = self
 
+    def value_or_default(self, value):
+        return self.default() if value is None else value
+
     @classmethod
     def by_kind(cls, zone_kind):
         return cls.map_by_zone_kind.get(zone_kind)
@@ -903,7 +912,10 @@ class ZoneMetadata:
         for meta, value in user_meta.items():
             if (m := cls.by_meta(meta)) and not m.immutable:
                 res.append(
-                    lambda zone_struct, m=m, value=value: m.set(value or m.default(), zone_struct),
+                    lambda zone_struct, m=m, value=value: m.set(
+                        m.value_or_default(value),
+                        zone_struct,
+                    ),
                 )
 
         return res
@@ -917,7 +929,7 @@ class ZoneMetadata:
                 res.append(
                     lambda zone_struct, k=k, v=v: v.update(
                         old_user_meta.get(k),
-                        new_user_meta.get(k) or v.default(),
+                        v.value_or_default(new_user_meta.get(k)),
                         zone_struct,
                     ),
                 )
