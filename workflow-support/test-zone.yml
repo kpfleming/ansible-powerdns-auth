@@ -28,7 +28,9 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when: result.zone.exists != false
+      failed_when:
+        - '"exception" in result'
+        - result.zone.exists != false
 
     - name: check notify for non-existent zone
       kpfleming.powerdns_auth.zone:
@@ -45,7 +47,9 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when: result.failed != true
+      failed_when:
+        - '"exception" in result'
+        - result.failed != true
 
     - name: check for failure during zone creation without properties
       kpfleming.powerdns_auth.zone:
@@ -62,7 +66,9 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when: result.failed != true
+      failed_when:
+        - '"exception" in result'
+        - result.failed != true
 
     - name: check for failure during zone creation without soa
       kpfleming.powerdns_auth.zone:
@@ -81,7 +87,9 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when: result.failed != true
+      failed_when:
+        - '"exception" in result'
+        - result.failed != true
 
     - name: check "Native" zone creation
       kpfleming.powerdns_auth.zone:
@@ -111,6 +119,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
         - result.zone.name != "d2.example."
         - result.zone.kind != "Native"
@@ -143,6 +152,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != false
         - result.zone.name != "d2.example."
         - result.zone.kind != "Native"
@@ -168,6 +178,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
         - result.zone.kind != "Master"
 
@@ -195,6 +206,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
         - result.zone.metadata.allow_axfr_from[0] != "AUTO-NS"
         - result.zone.metadata.allow_axfr_from[1] != "::"
@@ -218,6 +230,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
 
     - name: check zone removal
@@ -235,6 +248,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
 
     - name: check "Slave" zone creation
@@ -260,6 +274,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
         - result.zone.name != "d3.example."
         - result.zone.kind != "Slave"
@@ -293,6 +308,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
         - result.zone.masters[0] != "2.2.2.2"
         - result.zone.masters[1] != "::1"
@@ -312,6 +328,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - result.changed != true
 
     - when: (pdns_version == 'master') or (pdns_version is version('4.7', '>='))
@@ -338,6 +355,7 @@
           ansible.builtin.debug:
             msg: success
           failed_when:
+            - '"exception" in result'
             - result.changed != true
             - result.zone.name != "catalog1.example."
             - result.zone.kind != "Producer"
@@ -357,6 +375,7 @@
           ansible.builtin.debug:
             msg: success
           failed_when:
+            - '"exception" in result'
             - result.changed != true
 
         - name: check "Consumer" zone creation
@@ -382,6 +401,7 @@
           ansible.builtin.debug:
             msg: success
           failed_when:
+            - '"exception" in result'
             - result.changed != true
             - result.zone.name != "catalog2.example."
             - result.zone.kind != "Consumer"
@@ -426,5 +446,6 @@
           ansible.builtin.debug:
             msg: success
           failed_when:
+            - '"exception" in result'
             - result.changed != true
             - result.zone.catalog != "catalog1.example."

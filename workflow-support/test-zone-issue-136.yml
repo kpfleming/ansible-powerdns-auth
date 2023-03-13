@@ -31,6 +31,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - '"slave_renotify" in result.zone.metadata'
 
     - name: check "Consumer" zone creation with slave-renotify set to False
@@ -55,6 +56,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - '"slave_renotify" not in result.zone.metadata'
         - result.zone.metadata.slave_renotify != false
 
@@ -80,6 +82,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - '"slave_renotify" not in result.zone.metadata'
         - result.zone.metadata.slave_renotify != true
 
@@ -105,5 +108,6 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
+        - '"exception" in result'
         - '"slave_renotify" not in result.zone.metadata'
         - result.zone.metadata.slave_renotify != false
