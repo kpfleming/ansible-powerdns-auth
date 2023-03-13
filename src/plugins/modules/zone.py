@@ -675,6 +675,11 @@ class Metadata:
             if meta_object := cls.by_kind(k):
                 meta_object.user_meta_from_api(user_meta, v)
 
+        # remove 'None' metadata items
+        for k, v in list(user_meta.items()):
+            if v is None:
+                del user_meta[k]
+
         return user_meta
 
     @classmethod

@@ -31,7 +31,7 @@
       ansible.builtin.debug:
         msg: success
       failed_when:
-        - result.zone.metadata.slave_renotify is None
+        - '"slave_renotify" in result.zone.metadata'
 
     - name: check "Consumer" zone creation with slave-renotify set to False
       kpfleming.powerdns_auth.zone:
