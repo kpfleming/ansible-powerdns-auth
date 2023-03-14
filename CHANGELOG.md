@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.3] - 2023-03-14
+
+- zone: Resolved bugs in code added in 3.2.2, which ended up replacing
+  one crash with another.
+- Improved tests to report failures if exceptions are thrown while
+  executing modules.
+- zone: Resolved bugs in handling 'falsy' metadata values (reported by
+  @SrX in #136).
+- zone: Ensure that metadata items which are not present in an API
+  response are also not present in the 'zone' module's result.
+
 ## [3.2.2] - 2023-03-07
 
 - Improved validation of 'zone' module arguments to avoid crashes in
@@ -155,7 +166,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.2...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.3...HEAD
+[3.2.3]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.2...v3.2.3
 [3.2.2]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.1.0...v3.2.0
