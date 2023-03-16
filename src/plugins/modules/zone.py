@@ -173,6 +173,43 @@ options:
             type: int
             required: false
             default: 172800
+      rrsets:
+        description:
+          - This represents a list of Resource Record Set.
+        type: list
+        elements: complex
+        contains:
+            name:
+              description:
+                - Name for record set (e.g. “www.powerdns.com.”).
+              type: str
+              required: true
+            type:
+              description:
+                - Type of this record (e.g. “A”, “PTR”, “MX”).
+              type: str
+              required: true
+            ttl:
+              description:
+                - DNS TTL of the records, in seconds.
+              type: int
+            records:
+              description:
+                - Represents a list of records, RREntry object.
+              required: true
+              type: list
+              elements: complex
+              contains:
+                disabled:
+                  description:
+                    - Whether or not this record is disabled.
+                  type: bool
+                  required: true
+                content:
+                  description:
+                    - The content of resource record.
+                  type: str
+                  required: true
       masters:
         description:
           - List of IPv4 or IPv6 addresses which are masters for this zone.
@@ -1145,6 +1182,38 @@ def main():
                         },
                     },
                 },
+                "rrsets": {
+                    "type": "list",
+                    "elements": "dict",
+                    "options": {
+                        "name": {
+                            "type": "str",
+                            "required": True,
+                        },
+                        "type": {
+                            "type": "str",
+                            "required": True,
+                        },
+                        "ttl": {
+                            "type": "int",
+                            "default": 3600,
+                        },
+                        "records": {
+                          "type": "list",
+                          "elements": "dict",
+                            "options": {
+                                "disabled": {
+                                    "type": "bool",
+                                    "default": False,
+                                },
+                                "content": {
+                                    "type": "str",
+                                    "required": True,
+                                },
+                            },
+                        },
+                    },
+                },
                 "masters": {
                     "type": "list",
                     "elements": "str",
@@ -1448,6 +1517,27 @@ def main():
                     "records": [{"disabled": False, "content": ns} for ns in props["nameservers"]],
                 },
             ]
+
+            if props["rrsets"]:
+                for rrset in props["rrsets"]:
+                    if rrset['type'] == "NS":
+                        module.fail_json(
+                            msg=(
+                                f"'properties -> rrsets' NS record type not allowed to set"
+                            ),
+                            **result,
+                        )
+                        continue
+                    if rrset['type'] == "SOA":
+                        module.fail_json(
+                            msg=(
+                                f"'properties -> rrsets' SOA record type not allowed to set"
+                            ),
+                            **result,
+                        )
+                        continue
+                    rrset['ttl'] = str(rrset["ttl"])
+                    zone_struct["rrsets"].append(rrset)
 
         if props["kind"] in ["Slave", "Consumer"]:
             zone_struct["masters"] = props["masters"]

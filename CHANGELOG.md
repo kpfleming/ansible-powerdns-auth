@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+ - zone: Add possibility to define initial RRSet, only on the creation of the zone, not allow modification.
+
 ## [3.2.3] - 2023-03-14
 
 - zone: Resolved bugs in code added in 3.2.2, which ended up replacing
