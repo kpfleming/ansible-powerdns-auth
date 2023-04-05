@@ -178,12 +178,14 @@ options:
           - Resource Record Set.
             Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
             Only used when zone is being created (I(state=present) and zone is not present).
+          - SOA or NS records, are not permitted.
         type: list
         elements: complex
         contains:
           name:
             description:
               - Name for record set (e.g. "www.powerdns.com.").
+              - Must be absolute names (ending with '.').
             type: str
             required: true
           type:
@@ -193,7 +195,7 @@ options:
             required: true
           ttl:
             description:
-              - DNS TTL of the records, in seconds.
+              - TTL of the records, in seconds.
             type: int
             default: 3600
           records:
@@ -207,7 +209,6 @@ options:
                 description:
                   - Whether or not this record is disabled.
                 type: bool
-                required: true
               content:
                 description:
                   - The content of resource record.
