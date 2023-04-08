@@ -178,7 +178,7 @@ options:
           - Resource Record Set.
             Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
             Only used when zone is being created (I(state=present) and zone is not present).
-          - SOA or NS records, are not permitted.
+          - SOA and NS records are not permitted.
         type: list
         elements: complex
         contains:
@@ -209,6 +209,7 @@ options:
                 description:
                   - Whether or not this record is disabled.
                 type: bool
+                default: false
               content:
                 description:
                   - The content of resource record.
@@ -1527,8 +1528,8 @@ def main():
                     if rrset["type"] in ["SOA", "NS"]:
                         module.fail_json(
                             msg=(
-                                f"'{rrset['type']}' are not permitted"
-                                "in 'properties -> rrsets'"
+                                f"'{rrset['type']}' type is not permitted"
+                                " in 'properties -> rrsets'"
                             ),
                             **result,
                         )
