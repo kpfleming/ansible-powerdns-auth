@@ -1528,8 +1528,7 @@ def main():
                     if rrset["type"] in ["SOA", "NS"]:
                         module.fail_json(
                             msg=(
-                                f"'{rrset['type']}' type is not permitted"
-                                " in 'properties -> rrsets'"
+                                f"'{rrset['type']}' type is not permitted in 'properties -> rrsets'"
                             ),
                             **result,
                         )
