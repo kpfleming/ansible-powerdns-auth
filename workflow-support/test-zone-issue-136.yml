@@ -30,9 +30,7 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when:
-        - '"exception" in result'
-        - '"slave_renotify" in result.zone.metadata'
+      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is defined
 
     - name: check "Consumer" zone creation with slave-renotify set to False
       kpfleming.powerdns_auth.zone:
@@ -55,10 +53,7 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when:
-        - '"exception" in result'
-        - '"slave_renotify" not in result.zone.metadata'
-        - result.zone.metadata.slave_renotify != false
+      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is not defined or result.zone.metadata.slave_renotify != false
 
     - name: check "Consumer" zone creation with slave-renotify set to True
       kpfleming.powerdns_auth.zone:
@@ -81,10 +76,7 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when:
-        - '"exception" in result'
-        - '"slave_renotify" not in result.zone.metadata'
-        - result.zone.metadata.slave_renotify != true
+      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is not defined or result.zone.metadata.slave_renotify != true
 
     - name: check "Consumer" zone creation with slave-renotify changed from 'not present' to False
       kpfleming.powerdns_auth.zone:
@@ -107,7 +99,4 @@
     - name: check result
       ansible.builtin.debug:
         msg: success
-      failed_when:
-        - '"exception" in result'
-        - '"slave_renotify" not in result.zone.metadata'
-        - result.zone.metadata.slave_renotify != false
+      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is not defined or result.zone.metadata.slave_renotify != false
