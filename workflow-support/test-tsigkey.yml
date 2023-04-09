@@ -21,14 +21,12 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.key.exists != false
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.key.exists
 
     - name: check default key creation
       kpfleming.powerdns_auth.tsigkey:
@@ -38,14 +36,13 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.key.exists == false or result.key.algorithm != "hmac-md5"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.key.exists
+          - result.key.algorithm == "hmac-md5"
 
     - name: check key removal
       kpfleming.powerdns_auth.tsigkey:
@@ -55,14 +52,12 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.changed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
 
     - name: check non-default key creation
       kpfleming.powerdns_auth.tsigkey:
@@ -74,15 +69,14 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.key.exists == false or result.key.algorithm != "hmac-sha256" or result.key.key
-        != "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.key.exists
+          - result.key.algorithm == "hmac-sha256"
+          - result.key.key == "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
 
     - name: check key existence
       kpfleming.powerdns_auth.tsigkey:
@@ -92,15 +86,14 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.key.exists == false or result.key.algorithm != "hmac-sha256" or result.key.key
-        != "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.key.exists
+          - result.key.algorithm == "hmac-sha256"
+          - result.key.key == "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
 
     - name: check key algorithm change
       kpfleming.powerdns_auth.tsigkey:
@@ -111,14 +104,13 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.key.exists == false or result.key.algorithm != "hmac-sha512"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.key.exists
+          - result.key.algorithm == "hmac-sha512"
 
     - name: check key removal
       kpfleming.powerdns_auth.tsigkey:
@@ -128,14 +120,12 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.changed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
 
     - name: leave key for zone tests
       kpfleming.powerdns_auth.tsigkey:
@@ -145,11 +135,10 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed == true or result.key.exists == false or  result.key.algorithm != "hmac-md5"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.key.exists
+          - result.key.algorithm == "hmac-md5"

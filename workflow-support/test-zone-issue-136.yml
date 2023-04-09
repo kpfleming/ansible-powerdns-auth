@@ -23,14 +23,12 @@
             - ::1
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is defined
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.zone.metadata["slave_renotify"] is not defined
 
     - name: check "Consumer" zone creation with slave-renotify set to False
       kpfleming.powerdns_auth.zone:
@@ -46,14 +44,13 @@
           slave_renotify: false
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is not defined or result.zone.metadata.slave_renotify != false
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.zone.metadata["slave_renotify"] is defined
+          - not result.zone.metadata["slave_renotify"]
 
     - name: check "Consumer" zone creation with slave-renotify set to True
       kpfleming.powerdns_auth.zone:
@@ -69,14 +66,13 @@
           slave_renotify: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is not defined or result.zone.metadata.slave_renotify != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.zone.metadata["slave_renotify"] is defined
+          - result.zone.metadata["slave_renotify"]
 
     - name: check "Consumer" zone creation with slave-renotify changed from 'not present' to False
       kpfleming.powerdns_auth.zone:
@@ -92,11 +88,10 @@
           slave_renotify: false
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.zone.metadata["slave_renotify"] is not defined or result.zone.metadata.slave_renotify != false
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.zone.metadata["slave_renotify"] is defined
+          - not result.zone.metadata["slave_renotify"]

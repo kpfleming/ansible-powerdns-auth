@@ -21,14 +21,12 @@
         state: exists
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.zone.exists != false
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.zone.exists
 
     - name: check notify for non-existent zone
       kpfleming.powerdns_auth.zone:
@@ -38,14 +36,11 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - result.failed
 
     - name: check for failure during zone creation without properties
       kpfleming.powerdns_auth.zone:
@@ -55,14 +50,11 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - result.failed
 
     - name: check for failure during zone creation without soa
       kpfleming.powerdns_auth.zone:
@@ -74,14 +66,11 @@
       ignore_errors: true
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.failed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - result.failed
 
     - name: check "Native" zone creation
       kpfleming.powerdns_auth.zone:
@@ -103,15 +92,18 @@
           axfr_source: 127.0.0.1
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true or result.zone.name != "d2.example." or result.zone.kind != "Native" or result.zone.account
-        != "test-account1" or result.zone.metadata.allow_axfr_from[0] != "AUTO-NS" or result.zone.metadata.ixfr != true or result.zone.metadata.axfr_source != "127.0.0.1"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.zone.name == "d2.example."
+          - result.zone.kind == "Native"
+          - result.zone.account == "test-account1"
+          - result.zone.metadata.allow_axfr_from[0] == "AUTO-NS"
+          - result.zone.metadata.ixfr
+          - result.zone.metadata.axfr_source == "127.0.0.1"
 
     - name: check that zone properties and metadata did not change
       kpfleming.powerdns_auth.zone:
@@ -129,15 +121,18 @@
           axfr_source: 127.0.0.1
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != false or result.zone.name != "d2.example." or result.zone.kind != "Native" or result.zone.account
-        != "test-account1" or result.zone.metadata.allow_axfr_from[0] != "AUTO-NS" or result.zone.metadata.ixfr != true or result.zone.metadata.axfr_source != "127.0.0.1"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.changed
+          - result.zone.name == "d2.example."
+          - result.zone.kind == "Native"
+          - result.zone.account == "test-account1"
+          - result.zone.metadata.allow_axfr_from[0] == "AUTO-NS"
+          - result.zone.metadata.ixfr
+          - result.zone.metadata.axfr_source == "127.0.0.1"
 
     - name: check zone kind change from "Native" to "Master"
       kpfleming.powerdns_auth.zone:
@@ -148,14 +143,13 @@
           kind: Master
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true or result.zone.kind != "Master"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.zone.kind == "Master"
 
     - name: check zone metadata change
       kpfleming.powerdns_auth.zone:
@@ -173,16 +167,18 @@
             - axfr-key
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true or result.zone.metadata.allow_axfr_from[0] != "AUTO-NS" or result.zone.metadata.allow_axfr_from[1]
-        != "::" or result.zone.metadata.ixfr != false or result.zone.metadata.axfr_source != "127.0.0.8" or result.zone.metadata.slave_renotify != true or result.zone.metadata.tsig_allow_axfr[0]
-        != "axfr-key."
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.zone.metadata.allow_axfr_from[0] == "AUTO-NS"
+          - result.zone.metadata.allow_axfr_from[1] == "::"
+          - not result.zone.metadata.ixfr
+          - result.zone.metadata.axfr_source == "127.0.0.8"
+          - result.zone.metadata.slave_renotify
+          - result.zone.metadata.tsig_allow_axfr[0] == "axfr-key."
 
     - name: check notify for zone
       kpfleming.powerdns_auth.zone:
@@ -191,14 +187,12 @@
         state: notify
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
 
     - name: check zone removal
       kpfleming.powerdns_auth.zone:
@@ -207,14 +201,12 @@
         state: absent
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
 
     - name: check "Slave" zone creation
       kpfleming.powerdns_auth.zone:
@@ -231,21 +223,30 @@
             - axfr-key
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true or result.zone.name != "d3.example." or result.zone.kind != "Slave" or result.zone.masters[0]
-        != "1.1.1.1" or result.zone.masters[1] != "::1" or result.zone.metadata.axfr_master_tsig[0] != "axfr-key."
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.zone.name == "d3.example."
+          - result.zone.kind == "Slave"
+          - result.zone.masters[0] == "1.1.1.1"
+          - result.zone.masters[1] == "::1"
+          - result.zone.metadata.axfr_master_tsig[0] == "axfr-key."
 
     - name: check slave zone retrieval
       kpfleming.powerdns_auth.zone:
         <<: *common
         name: d3.example.
         state: retrieve
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
 
     - name: check "Slave" master change
       kpfleming.powerdns_auth.zone:
@@ -259,14 +260,14 @@
             - ::1
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true or result.zone.masters[0] != "2.2.2.2" or result.zone.masters[1] != "::1"
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.zone.masters[0] == "2.2.2.2"
+          - result.zone.masters[1] == "::1"
 
     - name: check zone removal
       kpfleming.powerdns_auth.zone:
@@ -275,14 +276,12 @@
         state: absent
       register: result
 
-    - name: display result
-      ansible.builtin.debug:
-        var: result
-
-    - name: check result
-      ansible.builtin.debug:
-        msg: success
-      failed_when: result['exception'] is defined or result.changed != true
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
 
     - when: (pdns_version == 'master') or (pdns_version is version('4.7', '>='))
       block:
@@ -300,14 +299,14 @@
                 mname: invalid.
                 rname: hostmaster.invalid.
 
-        - name: display result
-          ansible.builtin.debug:
-            var: result
-
-        - name: check result
-          ansible.builtin.debug:
-            msg: success
-          failed_when: result['exception'] is defined or result.changed != true or result.zone.name != "catalog1.example." or result.zone.kind != "Producer"
+        - ansible.builtin.assert:
+            quiet: true
+            that:
+              - result['exception'] is not defined
+              - not result.failed
+              - result.changed
+              - result.zone.name == "catalog1.example."
+              - result.zone.kind == "Producer"
 
         - name: check notify for zone
           register: result
@@ -316,14 +315,12 @@
             name: catalog1.example.
             state: notify
 
-        - name: display result
-          ansible.builtin.debug:
-            var: result
-
-        - name: check result
-          ansible.builtin.debug:
-            msg: success
-          failed_when: result['exception'] is defined or result.changed != true
+        - ansible.builtin.assert:
+            quiet: true
+            that:
+              - result['exception'] is not defined
+              - not result.failed
+              - result.changed
 
         - name: check "Consumer" zone creation
           register: result
@@ -340,21 +337,30 @@
               axfr_master_tsig:
                 - axfr-key
 
-        - name: display result
-          ansible.builtin.debug:
-            var: result
-
-        - name: check result
-          ansible.builtin.debug:
-            msg: success
-          failed_when: result['exception'] is defined or result.changed != true or result.zone.name != "catalog2.example." or result.zone.kind != "Consumer" or result.zone.masters[0]
-            != "1.1.1.1" or result.zone.masters[1] != "::1" or result.zone.metadata.axfr_master_tsig[0] != "axfr-key."
+        - ansible.builtin.assert:
+            quiet: true
+            that:
+              - result['exception'] is not defined
+              - not result.failed
+              - result.changed
+              - result.zone.name == "catalog2.example."
+              - result.zone.kind == "Consumer"
+              - result.zone.masters[0] == "1.1.1.1"
+              - result.zone.masters[1] == "::1"
+              - result.zone.metadata.axfr_master_tsig[0] == "axfr-key."
 
         - name: check "Consumer" zone retrieval
           kpfleming.powerdns_auth.zone:
             <<: *common
             name: catalog2.example.
             state: retrieve
+
+        - ansible.builtin.assert:
+            quiet: true
+            that:
+              - result['exception'] is not defined
+              - not result.failed
+              - result.changed
 
         - name: create zone for catalog
           kpfleming.powerdns_auth.zone:
@@ -379,11 +385,10 @@
               kind: Master
               catalog: catalog1.example.
 
-        - name: display result
-          ansible.builtin.debug:
-            var: result
-
-        - name: check result
-          ansible.builtin.debug:
-            msg: success
-          failed_when: result['exception'] is defined or result.changed != true or result.zone.catalog != "catalog1.example."
+        - ansible.builtin.assert:
+            quiet: true
+            that:
+              - result['exception'] is not defined
+              - not result.failed
+              - result.changed
+              - result.zone.catalog == "catalog1.example."
