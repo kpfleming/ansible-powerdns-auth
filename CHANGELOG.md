@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
- - zone: Added ability to create RRsets during zone creation (contributed by SrX in PR #128).
+## [3.3.0] - 2023-04-20
+
+### Added
+
+- zone: Added ability to create RRsets during zone creation (contributed by SrX in PR #138).
 
 ## [3.2.3] - 2023-03-14
+
+### Changed
 
 - zone: Resolved bugs in code added in 3.2.2, which ended up replacing
   one crash with another.
@@ -22,10 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.2.2] - 2023-03-07
 
+### Changed
+
 - Improved validation of 'zone' module arguments to avoid crashes in
   some situations (reported by @kviset in #133).
-
-### Changed
 
 ## [3.2.1] - 2023-02-09
 
@@ -168,7 +174,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.3...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.3...v3.3.0
 [3.2.3]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.2...v3.2.3
 [3.2.2]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/v3.2.0...v3.2.1
