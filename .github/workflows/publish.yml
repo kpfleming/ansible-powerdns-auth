@@ -14,7 +14,7 @@ jobs:
     - id: details
       uses: kpfleming/composite-actions/image-details@v2
       with:
-        base_image: python:bullseye-main
+        base_image: python:bookworm-main
   publish:
     runs-on: ubuntu-22.04
     needs:

@@ -17,7 +17,7 @@ pdns_run=(libsqlite3-0 libluajit-5.1-2)
 lint_deps=(shellcheck)
 
 toxenvs=(lint-action ci-action publish-action)
-cimatrix=(py38 py39 py310 py311)
+cimatrix=(py3{8,9,10,11,12})
 
 c=$(buildah from "${base_image}")
 
