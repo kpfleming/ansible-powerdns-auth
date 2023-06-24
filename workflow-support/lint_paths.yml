@@ -1,6 +1,7 @@
 paths:
   - 'src/**/*.py'
   - 'tox.ini'
+  - 'pyproject.toml'
   - 'workflow-support/*.sh'
   - 'workflow-support/test-*.yml'
   - '.github/workflows/lint.yml'

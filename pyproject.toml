@@ -39,3 +39,6 @@ select = [
   "W292",
   "YTT",
 ]
+ignore = [
+  "RUF012",
+]
