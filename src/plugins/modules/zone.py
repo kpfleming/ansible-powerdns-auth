@@ -83,8 +83,8 @@ options:
     description:
       - Zone properties. Ignored when I(state=exists), I(state=absent), I(state=notify),
         or I(state=retrieve).
-    type: complex
-    contains:
+    type: dict
+    suboptions:
       kind:
         description:
           - Zone kind.
@@ -125,8 +125,8 @@ options:
           - SOA record fields.
             Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
             Only used when zone is being created (I(state=present) and zone is not present).
-        type: complex
-        contains:
+        type: dict
+        suboptions:
           mname:
             description:
               - DNS name (absolute, ending with '.') of primary name server for the zone.
@@ -180,8 +180,8 @@ options:
             Only used when zone is being created (I(state=present) and zone is not present).
           - SOA and NS records are not permitted.
         type: list
-        elements: complex
-        contains:
+        elements: dict
+        suboptions:
           name:
             description:
               - Name for record set (e.g. "www.powerdns.com.").
@@ -203,8 +203,8 @@ options:
               - Represents a list of records.
             required: true
             type: list
-            elements: complex
-            contains:
+            elements: dict
+            suboptions:
               disabled:
                 description:
                   - Whether or not this record is disabled.
@@ -237,8 +237,8 @@ options:
     description:
       - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify),
         or I(state=retrieve).
-    type: complex
-    contains:
+    type: dict
+    suboptions:
       allow_axfr_from:
         description:
           - List of IPv4 and/or IPv6 subnets (or the special value AUTO-NS) from which AXFR
@@ -268,7 +268,7 @@ options:
         description:
           - List of TSIG keys used to validate NOTIFY requests from zone masters and to
             sign AXFR/IXFR requests to zone masters.
-          - Note: only the first key in the list will be used.
+          - "Note: only the first key in the list will be used."
         type: list
         elements: str
       forward_dnsupdate:
@@ -335,7 +335,7 @@ options:
         description:
           - List of TSIG keys used to sign NOTIFY requests and to validate
             AXFR/IXFR requests.
-          - Note: only the first key in the list will be used.
+          - "Note: only the first key in the list will be used."
         type: list
         elements: str
       tsig_allow_dnsupdate:
@@ -424,7 +424,7 @@ RETURN = """
 zone:
   description: Information about the zone
   returned: always
-  type: complex
+  type: dict
   contains:
     name:
       description: Name
@@ -473,7 +473,7 @@ zone:
     metadata:
       description: Zone metadata
       returned: when present
-      type: complex
+      type: dict
       contains:
         allow_axfr_from:
           description:

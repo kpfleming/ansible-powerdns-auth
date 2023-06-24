@@ -1,3 +1,5 @@
 .tox
 *.tar.gz
 src/galaxy.yml
+docs-build
+html
