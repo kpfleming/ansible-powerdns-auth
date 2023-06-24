@@ -34,19 +34,19 @@ requirements:
 options:
   state:
     description:
-      - If C(present) the zone will be created if necessary; if it
+      - If V(present) the zone will be created if necessary; if it
         already exists, its configuration will be updated to match
         the provided properties.
-      - If C(absent) the zone will be removed it if exists.
-      - If C(exists) the zone's existence will be checked, but it
+      - If V(absent) the zone will be removed it if exists.
+      - If V(exists) the zone's existence will be checked, but it
         will not be modified. Any configuration properties provided
         will be ignored.
-      - If C(notify) and the zone kind is C(Master), then NOTIFY
-        will be sent to the zone's slaves.
-      - If C(notify) and the zone kind is C(Slave), then the slave
-        zone will be updated as if a NOTIFY had been received.
-      - If C(retrieve) and the zone kind is C(Slave), then the slave
-        zone will be retrieved from the master.
+      - If V(notify) and O(properties.kind=Master), then NOTIFY will be sent to
+        the zone's slaves.
+      - If V(notify) and O(properties.kind=Slave), then the slave zone will be
+        updated as if a NOTIFY had been received.
+      - If V(retrieve) and O(properties.kind=Slave), then the slave zone will be
+        retrieved from the master.
     choices: [ 'present', 'absent', 'exists', 'notify', 'retrieve' ]
     type: str
     required: false
@@ -70,7 +70,7 @@ options:
     default: 'http://localhost:8081'
   api_spec_path:
     description:
-      - Path of the OpenAPI (Swagger) API spec document in C(api_url).
+      - Path of the OpenAPI (Swagger) API spec document in O(api_url).
     type: str
     required: false
     default: '/api/docs'
@@ -81,14 +81,14 @@ options:
     required: true
   properties:
     description:
-      - Zone properties. Ignored when I(state=exists), I(state=absent), I(state=notify),
-        or I(state=retrieve).
+      - Zone properties. Ignored when O(state=exists), O(state=absent), O(state=notify),
+        or O(state=retrieve).
     type: dict
     suboptions:
       kind:
         description:
           - Zone kind.
-          - I(kind=Producer) and I(kind=Consumer) are only supported in server version
+          - V(Producer) and V(Consumer) are only supported in server version
             4.7.0 or later.
         choices: [ 'Native', 'Master', 'Slave', 'Producer', 'Consumer' ]
         type: str
@@ -107,24 +107,27 @@ options:
       nameservers:
         description:
           - List of nameserver names to be listed in NS records for zone.
-            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
-            Only used when zone is being created (I(state=present) and zone is not present).
+          - Only used when O(properties.kind=Native), O(properties.kind=Master),
+            or O(properties.kind=Producer).
+          - Only used when zone is being created (O(state=present) and zone is not present).
           - Must be absolute names (ending with '.').
         type: list
         elements: str
       ttl:
         description:
           - Time to live for SOA and NS records.
-            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
-            Only used when zone is being created (I(state=present) and zone is not present).
+          - Only used when O(properties.kind=Native), O(properties.kind=Master),
+            or O(properties.kind=Producer).
+          - Only used when zone is being created (O(state=present) and zone is not present).
         type: int
         required: false
         default: 86400
       soa:
         description:
           - SOA record fields.
-            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
-            Only used when zone is being created (I(state=present) and zone is not present).
+          - Only used when O(properties.kind=Native), O(properties.kind=Master),
+            or O(properties.kind=Producer).
+          - Only used when zone is being created (O(state=present) and zone is not present).
         type: dict
         suboptions:
           mname:
@@ -155,7 +158,7 @@ options:
             description:
               - Number of seconds after which secondary name servers should retry to request
                 the serial number from the primary if the primary does not respond.
-              - Must be less than I(refresh).
+              - Must be less than O(properties.soa.refresh).
             type: int
             required: false
             default: 7200
@@ -163,7 +166,8 @@ options:
             description:
               - Number of seconds after which secondary name servers should stop answering
                 requests for this zone if the primary does not respond.
-              - Must be bigger than the sum of I(refresh) and I(retry).
+              - Must be bigger than the sum of O(properties.soa.refresh) and
+                O(properties.soa.retry).
             type: int
             required: false
             default: 3600000
@@ -176,8 +180,9 @@ options:
       rrsets:
         description:
           - Resource Record Set.
-            Only used when I(kind=Native), I(kind=Master), or I(kind=Producer).
-            Only used when zone is being created (I(state=present) and zone is not present).
+            Only used when O(properties.kind=Native), O(properties.kind=Master),
+            or O(properties.kind=Producer).
+          - Only used when zone is being created (O(state=present) and zone is not present).
           - SOA and NS records are not permitted.
         type: list
         elements: dict
@@ -218,25 +223,25 @@ options:
       masters:
         description:
           - List of IPv4 or IPv6 addresses which are masters for this zone.
-            Only used when I(kind=Slave) or I(kind=Consumer).
+            Only used when O(properties.kind=Slave) or O(properties.kind=Consumer).
         type: list
         elements: str
       master_tsig_key_ids:
         description:
           - The id of the TSIG keys used for master operation in this zone.
-            Only used when I(kind=Master) or I(kind=Producer).
+            Only used when O(properties.kind=Master) or O(properties.kind=Producer).
         type: list
         elements: str
       slave_tsig_key_ids:
         description:
           - The id of the TSIG keys used for slave operation in this zone.
-            Only used when I(kind=Slave) or I(kind=Consumer).
+            Only used when O(properties.kind=Slave) or O(properties.kind=Consumer).
         type: list
         elements: str
   metadata:
     description:
-      - Zone metadata. Ignored when I(state=exists), I(state=absent), I(state=notify),
-        or I(state=retrieve).
+      - Zone metadata. Ignored when O(state=exists), O(state=absent), O(state=notify),
+        or O(state=retrieve).
     type: dict
     suboptions:
       allow_axfr_from:
