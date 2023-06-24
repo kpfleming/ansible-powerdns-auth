@@ -9,17 +9,17 @@
 [![Imports - isort](https://img.shields.io/badge/Imports-isort-ef8336.svg)](https://github.com/pycqa/isort)
 
 This repo contains the `kpfleming.powerdns_auth` Ansible Collection. The collection includes modules to work with
-[PowerDNS Authoritative servers.](https://www.powerdns.com/auth.html)
+[PowerDNS Authoritative servers][2].
 
-Open Source software: [Apache License 2.0](https://spdx.org/licenses/Apache-2.0.html)
+Open Source software: [Apache License 2.0][3]
 
 ## &nbsp;
 
 ## External requirements
 
-The modules require the [Bravado](https://pypi.org/project/bravado/)
-package for parsing the Swagger/OpenAPI specification of the PowerDNS
-Authoritative Server API.
+The modules require the [Bravado][4] package for parsing the
+Swagger/OpenAPI specification of the PowerDNS Authoritative Server
+API.
 
 As of PowerDNS Authoritative Server 4.7.x, the Swagger API
 specification is not completely compliant, and as a result the
@@ -71,20 +71,20 @@ collections:
   - name: kpfleming.powerdns_auth
 ```
 
-See [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
+See [Ansible Using collections][5] for more details.
+
+Documentation of the collections's modules and their arguments/return
+values can be found [here][1].
 
 ## Contributing to this collection
 
 If you want to develop new content for this collection or improve what
 is already here, the easiest way to work on the collection is to clone
-it into one of the configured
-[`COLLECTIONS_PATH`](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths),
-and work on it there.
+it into one of the configured [`COLLECTIONS_PATH`][6], and work on it
+there.
 
 You can find more information in the [developer guide for
-collections](https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections),
-and in the [Ansible Community
-Guide](https://docs.ansible.com/ansible/latest/community/index.html).
+collections][7], and in the [Ansible Community Guide][8].
 
 ## More information
 
@@ -92,3 +92,12 @@ Guide](https://docs.ansible.com/ansible/latest/community/index.html).
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
 - [Ansible Collections Checklist](https://github.com/ansible-collections/overview/blob/master/collection_requirements.rst)
+
+[1]: https://kpfleming.github.io/ansible-powerdns-auth
+[2]: https://www.powerdns.com/auth.html
+[3]: https://spdx.org/licenses/Apache-2.0.html
+[4]: https://pypi.org/project/bravado/
+[5]: https://docs.ansible.com/ansible/latest/user_guide/collections_using.html
+[6]: https://docs.ansible.com/ansible/latest/reference_appendices/config.html#collections-paths
+[7]: https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html#contributing-to-collections
+[8]: https://docs.ansible.com/ansible/latest/community/index.html

@@ -4,5 +4,6 @@ paths:
   - 'workflow-support/test-*.yml'
   - 'workflow-support/*.sh'
   - 'workflow-support/versions.json'
+  - 'workflow-support/templates/galaxy.yml.j2'
   - '.github/workflows/ci.yml'
   - '.github/workflows/test.yml'

@@ -4,4 +4,5 @@ paths:
   - 'pyproject.toml'
   - 'workflow-support/*.sh'
   - 'workflow-support/test-*.yml'
+  - 'workflow-support/templates/galaxy.yml.j2'
   - '.github/workflows/lint.yml'
