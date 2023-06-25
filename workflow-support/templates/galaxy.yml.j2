@@ -1,6 +1,6 @@
 namespace: kpfleming
 name: powerdns_auth
-version: {{ tag }}
+version: {{ "0.0.0" if tag == "main" else tag }}
 readme: README.md
 authors:
 - Kevin P, Fleming <kevin@km6g.us> @kpfleming:irc/libera.chat
@@ -11,3 +11,7 @@ repository: https://github.com/kpfleming/ansible-powerdns-auth
 issues: https://github.com/kpfleming/ansible-powerdns-auth/issues
 documentation: https://kpfleming.github.io/ansible-powerdns-auth
 build_ignore: ['*~']
+tags:
+  - linux
+  - infrastructure
+  - dns

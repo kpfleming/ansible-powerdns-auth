@@ -7,9 +7,9 @@ basedir="$(realpath "${scriptdir}/..")"
 workdir="/work"
 base_image="docker.io/python:3.11"
 
-rm -f "${basedir}/src/kpfleming-powerdns_auth-0.0.0-local.tar.gz"
+rm -f "${basedir}/src/kpfleming-powerdns_auth-0.0.0.tar.gz"
 
-rm -rf "${basedir}/docs-build" "${basedir}/html"
+rm -rf "${basedir}/docs-build" "${basedir}/docs"
 
 tox run -e build
 
@@ -24,7 +24,7 @@ build_cmd apt-get install --yes --quiet=2 rsync
 
 build_cmd pip3 install ansible antsibull-docs
 
-build_cmd ansible-galaxy collection install "src/kpfleming-powerdns_auth-0.0.0-local.tar.gz"
+build_cmd ansible-galaxy collection install "src/kpfleming-powerdns_auth-0.0.0.tar.gz"
 
 build_cmd mkdir docs-build
 
@@ -34,6 +34,8 @@ build_cmd pip3 install -r docs-build/requirements.txt
 
 build_cmd docs-build/build.sh
 
-build_cmd mv docs-build/build/html .
-
 buildah rm "${c}"
+
+mv "${basedir}/docs-build/build/html" "${basedir}/docs"
+
+touch "${basedir}/docs/.nojekyll"

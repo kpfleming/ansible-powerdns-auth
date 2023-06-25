@@ -1,8 +1,10 @@
 paths:
+  - '.ansible-lint'
+  - '.github/workflows/lint.yml'
+  - 'pyproject.toml'
   - 'src/**/*.py'
   - 'tox.ini'
-  - 'pyproject.toml'
   - 'workflow-support/*.sh'
+  - 'workflow-support/make_galaxy_files.yml'
+  - 'workflow-support/templates/*.yml.j2'
   - 'workflow-support/test-*.yml'
-  - 'workflow-support/templates/galaxy.yml.j2'
-  - '.github/workflows/lint.yml'
