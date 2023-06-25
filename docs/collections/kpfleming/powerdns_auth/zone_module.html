@@ -130,7 +130,7 @@
 <h1>kpfleming.powerdns_auth.zone module – Manages a zone in a PowerDNS Authoritative server<a class="headerlink" href="#kpfleming-powerdns-auth-zone-module-manages-a-zone-in-a-powerdns-authoritative-server" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/kpfleming/powerdns_auth">kpfleming.powerdns_auth collection</a> (version 0.0.0-local).</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/kpfleming/powerdns_auth">kpfleming.powerdns_auth collection</a> (version 0.0.0).</p>
 <p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">kpfleming.powerdns_auth</span></code>.
 You need further requirements to be able to use this module,
 see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-requirements"><span class="std std-ref">Requirements</span></a> for details.</p>
@@ -178,7 +178,7 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-api_spec_path"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-api-spec-path"><strong>api_spec_path</strong></p>
 <a class="ansibleOptionLink" href="#parameter-api_spec_path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Path of the OpenAPI (Swagger) API spec document in <code class="docutils literal notranslate"><span class="pre">api_url</span></code>.</p>
+<td><div class="ansible-option-cell"><p>Path of the OpenAPI (Swagger) API spec document in <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-api-url"><span class="std std-ref"><span class="pre">api_url</span></span></a></strong></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/api/docs&quot;</span></code></p>
 </div></td>
 </tr>
@@ -194,7 +194,7 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-metadata"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-metadata"><strong>metadata</strong></p>
 <a class="ansibleOptionLink" href="#parameter-metadata" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Zone metadata. Ignored when <em>state=exists</em>, <em>state=absent</em>, <em>state=notify</em>, or <em>state=retrieve</em>.</p>
+<td><div class="ansible-option-cell"><p>Zone metadata. Ignored when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=exists</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=notify</span></span></a></code>, or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=retrieve</span></span></a></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -417,7 +417,7 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-properties"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties"><strong>properties</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>Zone properties. Ignored when <em>state=exists</em>, <em>state=absent</em>, <em>state=notify</em>, or <em>state=retrieve</em>.</p>
+<td><div class="ansible-option-cell"><p>Zone properties. Ignored when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=exists</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=notify</span></span></a></code>, or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=retrieve</span></span></a></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -441,7 +441,7 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <a class="ansibleOptionLink" href="#parameter-properties/kind" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Zone kind.</p>
-<p><em>kind=Producer</em> and <em>kind=Consumer</em> are only supported in server version 4.7.0 or later.</p>
+<p><code class="ansible-value docutils literal notranslate"><span class="pre">Producer</span></code> and <code class="ansible-value docutils literal notranslate"><span class="pre">Consumer</span></code> are only supported in server version 4.7.0 or later.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;Native&quot;</span></code></p></li>
@@ -456,21 +456,23 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-properties/master_tsig_key_ids"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-master-tsig-key-ids"><strong>master_tsig_key_ids</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/master_tsig_key_ids" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The id of the TSIG keys used for master operation in this zone. Only used when <em>kind=Master</em> or <em>kind=Producer</em>.</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The id of the TSIG keys used for master operation in this zone. Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Master</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Producer</span></span></a></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-properties/masters"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-masters"><strong>masters</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/masters" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>List of IPv4 or IPv6 addresses which are masters for this zone. Only used when <em>kind=Slave</em> or <em>kind=Consumer</em>.</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>List of IPv4 or IPv6 addresses which are masters for this zone. Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Slave</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Consumer</span></span></a></code>.</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-properties/nameservers"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-nameservers"><strong>nameservers</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/nameservers" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>List of nameserver names to be listed in NS records for zone. Only used when <em>kind=Native</em>, <em>kind=Master</em>, or <em>kind=Producer</em>. Only used when zone is being created (<em>state=present</em> and zone is not present).</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>List of nameserver names to be listed in NS records for zone.</p>
+<p>Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Native</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Master</span></span></a></code>, or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Producer</span></span></a></code>.</p>
+<p>Only used when zone is being created (<code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> and zone is not present).</p>
 <p>Must be absolute names (ending with ‘.’).</p>
 </div></td>
 </tr>
@@ -478,7 +480,8 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-properties/rrsets"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-rrsets"><strong>rrsets</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/rrsets" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Resource Record Set. Only used when <em>kind=Native</em>, <em>kind=Master</em>, or <em>kind=Producer</em>. Only used when zone is being created (<em>state=present</em> and zone is not present).</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Resource Record Set. Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Native</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Master</span></span></a></code>, or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Producer</span></span></a></code>.</p>
+<p>Only used when zone is being created (<code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> and zone is not present).</p>
 <p>SOA and NS records are not permitted.</p>
 </div></td>
 </tr>
@@ -535,14 +538,16 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-properties/slave_tsig_key_ids"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-slave-tsig-key-ids"><strong>slave_tsig_key_ids</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/slave_tsig_key_ids" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The id of the TSIG keys used for slave operation in this zone. Only used when <em>kind=Slave</em> or <em>kind=Consumer</em>.</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The id of the TSIG keys used for slave operation in this zone. Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Slave</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Consumer</span></span></a></code>.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
 <div class="ansibleOptionAnchor" id="parameter-properties/soa"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-soa"><strong>soa</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/soa" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">dictionary</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>SOA record fields. Only used when <em>kind=Native</em>, <em>kind=Master</em>, or <em>kind=Producer</em>. Only used when zone is being created (<em>state=present</em> and zone is not present).</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>SOA record fields.</p>
+<p>Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Native</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Master</span></span></a></code>, or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Producer</span></span></a></code>.</p>
+<p>Only used when zone is being created (<code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> and zone is not present).</p>
 </div></td>
 </tr>
 <tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -550,7 +555,7 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <a class="ansibleOptionLink" href="#parameter-properties/soa/expire" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Number of seconds after which secondary name servers should stop answering requests for this zone if the primary does not respond.</p>
-<p>Must be bigger than the sum of <em>refresh</em> and <em>retry</em>.</p>
+<p>Must be bigger than the sum of <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-soa-refresh"><span class="std std-ref"><span class="pre">properties.soa.refresh</span></span></a></strong></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-soa-retry"><span class="std std-ref"><span class="pre">properties.soa.retry</span></span></a></strong></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">3600000</span></code></p>
 </div></td>
 </tr>
@@ -574,7 +579,7 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <a class="ansibleOptionLink" href="#parameter-properties/soa/retry" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Number of seconds after which secondary name servers should retry to request the serial number from the primary if the primary does not respond.</p>
-<p>Must be less than <em>refresh</em>.</p>
+<p>Must be less than <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-soa-refresh"><span class="std std-ref"><span class="pre">properties.soa.refresh</span></span></a></strong></code>.</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">7200</span></code></p>
 </div></td>
 </tr>
@@ -605,7 +610,9 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-properties/ttl"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-ttl"><strong>ttl</strong></p>
 <a class="ansibleOptionLink" href="#parameter-properties/ttl" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
 </div></td>
-<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Time to live for SOA and NS records. Only used when <em>kind=Native</em>, <em>kind=Master</em>, or <em>kind=Producer</em>. Only used when zone is being created (<em>state=present</em> and zone is not present).</p>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Time to live for SOA and NS records.</p>
+<p>Only used when <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Native</span></span></a></code>, <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Master</span></span></a></code>, or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Producer</span></span></a></code>.</p>
+<p>Only used when zone is being created (<code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> and zone is not present).</p>
 <p class="ansible-option-line"><span class="ansible-option-default-bold">Default:</span> <code class="ansible-option-default docutils literal notranslate"><span class="pre">86400</span></code></p>
 </div></td>
 </tr>
@@ -621,12 +628,12 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <div class="ansibleOptionAnchor" id="parameter-state"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-state"><strong>state</strong></p>
 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
 </div></td>
-<td><div class="ansible-option-cell"><p>If <code class="docutils literal notranslate"><span class="pre">present</span></code> the zone will be created if necessary; if it already exists, its configuration will be updated to match the provided properties.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">absent</span></code> the zone will be removed it if exists.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">exists</span></code> the zone’s existence will be checked, but it will not be modified. Any configuration properties provided will be ignored.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">notify</span></code> and the zone kind is <code class="docutils literal notranslate"><span class="pre">Master</span></code>, then NOTIFY will be sent to the zone’s slaves.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">notify</span></code> and the zone kind is <code class="docutils literal notranslate"><span class="pre">Slave</span></code>, then the slave zone will be updated as if a NOTIFY had been received.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">retrieve</span></code> and the zone kind is <code class="docutils literal notranslate"><span class="pre">Slave</span></code>, then the slave zone will be retrieved from the master.</p>
+<td><div class="ansible-option-cell"><p>If <code class="ansible-value docutils literal notranslate"><span class="pre">present</span></code> the zone will be created if necessary; if it already exists, its configuration will be updated to match the provided properties.</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">absent</span></code> the zone will be removed it if exists.</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">exists</span></code> the zone’s existence will be checked, but it will not be modified. Any configuration properties provided will be ignored.</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">notify</span></code> and <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Master</span></span></a></code>, then NOTIFY will be sent to the zone’s slaves.</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">notify</span></code> and <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Slave</span></span></a></code>, then the slave zone will be updated as if a NOTIFY had been received.</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">retrieve</span></code> and <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-zone-module-parameter-properties-kind"><span class="std std-ref"><span class="pre">properties.kind=Slave</span></span></a></code>, then the slave zone will be retrieved from the master.</p>
 <p class="ansible-option-line"><span class="ansible-option-choices">Choices:</span></p>
 <ul class="simple">
 <li><p><code class="ansible-option-default-bold docutils literal notranslate"><span class="pre">&quot;present&quot;</span></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
