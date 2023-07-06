@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Added testing against PowerDNS Authoritative Server 4.8.x.
+
+- Removed testing against PowerDNS Authoritative Server 4.5.x (EOL).
+
 - Switched to fork of `j2cli` for rendering Galaxy metadata YAML file
   (no behavioral changes).
 

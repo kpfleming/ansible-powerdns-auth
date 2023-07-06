@@ -1,1 +1,1 @@
-versions={"pdns":["4.5", "4.6", "4.7", "master"], "python": ["py38", "py39", "py310", "py311", "py312"]}
+versions={"pdns":["4.6", "4.7", "4.8", "master"], "python": ["py38", "py39", "py310", "py311", "py312"]}
