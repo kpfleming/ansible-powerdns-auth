@@ -12,9 +12,8 @@ mkdir -p /pdns/"${pdns_ver}"
 autoreconf -vi
 ./configure --prefix=/pdns/"${pdns_ver}" --with-modules="gsqlite3" --disable-lua-records
 
-make -j2 -C ext/json11 libjson11.la
-make -j2 -C ext/yahttp/yahttp libyahttp.la
 make -j2 -C pdns apidocfiles.h
+make -j2 -C ext
 make -j2 -C pdns pdns_server
 
 cp pdns/pdns_server /pdns/"${pdns_ver}"
