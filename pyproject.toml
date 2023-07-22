@@ -42,3 +42,4 @@ select = [
 ignore = [
   "RUF012",
 ]
+unfixable = ["F401"]
