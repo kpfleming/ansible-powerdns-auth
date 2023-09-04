@@ -24,7 +24,7 @@ jobs:
     container:
       image: ${{ inputs.image }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: start pdns_server
       run: workflow-support/start_server.sh ${{ inputs.pdns }}
     - uses: kpfleming/composite-actions/ci-tox@v2
