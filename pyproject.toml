@@ -16,7 +16,7 @@ exclude = '''
 
 [tool.ruff]
 src = ["src"]
-format = "grouped"
+output-format = "grouped"
 target-version = "py38"
 line-length = 100
 select = [
