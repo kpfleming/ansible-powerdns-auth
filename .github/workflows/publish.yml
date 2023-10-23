@@ -26,6 +26,8 @@ jobs:
       image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
     - uses: actions/checkout@v4
+      with:
+        show-progress: false
     - uses: kpfleming/composite-actions/galaxy-publish-tox@v2
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
@@ -41,6 +43,7 @@ jobs:
       with:
         ref: docsite
         path: docsite
+        show-progress: false
     - run: docsite/workflow-support/make_docs.sh
     - uses: EndBug/add-and-commit@v9
       with:

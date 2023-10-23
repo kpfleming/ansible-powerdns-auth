@@ -15,6 +15,8 @@ jobs:
       need_lint: ${{ steps.preflight.outputs.need_lint == 'true' }}
     steps:
     - uses: actions/checkout@v4
+      with:
+        show-progress: false
     - id: details
       uses: kpfleming/composite-actions/image-details@v2
       with:
@@ -32,4 +34,6 @@ jobs:
       image: ${{ needs.preflight.outputs.image_base }}:main
     steps:
     - uses: actions/checkout@v4
+      with:
+        show-progress: false
     - uses: kpfleming/composite-actions/lint-tox@v2
