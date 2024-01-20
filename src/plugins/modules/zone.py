@@ -771,7 +771,7 @@ class MetadataBinaryValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0] == "1"
 
-    def set(self, value, api_client):  # noqa: A003
+    def set(self, value, api_client):
         if value:
             api_client.zonemetadata.modifyMetadata(
                 metadata_kind=self.api_kind,
@@ -799,7 +799,7 @@ class MetadataBinaryPresence(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = True
 
-    def set(self, value, api_client):  # noqa: A003
+    def set(self, value, api_client):
         if value:
             api_client.zonemetadata.modifyMetadata(
                 metadata_kind=self.api_kind,
@@ -827,7 +827,7 @@ class MetadataTernaryValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0] == "1"
 
-    def set(self, value, api_client):  # noqa: A003
+    def set(self, value, api_client):
         if value is not None:
             if value:
                 api_client.zonemetadata.modifyMetadata(
@@ -867,7 +867,7 @@ class MetadataListValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item
 
-    def set(self, value, api_client):  # noqa: A003
+    def set(self, value, api_client):
         if len(value) != 0:
             api_client.zonemetadata.modifyMetadata(
                 metadata_kind=self.api_kind,
@@ -895,7 +895,7 @@ class MetadataStringValue(Metadata):
     def user_meta_from_api(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0]
 
-    def set(self, value, api_client):  # noqa: A003
+    def set(self, value, api_client):
         if value:
             api_client.zonemetadata.modifyMetadata(
                 metadata_kind=self.api_kind,
@@ -991,7 +991,7 @@ class ZoneMetadataBinaryValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
-    def set(self, value, zone_struct):  # noqa: A003
+    def set(self, value, zone_struct):
         if value:
             zone_struct[self.zone_kind] = "1"
 
@@ -1010,7 +1010,7 @@ class ZoneMetadataTernaryValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
-    def set(self, value, zone_struct):  # noqa: A003
+    def set(self, value, zone_struct):
         if value is not None:
             if value:
                 zone_struct[self.zone_kind] = "1"
@@ -1035,7 +1035,7 @@ class ZoneMetadataListValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
-    def set(self, value, zone_struct):  # noqa: A003
+    def set(self, value, zone_struct):
         if value != []:
             zone_struct[self.zone_kind] = value
 
@@ -1051,7 +1051,7 @@ class ZoneMetadataStringValue(ZoneMetadata):
     def user_meta_from_api(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
-    def set(self, value, zone_struct):  # noqa: A003
+    def set(self, value, zone_struct):
         if value != "":
             zone_struct[self.zone_kind] = value
 
