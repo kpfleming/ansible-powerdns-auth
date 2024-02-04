@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # SPDX-FileCopyrightText: 2021 Kevin P. Fleming <kevin@km6g.us>
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
@@ -796,7 +795,7 @@ class MetadataBinaryPresence(Metadata):
     def default(self):
         return False
 
-    def user_meta_from_api(self, user_meta, api_meta_item):
+    def user_meta_from_api(self, user_meta, _api_meta_item):
         user_meta[self.meta] = True
 
     def set(self, value, api_client):
@@ -1411,7 +1410,7 @@ def main():
     partial_zone_info = api_client.zones.listZones(zone=zone)
 
     if len(partial_zone_info) == 0:
-        if (state == "exists") or (state == "absent"):
+        if state in ("exists", "absent"):
             # exit as there is nothing left to do
             module.exit_json(**result)
         elif state == "notify":

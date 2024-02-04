@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # SPDX-FileCopyrightText: 2021 Kevin P. Fleming <kevin@km6g.us>
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
@@ -319,7 +318,7 @@ def main():
     partial_key_info = [k for k in api_client.tsigkey.listTSIGKeys() if k["name"] == key]
 
     if len(partial_key_info) == 0:
-        if (state == "exists") or (state == "absent"):
+        if state in ("exists", "absent"):
             # exit as there is nothing left to do
             module.exit_json(**result)
         else:
