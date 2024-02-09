@@ -14,7 +14,6 @@ ignore = [
   "ISC001",   # conflicts with formatter
   "PLR0912",  # Leave complexity to me.
   "PLR0915",  # Leave complexity to me.
-  "PLW0603",  # globals are used intentionally here
   "RUF012",   # no need for this warning in Ansible modules
   "S101",     # assert
   "TRY301",   # Raise in try blocks can totally make sense.

@@ -2,8 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [*Keep a
+Changelog*](https://keepachangelog.com/en/1.0.0/) and this project
+adheres to [*Calendar Versioning*](https://calver.org/).
+
+The **first number** of the version is the 2-digit year.
+
+The **second number** is incremented with each release, starting at 1
+for each year.
+
+When present, the **third number** is for fixes made against older
+releases (only for emergencies).
 
 ## [Unreleased]
 
@@ -17,6 +26,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (no behavioral changes).
 
 - Switched from `j2cli` to `jinjanator` for rendering metadata file.
+
+- Python code refactored to reduce duplication.
+
+- Module documentation refactored to reduce duplication.
+
+- Python code improved to no longer use global variables.
+
+- Galaxy metadata updated to current specifications.
+
+- Galaxy `requirements.txt` added so that `ansible-builder` will
+  install the necessary Python packages.
+
+- Switched to CalVer.
 
 ## [3.4.1] - 2023-07-02
 
