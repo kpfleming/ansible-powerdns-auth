@@ -16,6 +16,8 @@ releases (only for emergencies).
 
 ## [Unreleased]
 
+## [24.1] - 2024-02-09
+
 ### Changed
 
 - Added testing against PowerDNS Authoritative Server 4.8.x.
@@ -219,7 +221,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.4.1...HEAD
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/24.1...HEAD
+[24.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.4.1...24.1
 [3.4.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.3.0...3.4.0
 [3.3.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.2.3...3.3.0
