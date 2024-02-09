@@ -11,12 +11,12 @@ The **first number** of the version is the 2-digit year.
 The **second number** is incremented with each release, starting at 1
 for each year.
 
-When present, the **third number** is for fixes made against older
-releases (only for emergencies).
+The **third number** is for fixes made against older releases (only
+for emergencies).
 
 ## [Unreleased]
 
-## [24.1] - 2024-02-09
+## [24.1.0] - 2024-02-09
 
 ### Changed
 
@@ -221,8 +221,8 @@ First release!
 
 ### Changed
 
-[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/24.1...HEAD
-[24.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.4.1...24.1
+[unreleased]: https://github.com/kpfleming/ansible-powerdns-auth/compare/24.1.0...HEAD
+[24.1.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.4.1...24.1.0
 [3.4.1]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.3.0...3.4.0
 [3.3.0]: https://github.com/kpfleming/ansible-powerdns-auth/compare/3.2.3...3.3.0
