@@ -1,0 +1,17 @@
+namespace: kpfleming
+name: powerdns_auth
+version: 24.1.0
+readme: README.md
+authors:
+- Kevin P, Fleming <kevin@km6g.us> @kpfleming:irc/libera.chat
+description: Modules to manipulate content in a PowerDNS Authoritative server
+license:
+- Apache-2.0
+repository: https://github.com/kpfleming/ansible-powerdns-auth
+issues: https://github.com/kpfleming/ansible-powerdns-auth/issues
+documentation: https://kpfleming.github.io/ansible-powerdns-auth
+build_ignore: ['*~']
+tags:
+  - linux
+  - infrastructure
+  - dns
