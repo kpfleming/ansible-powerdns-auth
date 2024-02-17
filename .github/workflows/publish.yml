@@ -20,6 +20,10 @@ jobs:
         base_image: python:bookworm-main
   publish_galaxy:
     runs-on: ubuntu-22.04
+    outputs:
+      collection_namespace: ${{ steps.publish.outputs.collection_namespace }}
+      collection_name: ${{ steps.publish.outputs.collection_name }}
+      collection_tarball: ${{ steps.publish.outputs.collection_tarball }}
     needs:
     - image_details
     container:
@@ -28,7 +32,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         show-progress: false
-    - uses: kpfleming/composite-actions/galaxy-publish-tox@v2
+    - id: publish
+      uses: kpfleming/composite-actions/galaxy-publish-tox@v2
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         tag: ${{ github.ref_name }}
@@ -44,7 +49,10 @@ jobs:
         ref: docsite
         path: docsite
         show-progress: false
-    - run: docsite/workflow-support/make_docs.sh
+    - uses: actions/download-artifact@v4
+      with:
+        name: collection
+    - run: docsite/workflow-support/make_docs.sh ${{ needs.publish_galaxy.outputs.collection_namespace }}.${{ needs.publish_galaxy.outputs.collection_name }} ${{ needs.publish_galaxy.outputs.collection_tarball }}
     - uses: EndBug/add-and-commit@v9
       with:
         cwd: docsite
