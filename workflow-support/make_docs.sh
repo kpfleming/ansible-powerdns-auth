@@ -12,11 +12,11 @@ apt-get install --yes --quiet=2 rsync
 
 pip3 install ansible
 
-ansible-galaxy collection install kpfleming.powerdns_auth
+ansible-galaxy collection install "${2}"
 
 pip3 install -r "${basedir}/docs-build/requirements.txt"
 
-"${basedir}/docs-build/build.sh"
+"${basedir}/docs-build/build.sh" "${1}"
 
 mv "${basedir}/docs-build/build/html" "${basedir}/docs"
 
