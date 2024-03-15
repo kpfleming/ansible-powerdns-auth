@@ -16,6 +16,12 @@ for emergencies).
 
 ## [Unreleased]
 
+### Changed
+
+- Added testing against PowerDNS Authoritative Server 4.9.x.
+
+- Removed testing against PowerDNS Authoritative Server 4.6.x (EOL).
+
 ## [24.1.0] - 2024-02-09
 
 ### Changed

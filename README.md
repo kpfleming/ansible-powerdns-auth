@@ -20,7 +20,7 @@ The modules require the [Bravado][4] package for parsing the
 Swagger/OpenAPI specification of the PowerDNS Authoritative Server
 API.
 
-As of PowerDNS Authoritative Server 4.8.x, the Swagger API
+As of PowerDNS Authoritative Server 4.9.x, the Swagger API
 specification is not completely compliant, and as a result the
 validation packages used by Bravado will not accept it. In order to
 work around this problem, older versions of the validation packages
