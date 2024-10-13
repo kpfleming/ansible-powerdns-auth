@@ -15,6 +15,7 @@ image_name=${1}; shift
 pdns_build=(build-essential autoconf automake ragel bison flex libboost-all-dev pkg-config python3-venv libluajit-5.1-dev libssl-dev libsqlite3-dev sqlite3)
 pdns_run=(libsqlite3-0 libluajit-5.1-2)
 lint_deps=(shellcheck)
+publish_deps=(yq)
 
 toxenvs=(lint-action ci-action publish-action)
 cimatrix=(py3{9,10,11,12,13})
@@ -32,6 +33,7 @@ build_cmd_with_source() {
 build_cmd apt-get update --quiet=2
 build_cmd apt-get install --yes --quiet=2 "${pdns_build[@]}" "${pdns_run[@]}"
 build_cmd apt-get install --yes --quiet=2 "${lint_deps[@]}"
+build_cmd apt-get install --yes --quiet=2 "${publish_deps[@]}"
 
 for pdns_ver in "${@}"; do
     case "${pdns_ver}" in
