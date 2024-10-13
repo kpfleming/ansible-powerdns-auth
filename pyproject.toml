@@ -1,21 +1,20 @@
 [tool.ruff]
-src = ["src"]
-target-version = "py38"
+target-version = "py39"
 line-length = 100
 
-[tool.ruff.lint]
-select = ["ALL"]
-ignore = [
-  "ANN",      # Mypy is better at this.
-  "COM812",   # conflicts with formatter
-  "C901",     # Leave complexity to me.
-  "D",        # We have different ideas about docstrings.
-  "INP001",   # we don't care that these are in implicit namespace packages
-  "ISC001",   # conflicts with formatter
-  "PLR0912",  # Leave complexity to me.
-  "PLR0915",  # Leave complexity to me.
-  "RUF012",   # no need for this warning in Ansible modules
-  "S101",     # assert
-  "TRY301",   # Raise in try blocks can totally make sense.
+src = [ "src" ]
+lint.select = [ "ALL" ]
+lint.ignore = [
+  "ANN",     # Mypy is better at this.
+  "C901",    # Leave complexity to me.
+  "COM812",  # conflicts with formatter
+  "D",       # We have different ideas about docstrings.
+  "INP001",  # we don't care that these are in implicit namespace packages
+  "ISC001",  # conflicts with formatter
+  "PLR0912", # Leave complexity to me.
+  "PLR0915", # Leave complexity to me.
+  "RUF012",  # no need for this warning in Ansible modules
+  "S101",    # assert
+  "TRY301",  # Raise in try blocks can totally make sense.
 ]
-unfixable = ["F401"]
+lint.unfixable = [ "F401" ]

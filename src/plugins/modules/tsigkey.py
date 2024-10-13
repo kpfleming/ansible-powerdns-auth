@@ -11,7 +11,7 @@ from ansible_collections.kpfleming.powerdns_auth.plugins.module_utils.api_wrappe
     api_exception_handler,
 )
 
-assert sys.version_info >= (3, 8), "This module requires Python 3.8 or newer."
+assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
 
 DOCUMENTATION = """
 %YAML 1.2

@@ -16,6 +16,8 @@ for emergencies).
 
 ## [Unreleased]
 
+## [24.2.0] - 2024-10-13
+
 ### Changed
 
 - Added testing against PowerDNS Authoritative Server 4.9.x.
@@ -23,6 +25,8 @@ for emergencies).
 - Removed testing against PowerDNS Authoritative Server 4.6.x (EOL).
 
 - Added testing against Python 3.13 (beta).
+
+- Removed support for Python 3.8.
 
 ## [24.1.0] - 2024-02-09
 
