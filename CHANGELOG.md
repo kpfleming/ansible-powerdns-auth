@@ -16,6 +16,12 @@ for emergencies).
 
 ## [Unreleased]
 
+## [24.3.0] - 2024-10-13
+
+### Changed
+
+- Corrected bug in publishing workflow; no content changes.
+
 ## [24.2.0] - 2024-10-13
 
 ### Changed
