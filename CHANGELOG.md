@@ -16,6 +16,10 @@ for emergencies).
 
 ## [Unreleased]
 
+### Changed
+
+- Allow NS records in RRsets (contributed by torstehu in PR #162).
+
 ## [24.3.0] - 2024-10-13
 
 ### Changed
