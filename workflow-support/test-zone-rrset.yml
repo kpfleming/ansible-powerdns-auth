@@ -46,7 +46,7 @@
       vars:
         d1_rrset: "{{ lookup('dig_local', 't1.d1.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check zone creation with zone deligation
+    - name: check zone creation with zone delegation
       kpfleming.powerdns_auth.zone:
         <<: *common
         name: d2.rrset.example.

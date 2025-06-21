@@ -16,6 +16,10 @@ for emergencies).
 
 ## [Unreleased]
 
+### Changed
+
+- Allow NS records in RRsets (contributed by torstehu in PR #162).
+
 ## [24.3.0] - 2024-10-13
 
 ### Changed
@@ -33,8 +37,6 @@ for emergencies).
 - Added testing against Python 3.13 (beta).
 
 - Removed support for Python 3.8.
-
-- Fix ability to make zone deligation
 
 ## [24.1.0] - 2024-02-09
 
