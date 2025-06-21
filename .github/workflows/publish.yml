@@ -56,6 +56,6 @@ jobs:
     - uses: EndBug/add-and-commit@v9
       with:
         cwd: docsite
-        add: . --no-ignore-removal
+        add: docs --no-ignore-removal
         tag: docsite-${{ github.ref_name }} --force
         tag_push: --force
