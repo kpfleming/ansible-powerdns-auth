@@ -11,6 +11,7 @@ lint.ignore = [
   "D",       # We have different ideas about docstrings.
   "INP001",  # we don't care that these are in implicit namespace packages
   "ISC001",  # conflicts with formatter
+  "PLC0415",
   "PLR0912", # Leave complexity to me.
   "PLR0915", # Leave complexity to me.
   "RUF012",  # no need for this warning in Ansible modules
