@@ -29,7 +29,7 @@ jobs:
         show-progress: false
     - name: start pdns_server
       run: workflow-support/start_server.sh ${{ inputs.pdns }}
-    - uses: kpfleming/composite-actions/ci-tox@v2
+    - uses: kpfleming/composite-actions/ci-tox@v3
       with:
         python: ${{ inputs.python }}
       env:

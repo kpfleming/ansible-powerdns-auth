@@ -15,7 +15,7 @@ jobs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
     - id: details
-      uses: kpfleming/composite-actions/image-details@v2
+      uses: kpfleming/composite-actions/image-details@v3
       with:
         base_image: python:bookworm-main
   publish_galaxy:
@@ -33,7 +33,7 @@ jobs:
       with:
         show-progress: false
     - id: publish
-      uses: kpfleming/composite-actions/galaxy-publish-tox@v2
+      uses: kpfleming/composite-actions/galaxy-publish-tox@v3
       with:
         galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
         tag: ${{ github.ref_name }}
