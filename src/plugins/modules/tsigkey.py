@@ -276,7 +276,7 @@ def main():
         if (mod_key := module.params["key"]) and mod_key != key_info["key"]:
             key_struct["key"] = mod_key
 
-        if len(key_struct):
+        if key_struct:
             key_info = api_client.putTSIGKey(tsigkey_id=key_id, tsigkey=key_struct)
             result["changed"] = True
 

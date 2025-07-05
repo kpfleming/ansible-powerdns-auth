@@ -1505,7 +1505,7 @@ def main():
             ):
                 updater(zone_struct)
 
-        if len(zone_struct):
+        if zone_struct:
             api_zone_client.putZone(zone_struct=zone_struct)
             result["changed"] = True
 
