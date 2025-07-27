@@ -1,0 +1,211 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: python
+    pdns_version: "{{ lookup('ansible.builtin.env', 'pdns_version') }}"
+    common_args: &common
+      api_key: foo
+
+  tasks:
+    - name: check zone creation with one rrset, with default TTL
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d1.rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: t1.d1.rrset.example.
+              type: A
+              records:
+                - content: 192.168.0.1
+                - content: 192.168.1.2
+                - content: 192.168.3.4
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - d1_rrset[0]['type'] == 'A'
+          - d1_rrset[0]['ttl'] == 3600
+          - (d1_rrset | sort(attribute='address'))[0]['address'] == "192.168.0.1"
+          - (d1_rrset | sort(attribute='address'))[1]['address'] == "192.168.1.2"
+          - (d1_rrset | sort(attribute='address'))[2]['address'] == "192.168.3.4"
+      vars:
+        d1_rrset: "{{ lookup('dig_local', 't1.d1.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check zone creation with zone delegation
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d2.rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: sub.d2.rrset.example.
+              type: NS
+              records:
+                - content: ns2.example.
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - result.changed
+
+    - name: check for failure when rrset includes SOA
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d3.rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: d3.rrset.example.
+              type: SOA
+              records:
+                - content: invalid SOA
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" in result'
+          - result.failed
+
+    - name: check zone creation of a zone with more than one rrset
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d4.rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: t1.d4.rrset.example.
+              type: A
+              records:
+                - content: 192.168.0.0
+                - content: 192.168.0.1
+                - content: 192.168.1.2
+                - content: 192.168.3.4
+            - name: t2.d4.rrset.example.
+              type: A
+              records:
+                - content: 192.168.5.1
+                - content: 192.168.6.2
+                - content: 192.168.7.4
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - (t1_d4_rrset | length) == 4
+          - '"192.168.0.0" in t1_d4_rrset'
+          - '"192.168.0.1" in t1_d4_rrset'
+          - '"192.168.1.2" in t1_d4_rrset'
+          - '"192.168.3.4" in t1_d4_rrset'
+          - (t2_d4_rrset | length) == 3
+          - '"192.168.5.1" in t2_d4_rrset'
+          - '"192.168.6.2" in t2_d4_rrset'
+          - '"192.168.7.4" in t2_d4_rrset'
+      vars:
+        t1_d4_rrset: "{{ query('dig_local', 't1.d4.rrset.example.', qtype='A', flat=1, fail_on_error=false, real_empty=false) }}"
+        t2_d4_rrset: "{{ query('dig_local', 't2.d4.rrset.example.', qtype='A', flat=1, fail_on_error=false, real_empty=false) }}"
+
+    - name: check zone creation with one rrset, with non-default TTL
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d5.rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: t1.d5.rrset.example.
+              type: A
+              ttl: 900
+              records:
+                - content: 192.168.0.1
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - d5_rrset['ttl'] == 900
+      vars:
+        d5_rrset: "{{ lookup('dig_local', 't1.d5.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check zone creation with one rrset, with a disabled rr
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d6.rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: t1.d6.rrset.example.
+              type: A
+              records:
+                - content: 192.168.0.1
+                - content: 192.168.1.2
+                  disabled: true
+                - content: 192.168.3.4
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - '"192.168.1.2" not in d6_rrset'
+      vars:
+        d6_rrset: "{{ query('dig_local', 't1.d6.rrset.example.', qtype='A', flat=1, fail_on_error=false, real_empty=false) }}"
