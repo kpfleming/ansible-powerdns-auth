@@ -29,7 +29,7 @@ jobs:
     container:
       image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         show-progress: false
     - id: publish
@@ -44,7 +44,7 @@ jobs:
     container:
       image: docker.io/python:3.11
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         ref: docsite
         path: docsite
