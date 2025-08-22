@@ -18,6 +18,16 @@ for emergencies).
 
 ### Changed
 
+- Added testing against PowerDNS Authoritative Server 5.0.x.
+
+- Removed testing against PowerDNS Authoritative Server 4.7.x (EOL).
+
+- Added testing against Python 3.14.
+
+## [25.1.0] - 2025-06-21
+
+### Changed
+
 - Allow NS records in RRsets (contributed by torstehu in PR #162).
 
 ## [24.3.0] - 2024-10-13

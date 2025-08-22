@@ -282,8 +282,7 @@
           - not result.failed
           - result.changed
 
-    - when: (pdns_version == 'master') or (pdns_version is version('4.7', '>='))
-      block:
+    - block:
         - name: check "Producer" zone creation
           register: result
           kpfleming.powerdns_auth.zone:

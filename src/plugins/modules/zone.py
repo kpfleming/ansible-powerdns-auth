@@ -64,8 +64,6 @@ options:
       kind:
         description:
           - Zone kind.
-          - V(Producer) and V(Consumer) are only supported in server version
-            4.7.0 or later.
         choices: [ 'Native', 'Master', 'Slave', 'Producer', 'Consumer' ]
         type: str
         required: true
@@ -78,7 +76,6 @@ options:
           - Optional zone name, indicating that this zone should be a member of the specified
             catalog zone.
           - Must be an absolute zone name (ending with '.').
-          - Only supported in server version 4.7.0 or later.
         type: str
       nameservers:
         description:
