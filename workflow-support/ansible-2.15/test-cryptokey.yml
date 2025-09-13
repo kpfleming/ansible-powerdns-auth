@@ -1,0 +1,289 @@
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_python_interpreter: python
+    common_args: &common
+      api_key: foo
+      zone_name: cryptokeys.example.
+    refresh_task: &refresh
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        name: cryptokeys.example.
+        NS:
+          - host: ns1.example.
+
+  pre_tasks:
+    - ansible.builtin.debug:
+        var: ansible_python_interpreter
+
+    - name: Creating Native zone for cryptokeys tests
+      kpfleming.powerdns_auth.zone:
+        name: cryptokeys.example.
+        api_key: foo
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+          rrsets:
+            - name: cryptokeys.example.
+              type: A
+              records:
+                - content: 192.168.1.1
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.zone.name == "cryptokeys.example."
+          - result.zone.kind == "Native"
+
+  tasks:
+    - name: check that there are no keys
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: exists
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.exists
+          - not result.changed
+          - result.cryptokey == {}
+          - result.cryptokeys == []
+          - output == ""
+      vars:
+        output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check generated key creation
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: present
+        cryptokey:
+          keytype: csk
+          algorithm: ed25519
+          active: true
+      register: result
+    - <<: *refresh
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - (result.cryptokeys | length) == 1
+          - result.cryptokeys[0]["algorithm"].lower() == "ed25519"
+          - result.cryptokeys[0]["active"] == true
+          - result.cryptokeys[0]["keytype"] == "csk"
+          - output["algorithm"] == 15
+          - output["type"] == "DNSKEY"
+      vars:
+        output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=true, real_empty=true) | tojson }}"
+
+    - name: check key deletion
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: absent
+        cryptokey_id: 1
+      register: result
+    - <<: *refresh
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - result.cryptokeys == []
+          - result.cryptokey == {}
+          - output == ""
+      vars:
+        output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check imported key creation
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: present
+        cryptokey:
+          keytype: zsk
+          dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+          privatekey: "Private-key-format: v1.2\nAlgorithm: 15 (ED25519)\nPrivateKey: Rnt2dv3mWMmP8bU/8koayZ4R5dWdI86zJmZ0nnjPe6Q=\n"
+          active: true
+      register: result
+    - <<: *refresh
+    # For the following test : by default, when creating a key and it's the only one present
+    # powerdns will use it as a csk regardless of the keytype passed for its creation
+    # Once another key is present of the opposite type or a csk, powerdns will use
+    # the two keys as a ksk/zsk pair.
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.changed
+          - (result.cryptokeys | length) == 1
+          - result.cryptokeys[0]["active"] == true
+          - result.cryptokeys[0]["keytype"] == "csk"
+          - '"lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk=" in result.cryptokeys[0]["dnskey"]'
+          - output["key"] == "lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+          - output["algorithm"] == 15
+      vars:
+        output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false) | tojson }}"
+
+    - name: check getting key by id
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: exists
+        cryptokey_id: 1
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.changed
+          - result.exists
+          - result.cryptokey["active"] == true
+          - result.cryptokey["keytype"] == "csk"
+          - '"lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk=" in result.cryptokey["dnskey"]'
+
+    - name: check listing of all keys
+      block:
+        - name: creating key
+          kpfleming.powerdns_auth.cryptokey:
+            <<: *common
+            state: present
+            cryptokey:
+              active: false
+              keytype: ksk
+              algorithm: ed25519
+          register: cryptokey
+        - name: getting keys
+          kpfleming.powerdns_auth.cryptokey:
+            <<: *common
+            state: exists
+          register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.changed
+          - result.exists
+          - (result.cryptokeys | length) == 2
+          - result.cryptokey == {}
+          - cryptokey.changed
+
+    - name: deleting key for following tests
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: absent
+        cryptokey_id: 1
+    - <<: *refresh
+
+    - name: check activating key
+      block:
+        - kpfleming.powerdns_auth.cryptokey:
+            <<: *common
+            state: present
+            cryptokey_id: 2
+            cryptokey:
+              active: true
+          register: cryptokey
+        - kpfleming.powerdns_auth.cryptokey:
+            <<: *common
+            state: "exists"
+            cryptokey_id: 2
+          register: result
+    - <<: *refresh
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - cryptokey['exception'] is not defined
+          - result['exception'] is not defined
+          - not cryptokey.failed
+          - not result.failed
+          - result.cryptokey.active == true
+          - output["algorithm"] == 15
+      vars:
+        output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false) | tojson }}"
+
+    - name: check getting key by id of nonexistent key
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: exists
+        cryptokey_id: 100
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result.failed
+          - not result.exists
+          - result.msg == "API operation getCryptokey returned 'Not Found'"
+
+    - name: check operation on nonexistent zone
+      kpfleming.powerdns_auth.cryptokey:
+        api_key: foo
+        zone_name: nonexistent.example.
+        state: exists
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result.failed
+          - result.msg == "No zone found for name nonexistent.example."
+
+    - name: check imported key with wrong parameters
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: present
+        cryptokey:
+          keytype: zsk
+          dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+          active: true
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result.failed
+          - result.msg == "Wrong options provided for cryptokey creation"
+
+    - name: check missing keytype
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: present
+        cryptokey:
+          algorithm: ed25519
+          active: true
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result.failed
+          - result.msg == "Missing keytype option in cryptokey definition"
+
+    - name: check nonexistent key deletion
+      kpfleming.powerdns_auth.cryptokey:
+        <<: *common
+        state: absent
+        cryptokey_id: 100
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result.failed
+          - result.msg == "Key of id 100 not found for zone cryptokeys.example."

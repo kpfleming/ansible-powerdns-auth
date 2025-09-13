@@ -53,6 +53,8 @@ virtual environment on the managed node.
   * PowerDNS Authoritative Server:
     - kpfleming.powerdns_auth.tsigkey: manage TSIG keys
     - kpfleming.powerdns_auth.zone: manage zones
+    - kpfleming.powerdns_auth.rrset: manage rrsets
+    - kpfleming.powerdns_auth.cryptokey: manage cryptokeys
 
 ## Using this collection
 

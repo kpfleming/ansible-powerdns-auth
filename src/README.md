@@ -68,3 +68,137 @@ Examples:
     algorithm: hmac-sha256
     key: '+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=='
 ```
+
+## kpfleming.powerdns_auth.rrset
+
+This module can be used to create and remove rrsets. It can also manage records in any rrset.
+Two modes are available for records management, you can either use the traditional" way :
+```yaml
+- name: Creating a rrset of record type A
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    name: ns.zone.example.
+    type: A
+    records:
+      - content: 192.168.0.1
+```
+or use the record options from the ones supported :
+```yaml
+- name: Creating a rrset of record type A
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    name: ns.zone.example.
+    A:
+      - address: 192.168.0.1
+```
+
+The supported types are :
+A,AAAA,CAA,CNAME,DNSKEY,DS,HINFO,HTTPS,LOC,MX,NAPTR,NS,NSEC,NSEC3PARAM,PTR,RP,SPF,SOA,SRV,SSHFP,SVCB,TLSA,TXT
+
+Idempotency is only supported when the `keep` option is provided.
+
+Examples:
+```yaml
+- name: Deleting rrset
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    name: ns.zone.example.
+    type: A
+
+- name: Replacing records in rrset
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    name: ns.zone.example.
+    A:
+      - address: 192.168.1.1
+
+- name: Updating records in rrset
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    name: ns.zone.example.
+    keep: true
+    NS:
+      - host: ns1.example.
+
+- name: Deleting records in rrset
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    name: ns.zone.example.
+    state: absent
+    keep: true
+    NS:
+      - host: ns1.example.
+
+- name: Listing all rrsets in zone
+  kpfleming.powerdns_auth.rrset:
+    api_key: foo
+    zone_name: zone.example.
+    state: exists
+```
+
+## kpfleming.powerdns_auth.cryptokey
+
+This module can create, delete, activate/deactivate, publish/unpublish a cryptokey in a zone of PowerDNS Authoritative server.
+
+Note that for keytype, by default if only one key is present it will be used as a csk regardless ofthe provided type. For the key to assume its role another key of the opposite type has to be present (zsk for ksk and vice-versa).
+
+Examples:
+```yaml
+- name: Generate key
+  kpfleming.powerdns_auth.cryptokey:
+    api_key: foo
+    zone_name: crypto.example.
+    state: present
+    cryptokey:
+      keytype: csk
+      algorithm: ed25519
+      active: true
+
+- name: Import key
+  kpfleming.powerdns_auth.cryptokey:
+    api_key: foo
+    zone_name: crypto.example.
+    state: present
+    cryptokey:
+      keytype: zsk
+      dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+      privatekey: 'Private-key-format: v1.2\n
+                   Algorithm: 15 (ED25519)\n
+                   PrivateKey: Rnt2dv3mWMmP8bU/8koayZ4R5dWdI86zJmZ0nnjPe6Q=\n'
+      active: true
+
+- name: Delete key
+  kpfleming.powerdns_auth.cryptokey:
+    api_key: foo
+    zone_name: crypto.example.
+    state: absent
+    cryptokey_id: 1
+
+- name: Activating key
+  kpfleming.powerdns_auth.cryptokey:
+    api_key: foo
+    zone_name: crypto.example.
+    state: present
+    cryptokey_id: 1
+    cryptokey:
+      active: true
+
+- name: Listing a specific key
+  kpfleming.powerdns_auth.cryptokey:
+    api_key: foo
+    zone_name: crypto.example.
+    state: exists
+    cryptokey_id: 1
+
+- name: Listing all keys in the zone
+  kpfleming.powerdns_auth.cryptokey:
+    api_key: foo
+    zone_name: crypto.example.
+    state: exists
+```
