@@ -7,7 +7,7 @@
     common_args: &common
       api_key: foo
       zone_name: cryptokeys.example.
-    # For some reason in this test environment changes made to the cryptokeys
+    # For some reason in this test environment changes made to the CryptoKeys
     # are not effective unless some record is updated in the zone hence the following
     # task and its presence throughout the playbook.
     refresh_task: &refresh
@@ -21,7 +21,7 @@
     - ansible.builtin.debug:
         var: ansible_python_interpreter
 
-    - name: Creating Native zone for cryptokeys tests
+    - name: Creating Native zone for CryptoKeys tests
       kpfleming.powerdns_auth.zone:
         name: cryptokeys.example.
         api_key: foo
@@ -50,7 +50,7 @@
           - result.zone.kind == "Native"
 
   tasks:
-    - name: check that there are no keys
+    - name: check that there are no CryptoKeys
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: exists
@@ -62,20 +62,18 @@
           - not result.failed
           - not result.exists
           - not result.changed
-          - result.cryptokey == {}
           - result.cryptokeys == []
           - output == ""
       vars:
         output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check generated key creation
+    - name: check generated CryptoKey creation
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: present
-        cryptokey:
-          keytype: csk
-          algorithm: ed25519
-          active: true
+        keytype: csk
+        algorithm: ed25519
+        active: true
       register: result
     - <<: *refresh
     - ansible.builtin.assert:
@@ -93,11 +91,11 @@
       vars:
         output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=true, real_empty=true)}}"
 
-    - name: check key deletion
+    - name: check CryptoKey deletion
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: absent
-        cryptokey_id: 1
+        id: 1
       register: result
     - <<: *refresh
     - ansible.builtin.assert:
@@ -107,26 +105,24 @@
           - not result.failed
           - result.changed
           - result.cryptokeys == []
-          - result.cryptokey == {}
           - output == ""
       vars:
         output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check imported key creation
+    - name: check imported CryptoKey creation
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: present
-        cryptokey:
-          keytype: zsk
-          dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
-          privatekey: "Private-key-format: v1.2\nAlgorithm: 15 (ED25519)\nPrivateKey: Rnt2dv3mWMmP8bU/8koayZ4R5dWdI86zJmZ0nnjPe6Q=\n"
-          active: true
+        keytype: zsk
+        dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+        privatekey: "Private-key-format: v1.2\nAlgorithm: 15 (ED25519)\nPrivateKey: Rnt2dv3mWMmP8bU/8koayZ4R5dWdI86zJmZ0nnjPe6Q=\n"
+        active: true
       register: result
     - <<: *refresh
-    # For the following test : by default, when creating a key and it's the only one present
+    # For the following test : by default, when creating a Cryptokey and it's the only one present
     # powerdns will use it as a csk regardless of the keytype passed for its creation
-    # Once another key is present of the opposite type or a csk, powerdns will use
-    # the two keys as a ksk/zsk pair.
+    # Once another CryptoKey is present of the opposite type or a csk, powerdns will use
+    # the two CryptoKeys as a ksk/zsk pair.
     - ansible.builtin.assert:
         quiet: true
         that:
@@ -142,11 +138,11 @@
       vars:
         output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false)}}"
 
-    - name: check getting key by id
+    - name: check getting CryptoKey by id
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: exists
-        cryptokey_id: 1
+        id: 1
       register: result
     - ansible.builtin.assert:
         quiet: true
@@ -155,22 +151,22 @@
           - not result.failed
           - not result.changed
           - result.exists
-          - result.cryptokey["active"] == true
-          - result.cryptokey["keytype"] == "csk"
-          - '"lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk=" in result.cryptokey["dnskey"]'
+          - (result.cryptokeys | length) == 1
+          - result.cryptokeys[0]["active"] == true
+          - result.cryptokeys[0]["keytype"] == "csk"
+          - '"lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk=" in result.cryptokeys[0]["dnskey"]'
 
-    - name: check listing of all keys
+    - name: check listing of all CryptoKeys
       block:
-        - name: creating key
+        - name: creating CryptoKey
           kpfleming.powerdns_auth.cryptokey:
             <<: *common
             state: present
-            cryptokey:
-              active: false
-              keytype: ksk
-              algorithm: ed25519
+            active: false
+            keytype: ksk
+            algorithm: ed25519
           register: cryptokey
-        - name: getting keys
+        - name: getting CryptoKeys
           kpfleming.powerdns_auth.cryptokey:
             <<: *common
             state: exists
@@ -183,29 +179,27 @@
           - not result.changed
           - result.exists
           - (result.cryptokeys | length) == 2
-          - result.cryptokey == {}
           - cryptokey.changed
 
-    - name: deleting key for following tests
+    - name: deleting CryptoKey for following tests
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: absent
-        cryptokey_id: 1
+        id: 1
     - <<: *refresh
 
-    - name: check activating key
+    - name: check activating CryptoKey
       block:
         - kpfleming.powerdns_auth.cryptokey:
             <<: *common
             state: present
-            cryptokey_id: 2
-            cryptokey:
-              active: true
+            id: 2
+            active: true
           register: cryptokey
         - kpfleming.powerdns_auth.cryptokey:
             <<: *common
             state: "exists"
-            cryptokey_id: 2
+            id: 2
           register: result
     - <<: *refresh
     - ansible.builtin.assert:
@@ -215,16 +209,16 @@
           - '"exception" not in result'
           - not cryptokey.failed
           - not result.failed
-          - result.cryptokey.active == true
+          - result.cryptokeys[0]['active'] == true
           - output["algorithm"] == 15
       vars:
         output: "{{ lookup('dig_local', 'cryptokeys.example.', qtype='DNSKEY', flat=0, fail_on_error=false, real_empty=false)}}"
 
-    - name: check getting key by id of nonexistent key
+    - name: check getting CryptoKey by id of nonexistent CryptoKey
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: exists
-        cryptokey_id: 100
+        id: 100
       ignore_errors: true
       register: result
     - ansible.builtin.assert:
@@ -249,14 +243,13 @@
           - result.failed
           - result.msg == "No zone found for name nonexistent.example."
 
-    - name: check imported key with wrong parameters
+    - name: check imported CryptoKey with wrong parameters
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: present
-        cryptokey:
-          keytype: zsk
-          dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
-          active: true
+        keytype: zsk
+        dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+        active: true
       ignore_errors: true
       register: result
     - ansible.builtin.assert:
@@ -264,15 +257,14 @@
         that:
           - '"exception" in result'
           - result.failed
-          - result.msg == "Wrong options provided for cryptokey creation"
+          - result.msg == "Wrong options provided for CryptoKey creation"
 
     - name: check missing keytype
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: present
-        cryptokey:
-          algorithm: ed25519
-          active: true
+        algorithm: ed25519
+        active: true
       ignore_errors: true
       register: result
     - ansible.builtin.assert:
@@ -280,13 +272,13 @@
         that:
           - '"exception" in result'
           - result.failed
-          - result.msg == "Missing keytype option in cryptokey definition"
+          - result.msg == "Missing keytype option in CryptoKey definition"
 
-    - name: check nonexistent key deletion
+    - name: check nonexistent CryptoKey deletion
       kpfleming.powerdns_auth.cryptokey:
         <<: *common
         state: absent
-        cryptokey_id: 100
+        id: 100
       ignore_errors: true
       register: result
     - ansible.builtin.assert:

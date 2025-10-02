@@ -1,7 +1,8 @@
 {% for rrset in rrsets %}
 {% set rrset_type = rrset.keys() | first %}
-- name: Creating rrset of type {{ rrset_type }}
+- name: Creating RRset of type {{ rrset_type }}
   kpfleming.powerdns_auth.rrset:
+    {# The following types require the RR to be in the root of the zone #}
     {% if rrset_type in ["DNSKEY", "NS", "NSEC"] %}
         {% set name = "rrset.example." %}
     {% else %}

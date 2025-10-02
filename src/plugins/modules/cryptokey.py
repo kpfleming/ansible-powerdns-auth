@@ -18,10 +18,10 @@ DOCUMENTATION = """
 ---
 module: powerdns_auth_cryptokey
 
-short_description: Manages a cryptokey in a zone of PowerDNS Authoritative server
+short_description: Manages a CryptoKey in a zone of PowerDNS Authoritative server
 
 description:
-  - This module can create, delete, activate/deactivate, publish/unpublish a cryptokey
+  - This module can create, delete, activate/deactivate, publish/unpublish a CryptoKey
     in a zone of PowerDNS Authoritative server.
 
 requirements:
@@ -33,11 +33,11 @@ extends_documentation_fragment:
 options:
   state:
     description:
-      - If V(present) the cryptokey will be created
-      - If V(present) and O(cryptokey_id) the cryptokey will be updated
-      - If V(absent) the cryptokey will be deleted
+      - If V(present) the CryptoKey will be created
+      - If V(present) and O(id) the CryptoKey will be updated
+      - If V(absent) the CryptoKey will be deleted
       - If V(exists) lists all the keys in the zone
-      - If V(exists) and O(cryptokey_id) returns the corresponding cryptokey
+      - If V(exists) and O(id) returns the corresponding CryptoKey
     choices: [ 'present', 'absent', 'exists' ]
     type: str
     required: false
@@ -47,75 +47,50 @@ options:
       - Name of the zone
     type: str
     required: true
-  server_id:
+  id:
     description:
-      - ID of the server managed.
+      - The CryptoKey id.
     type: str
-    default: localhost
-  api_url:
+  keytype:
     description:
-      - URL of the API of the PowerDNS Authoritative server.
+      - The type of CryptoKey, either zone signing key (zsk), key signing key (ksk)
+        or combined signing key (csk)
+      - Note that by default if only one CryptoKey is present it will be used as a csk regardless
+        of the provided type. For the CryptoKey to assume its role another CryptoKey
+        of the opposite type has to be present (zsk for ksk and vice-versa).
     type: str
-    default: 'http://localhost:8081'
-  api_spec_path:
-    description:
-      - API endpoint of the swagger resource.
-    type: str
-    default: /api/docs
-  api_key:
-    description:
-      - Key of the PowerDNS API.
-    type: str
+    choices: [ 'zsk', 'ksk', 'csk']
     required: true
-  cryptokey_id:
+  active:
     description:
-      - The cryptokey id.
+      - Whether the CryptoKey is active or not.
+    type: bool
+    default: false
+  published:
+    description:
+      - Whether the CryptoKey is published or not.
+    type: bool
+    default: true
+  dnskey:
+    description:
+      - The DNSKEY record for the CryptoKey.
+      - Required alongside O(privatekey) for CryptoKey creation if O(algorithm)
+        is not present.
     type: str
-  cryptokey:
+  privatekey:
     description:
-      - Cryptokey object definition.
-    type: dict
-    suboptions:
-      keytype:
-        description:
-          - The type of key, either zone signing key (zsk), key signing key (ksk)
-            or combined signing key (csk)
-          - Note that by default if only one key is present it will be used as a csk regardless of
-            the provided type. For the key to assume its role another key of the opposite type has
-            to be present (zsk for ksk and vice-versa).
-        type: str
-        choices: [ 'zsk', 'ksk', 'csk']
-        required: true
-      active:
-        description:
-          - Whether the key is active or not.
-        type: bool
-        default: false
-      published:
-        description:
-          - Whether the key is published or not.
-        type: bool
-        default: true
-      dnskey:
-        description:
-          - The DNSKEY record for the cryptokey.
-          - Required alongside O(privatekey) for cryptokey creation if O(algorithm)
-            is not present.
-        type: str
-      privatekey:
-        description:
-          - The privatekey in ISC format.
-          - Required if O(dnskey)
-        type: str
-      algorithm:
-        description:
-          - Algorithm for key generation.
-        type: str
-      bits:
-        description:
-          - Size of the key in bits when O(algorithm) is a variant of RSA.
-        type: int
-        default: 4096
+      - The privatekey in ISC format.
+      - Required if O(dnskey)
+    type: str
+  algorithm:
+    description:
+      - Algorithm for CryptoKey generation.
+    type: str
+  bits:
+    description:
+      - Size of the CryptoKey in bits when O(algorithm) is a variant of RSA.
+    type: int
+    default: 4096
 
 author:
   - Mohamed Chamrouk (@mohamed-chamrouk)
@@ -129,47 +104,44 @@ EXAMPLES = """
     api_key: foo
     zone_name: crypto.example.
     state: present
-    cryptokey:
-      keytype: csk
-      algorithm: ed25519
-      active: true
+    keytype: csk
+    algorithm: ed25519
+    active: true
 
 - name: Import key
   kpfleming.powerdns_auth.cryptokey:
     api_key: foo
     zone_name: crypto.example.
     state: present
-    cryptokey:
-      keytype: zsk
-      dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
-      privatekey: |
-        Private-key-format: v1.2
-        Algorithm: 15 (ED25519)
-        PrivateKey: Rnt2dv3mWMmP8bU/8koayZ4R5dWdI86zJmZ0nnjPe6Q=
-      active: true
+    keytype: zsk
+    dnskey: "257 3 15 lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
+    privatekey: |
+      Private-key-format: v1.2
+      Algorithm: 15 (ED25519)
+      PrivateKey: Rnt2dv3mWMmP8bU/8koayZ4R5dWdI86zJmZ0nnjPe6Q=
+    active: true
 
 - name: Delete key
   kpfleming.powerdns_auth.cryptokey:
     api_key: foo
     zone_name: crypto.example.
     state: absent
-    cryptokey_id: 1
+    id: 1
 
 - name: Activating key
   kpfleming.powerdns_auth.cryptokey:
     api_key: foo
     zone_name: crypto.example.
     state: present
-    cryptokey_id: 1
-    cryptokey:
-      active: true
+    id: 1
+    active: true
 
 - name: Listing a specific key
   kpfleming.powerdns_auth.cryptokey:
     api_key: foo
     zone_name: crypto.example.
     state: exists
-    cryptokey_id: 1
+    id: 1
 
 - name: Listing all keys in the zone
   kpfleming.powerdns_auth.cryptokey:
@@ -183,59 +155,22 @@ RETURN = """
 ---
 exists:
   description:
-    - If cryptokey_id is provided, whether a corresponding key exists
+    - If id is provided, whether a corresponding key exists
     - Otherwise if there is any key in the zone
   returned: when state is exists
   type: bool
-cryptokey:
-  description:
-    - The corresponding key when state is exists and cryptokey_id is provided
-  returned: when state is exists and cryptokey_id is provided
-  type: dict
-  contains:
-    active:
-      description: whether or not the key is active
-      type: bool
-    algorithm:
-      description: the key algorithm
-      type: str
-    bits:
-      description: size in bits, used in dnskey record
-      type: int
-    dnskey:
-      description: the dnskey record
-      type: str
-    ds:
-      description: when key is ksk or csk, used to create the DS record on the parent zone
-      type: list
-      elements: str
-    flags:
-      description: flags
-      type: str
-    id:
-      description: the id of the key
-      type: str
-    keytype:
-      description: the type of the key
-      type: str
-    published:
-      description: whether or not the key is published
-      type: bool
-    type:
-      description: always Cryptokey
-      type: str
 cryptokeys:
   description:
-    - List of existing cryptokeys after all the changes are made.
-  returned: always except when cryptokey is returned
+    - List of existing CryptoKeys after all the changes are made.
+  returned: always
   type: list
   elements: dict
   contains:
     active:
-      description: whether or not the key is active
+      description: whether or not the CryptoKey is active
       type: bool
     algorithm:
-      description: the key algorithm
+      description: the CryptoKey algorithm
       type: str
     bits:
       description: size in bits, used in dnskey record
@@ -244,20 +179,20 @@ cryptokeys:
       description: the dnskey record
       type: str
     ds:
-      description: when key is ksk or csk, used to create the DS record on the parent zone
+      description: when keytype is ksk or csk, used to create the DS record on the parent zone
       type: list
       elements: str
     flags:
       description: flags
       type: str
     id:
-      description: the id of the key
+      description: the id of the CryptoKey
       type: str
     keytype:
-      description: the type of the key
+      description: the type of the CryptoKey
       type: str
     published:
-      description: whether or not the key is published
+      description: whether or not the CryptoKey is published
       type: bool
     type:
       description: always Cryptokey
@@ -343,30 +278,28 @@ def main():
             "required": True,
             "no_log": True,
         },
-        "cryptokey_id": {
+        "id": {
             "type": "str",
         },
-        "cryptokey": {
-            "type": "dict",
-            "options": {
-                "keytype": {"type": "str", "required": False, "choices": ["zsk", "ksk", "csk"]},
-                "active": {"type": "bool", "default": False},
-                "published": {"type": "bool", "default": True},
-                "dnskey": {"type": "str", "required": False},
-                "privatekey": {"type": "str", "required": False},
-                "algorithm": {"type": "str", "required": False},
-                "bits": {"type": "int", "default": 4096},
-            },
-        },
+        "keytype": {"type": "str", "required": False, "choices": ["zsk", "ksk", "csk"]},
+        "active": {"type": "bool", "default": False},
+        "published": {"type": "bool", "default": True},
+        "dnskey": {"type": "str", "required": False},
+        "privatekey": {"type": "str", "required": False},
+        "algorithm": {"type": "str", "required": False},
+        "bits": {"type": "int", "default": 4096},
     }
 
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
-        required_if=(("state", "present", ["cryptokey"]), ("state", "absent", ["cryptokey_id"])),
+        required_if=(
+            ("state", "present", ["keytype", "active", "published"], True),
+            ("state", "absent", ["id"]),
+        ),
     )
 
-    result = {"changed": False, "cryptokey": {}, "cryptokeys": []}
+    result = {"changed": False, "cryptokeys": []}
 
     params = module.params
     state = params["state"]
@@ -376,10 +309,6 @@ def main():
         module=module, result=result, object_type="zones", zone_id=None
     )
 
-    api_cryptokey_client = APICryptokeyWrapper(
-        module=module, result=result, object_type="zonecryptokey", zone_id=None, cryptokey_id=None
-    )
-
     partial_zone_info = api_zone_client.listZones(zone=zone_name)
 
     if len(partial_zone_info) == 0:
@@ -387,27 +316,42 @@ def main():
 
     # get the zone_id from the zone_name
     zone_id = partial_zone_info[0]["id"]
-    api_cryptokey_client.zone_id = zone_id
+    api_cryptokey_client = APICryptokeyWrapper(
+        module=module,
+        result=result,
+        object_type="zonecryptokey",
+        zone_id=zone_id,
+        cryptokey_id=None,
+    )
 
     existing_zone_keys = api_cryptokey_client.listCryptokeys()
 
     if state == "exists":
         result["exists"] = False
-        if params["cryptokey_id"] is not None:
-            api_cryptokey_client.cryptokey_id = params["cryptokey_id"]
-            result["cryptokey"] = api_cryptokey_client.getCryptokey()
+        if params["id"] is not None:
+            api_cryptokey_client.cryptokey_id = params["id"]
+            result["cryptokeys"] = [api_cryptokey_client.getCryptokey()]
             # nonexistent key id is handled by the API error handler
         else:
             result["cryptokeys"] = existing_zone_keys
 
-        if result["cryptokey"] or result["cryptokeys"]:
+        if result["cryptokeys"]:
             result["exists"] = True
     elif state == "present":
-        cryptokey_def = params["cryptokey"]
-        if params["cryptokey_id"] is None:
+        cryptokey_fields = [
+            "keytype",
+            "active",
+            "published",
+            "dnskey",
+            "privatekey",
+            "algorithm",
+            "bits",
+        ]
+        cryptokey_def = {key: params[key] for key in cryptokey_fields}
+        if params["id"] is None:
             # Creating the cryptokey
             if cryptokey_def["keytype"] is None:
-                module.fail_json(msg="Missing keytype option in cryptokey definition", **result)
+                module.fail_json(msg="Missing keytype option in CryptoKey definition", **result)
 
             generated_key_fields = ["algorithm"]
             imported_key_fields = ["dnskey", "privatekey"]
@@ -421,7 +365,7 @@ def main():
             elif cryptokey_def["privatekey"] is not None and cryptokey_def["dnskey"] is not None:
                 result_fields = common_fields + imported_key_fields
             else:
-                module.fail_json(msg="Wrong options provided for cryptokey creation", **result)
+                module.fail_json(msg="Wrong options provided for CryptoKey creation", **result)
 
             cryptokey = {field: cryptokey_def[field] for field in result_fields}
 
@@ -430,33 +374,33 @@ def main():
             # Updating the cryptokey
             cryptokeys_ids = [str(key["id"]) for key in existing_zone_keys]
 
-            if params["cryptokey_id"] in cryptokeys_ids:
+            if params["id"] in cryptokeys_ids:
                 cryptokey = {
                     "active": cryptokey_def["active"],
                     "published": cryptokey_def["published"],
                 }
             else:
                 module.fail_json(
-                    msg=f"Key of id {params['cryptokey_id']} not found \
+                    msg=f"Key of id {params['id']} not found \
                           for zone {params['zone_name']}",
                     **result,
                 )
 
-            api_cryptokey_client.cryptokey_id = params["cryptokey_id"]
+            api_cryptokey_client.cryptokey_id = params["id"]
             api_cryptokey_client.modifyCryptokey(cryptokey=cryptokey)
 
         result["changed"] = True
     else:
         # when state is absent
         cryptokeys_ids = [str(key["id"]) for key in existing_zone_keys]
-        cryptokey_id = params["cryptokey_id"]
+        cryptokey_id = params["id"]
 
         if cryptokey_id in cryptokeys_ids:
             api_cryptokey_client.cryptokey_id = cryptokey_id
             api_cryptokey_client.deleteCryptokey()
         else:
             module.fail_json(
-                msg=f"Key of id {params['cryptokey_id']} not found for zone {params['zone_name']}",
+                msg=f"Key of id {params['id']} not found for zone {params['zone_name']}",
                 **result,
             )
 

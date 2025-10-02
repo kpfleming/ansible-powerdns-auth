@@ -17,7 +17,7 @@
     - ansible.builtin.debug:
         var: ansible_python_interpreter
 
-    - name: Creating template for all rrset types
+    - name: Creating template for all RRset types
       ansible.builtin.template:
         src: ./template/all-rrset-types.yml.j2
         dest: ./template/test-rrset-all-types.yml
@@ -26,7 +26,7 @@
     - ansible.builtin.set_fact:
         rrsets: "{{ rrsets_dnssec }}"
 
-    - name: Creating template for all rrset dnssec types
+    - name: Creating template for all RRset dnssec types
       ansible.builtin.template:
         src: ./template/all-rrset-types.yml.j2
         dest: ./template/test-rrset-all-dnssec-types.yml
@@ -56,15 +56,15 @@
           - result.zone.kind == "Native"
 
   tasks:
-    - name: check creating each type of supported DNS record
+    - name: check creating each type of supported DNS RR
       ansible.builtin.include_tasks:
         file: ./template/test-rrset-all-types.yml
 
-    - name: check creating each type of supported DNSSEC record
+    - name: check creating each type of supported DNSSEC RR
       ansible.builtin.include_tasks:
         file: ./template/test-rrset-all-dnssec-types.yml
 
-    - name: check deleting existing rrset
+    - name: check deleting existing RRset
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: absent
@@ -81,7 +81,7 @@
       vars:
         dig: "{{ lookup('dig_local', 't.hinfo.rrset.example.', qtype='HINFO', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check updating existing rrset by replacing all records
+    - name: check updating existing RRset by replacing all RRs
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: present
@@ -102,7 +102,7 @@
       vars:
         dig: "{{ lookup('dig_local', 't.aaaa.rrset.example.', qtype='AAAA', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check updating existing rrset and keeping records
+    - name: check updating existing RRset and keeping RRs
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: present
@@ -122,7 +122,7 @@
       vars:
         dig: "{{ query('dig_local', 't.a.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check deleting some of records in exisitng rrset
+    - name: check deleting some RR in exisitng RRset
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: absent
@@ -143,7 +143,7 @@
       vars:
         dig: "{{ lookup('dig_local', 't.txt.rrset.example.', qtype='TXT', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check updating existing rrset with same content
+    - name: check updating existing RRset with same content
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: present
@@ -164,7 +164,7 @@
       vars:
         dig: "{{ lookup('dig_local', 'rrset.example.', qtype='NS', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check deleting nonexistent record from existing rrset
+    - name: check deleting nonexistent RR from existing RRset
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: absent
@@ -185,7 +185,7 @@
       vars:
         dig: "{{ lookup('dig_local', 't.cname.rrset.example.', qtype='CNAME', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check deleting nonexistent rrset
+    - name: check deleting nonexistent RRset
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: absent
@@ -231,7 +231,7 @@
           - result.failed
           - not result.changed
 
-    - name: check missing options in rrset
+    - name: check missing options in RRset
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: present
@@ -248,7 +248,7 @@
           - result.failed
           - not result.changed
 
-    - name: check listing all rrsets of a zone
+    - name: check listing all RRsets of a zone
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: exists
@@ -261,7 +261,7 @@
           - not result.changed
           - (result['rrsets'] | length) == 22
 
-    - name: check listing all rrsets of a given type
+    - name: check listing all RRsets of a given type
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: exists
@@ -276,7 +276,7 @@
           - result.exists
           - (result.rrsets | map(attribute='type') | unique | list) == ["A"]
 
-    - name: check listing all rrsets of a given name
+    - name: check listing all RRsets of a given name
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: exists
