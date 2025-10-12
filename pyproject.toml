@@ -16,6 +16,7 @@ lint.ignore = [
   "PLR0915", # Leave complexity to me.
   "RUF012",  # no need for this warning in Ansible modules
   "S101",    # assert
+  "TID252",  # relative imports make more sense here
   "TRY301",  # Raise in try blocks can totally make sense.
 ]
 lint.unfixable = [ "F401" ]

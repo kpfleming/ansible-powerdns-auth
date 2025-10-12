@@ -6,10 +6,8 @@
 import sys
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kpfleming.powerdns_auth.plugins.module_utils.api_wrapper import (
-    APIWrapper,
-    api_exception_handler,
-)
+
+from ..api_wrapper import APITSIGKeyWrapper
 
 assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
 
@@ -130,28 +128,6 @@ key:
       returned: always
       type: str
 """
-
-
-class APITSIGKeyWrapper(APIWrapper):
-    @api_exception_handler
-    def createTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.createTSIGKey(server_id=self.server_id, **kwargs).result()
-
-    @api_exception_handler
-    def deleteTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.deleteTSIGKey(server_id=self.server_id, **kwargs).result()
-
-    @api_exception_handler
-    def getTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.getTSIGKey(server_id=self.server_id, **kwargs).result()
-
-    @api_exception_handler
-    def listTSIGKeys(self):  # noqa: N802
-        return self.raw_api.listTSIGKeys(server_id=self.server_id).result()
-
-    @api_exception_handler
-    def putTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.putTSIGKey(server_id=self.server_id, **kwargs).result()
 
 
 def main():
