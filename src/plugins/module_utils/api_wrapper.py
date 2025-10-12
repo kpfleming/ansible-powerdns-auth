@@ -89,11 +89,11 @@ class APIZoneWrapper(APIWrapper):
         return self.raw_api.deleteZone(server_id=self.server_id, zone_id=self.zone_id).result()
 
     @api_exception_handler
-    def listZone(self):  # noqa: N802
+    def listZone(self, *, rrsets=False):  # noqa: N802
         return self.raw_api.listZone(
             server_id=self.server_id,
             zone_id=self.zone_id,
-            rrsets=False,
+            rrsets=rrsets,
         ).result()
 
     @api_exception_handler
@@ -103,6 +103,14 @@ class APIZoneWrapper(APIWrapper):
     @api_exception_handler
     def notifyZone(self):  # noqa: N802
         return self.raw_api.notifyZone(server_id=self.server_id, zone_id=self.zone_id).result()
+
+    @api_exception_handler
+    def patchZone(self, **kwargs):  # noqa: N802
+        return self.raw_api.patchZone(
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+            **kwargs,
+        ).result()
 
     @api_exception_handler
     def putZone(self, **kwargs):  # noqa: N802
