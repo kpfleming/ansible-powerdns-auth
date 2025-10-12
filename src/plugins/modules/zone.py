@@ -6,10 +6,9 @@
 import sys
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kpfleming.powerdns_auth.plugins.module_utils.api_wrapper import (
-    APIWrapper,
-    api_exception_handler,
-)
+
+from ..module_utils.api_module_args import API_MODULE_ARGS
+from ..module_utils.api_wrapper import APIZoneMetadataWrapper, APIZoneWrapper
 
 assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
 
@@ -563,77 +562,6 @@ zone:
 """
 
 
-class APIZoneWrapper(APIWrapper):
-    def __init__(self, *, module, result, object_type, zone_id):
-        super().__init__(module=module, result=result, object_type=object_type)
-        self.zone_id = zone_id
-
-    @api_exception_handler
-    def axfrRetrieveZone(self):  # noqa: N802
-        return self.raw_api.axfrRetrieveZone(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-        ).result()
-
-    @api_exception_handler
-    def createZone(self, **kwargs):  # noqa: N802
-        return self.raw_api.createZone(server_id=self.server_id, rrsets=False, **kwargs).result()
-
-    @api_exception_handler
-    def deleteZone(self):  # noqa: N802
-        return self.raw_api.deleteZone(server_id=self.server_id, zone_id=self.zone_id).result()
-
-    @api_exception_handler
-    def listZone(self):  # noqa: N802
-        return self.raw_api.listZone(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            rrsets=False,
-        ).result()
-
-    @api_exception_handler
-    def listZones(self, **kwargs):  # noqa: N802
-        return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
-
-    @api_exception_handler
-    def notifyZone(self):  # noqa: N802
-        return self.raw_api.notifyZone(server_id=self.server_id, zone_id=self.zone_id).result()
-
-    @api_exception_handler
-    def putZone(self, **kwargs):  # noqa: N802
-        return self.raw_api.putZone(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            **kwargs,
-        ).result()
-
-
-class APIZoneMetadataWrapper(APIWrapper):
-    def __init__(self, *, module, result, object_type, zone_id):
-        super().__init__(module=module, result=result, object_type=object_type)
-        self.zone_id = zone_id
-
-    @api_exception_handler
-    def deleteMetadata(self, **kwargs):  # noqa: N802
-        return self.raw_api.deleteMetadata(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            **kwargs,
-        ).result()
-
-    @api_exception_handler
-    def listMetadata(self):  # noqa: N802
-        return self.raw_api.listMetadata(server_id=self.server_id, zone_id=self.zone_id).result()
-
-    @api_exception_handler
-    def modifyMetadata(self, **kwargs):  # noqa: N802
-        return self.raw_api.modifyMetadata(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            **kwargs,
-        ).result()
-
-
 class Metadata:
     map_by_api_kind = {}
     map_by_meta = {}
@@ -1063,23 +991,7 @@ def main():
             "type": "str",
             "required": True,
         },
-        "server_id": {
-            "type": "str",
-            "default": "localhost",
-        },
-        "api_url": {
-            "type": "str",
-            "default": "http://localhost:8081",
-        },
-        "api_spec_path": {
-            "type": "str",
-            "default": "/api/docs",
-        },
-        "api_key": {
-            "type": "str",
-            "required": True,
-            "no_log": True,
-        },
+        **API_MODULE_ARGS,
         "properties": {
             "type": "dict",
             "options": {
