@@ -7,6 +7,7 @@ import sys
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APIZoneMetadataWrapper, APIZoneWrapper
 
 assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
@@ -990,23 +991,7 @@ def main():
             "type": "str",
             "required": True,
         },
-        "server_id": {
-            "type": "str",
-            "default": "localhost",
-        },
-        "api_url": {
-            "type": "str",
-            "default": "http://localhost:8081",
-        },
-        "api_spec_path": {
-            "type": "str",
-            "default": "/api/docs",
-        },
-        "api_key": {
-            "type": "str",
-            "required": True,
-            "no_log": True,
-        },
+        **API_MODULE_ARGS,
         "properties": {
             "type": "dict",
             "options": {
