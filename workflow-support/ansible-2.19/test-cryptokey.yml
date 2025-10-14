@@ -119,8 +119,8 @@
         active: true
       register: result
     - <<: *refresh
-    # For the following test : by default, when creating a Cryptokey and it's the only one present
-    # powerdns will use it as a csk regardless of the keytype passed for its creation
+    # For the following test : by default, when creating a unique CryptoKey in a zone,
+    # powerdns will use it as a csk regardless of the keytype passed for its creation.
     # Once another CryptoKey is present of the opposite type or a csk, powerdns will use
     # the two CryptoKeys as a ksk/zsk pair.
     - ansible.builtin.assert:
@@ -257,7 +257,7 @@
         that:
           - '"exception" in result'
           - result.failed
-          - result.msg == "Wrong options provided for CryptoKey creation"
+          - "result.msg == 'parameters are required together: dnskey, privatekey'"
 
     - name: check missing keytype
       kpfleming.powerdns_auth.cryptokey:

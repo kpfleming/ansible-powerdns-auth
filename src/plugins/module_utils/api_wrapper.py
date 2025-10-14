@@ -171,3 +171,43 @@ class APITSIGKeyWrapper(APIWrapper):
     @api_exception_handler
     def putTSIGKey(self, **kwargs):  # noqa: N802
         return self.raw_api.putTSIGKey(server_id=self.server_id, **kwargs).result()
+
+
+class APICryptokeyWrapper(APIWrapper):
+    def __init__(self, *, module, result, object_type, zone_id, cryptokey_id):
+        super().__init__(module=module, result=result, object_type=object_type)
+        self.zone_id = zone_id
+        self.cryptokey_id = cryptokey_id
+
+    @api_exception_handler
+    def listCryptokeys(self):  # noqa: N802
+        return self.raw_api.listCryptokeys(
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+        ).result()
+
+    @api_exception_handler
+    def createCryptokey(self, **kwargs):  # noqa: N802
+        return self.raw_api.createCryptokey(
+            server_id=self.server_id,
+            zone_id=self.zone_id,
+            **kwargs,
+        ).result()
+
+    @api_exception_handler
+    def getCryptokey(self):  # noqa: N802
+        return self.raw_api.getCryptokey(
+            server_id=self.server_id, zone_id=self.zone_id, cryptokey_id=self.cryptokey_id
+        ).result()
+
+    @api_exception_handler
+    def modifyCryptokey(self, **kwargs):  # noqa: N802
+        return self.raw_api.modifyCryptokey(
+            server_id=self.server_id, zone_id=self.zone_id, cryptokey_id=self.cryptokey_id, **kwargs
+        ).result()
+
+    @api_exception_handler
+    def deleteCryptokey(self):  # noqa: N802
+        return self.raw_api.deleteCryptokey(
+            server_id=self.server_id, zone_id=self.zone_id, cryptokey_id=self.cryptokey_id
+        ).result()

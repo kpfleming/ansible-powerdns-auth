@@ -6,10 +6,9 @@
 import sys
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kpfleming.powerdns_auth.plugins.module_utils.api_wrapper import (
-    APIWrapper,
-    api_exception_handler,
-)
+
+from ..module_utils.api_module_args import API_MODULE_ARGS
+from ..module_utils.api_wrapper import APIZoneWrapper
 
 assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
 
@@ -832,32 +831,6 @@ rrsets:
 """
 
 
-class APIZoneRRSetWrapper(APIWrapper):
-    def __init__(self, *, module, result, object_type, zone_id):
-        super().__init__(module=module, result=result, object_type=object_type)
-        self.zone_id = zone_id
-
-    @api_exception_handler
-    def listZone(self):  # noqa: N802
-        return self.raw_api.listZone(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            rrsets=True,
-        ).result()
-
-    @api_exception_handler
-    def listZones(self, **kwargs):  # noqa: N802
-        return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
-
-    @api_exception_handler
-    def patchZone(self, **kwargs):  # noqa: N802
-        return self.raw_api.patchZone(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            **kwargs,
-        ).result()
-
-
 def get_result_rrsets(rrsets, rrset_name, rrset_type):
     """
     Function to build the return object to the ansible module.
@@ -903,7 +876,7 @@ def get_result_rrsets(rrsets, rrset_name, rrset_type):
 
 
 def get_rrsets(api_client):
-    return api_client.listZone()["rrsets"]
+    return api_client.listZone(rrsets=True)["rrsets"]
 
 
 def safe_string_record(record_type, record, type_def):
@@ -937,23 +910,7 @@ def main():
             "type": "str",
             "required": True,
         },
-        "server_id": {
-            "type": "str",
-            "default": "localhost",
-        },
-        "api_url": {
-            "type": "str",
-            "default": "http://localhost:8081",
-        },
-        "api_spec_path": {
-            "type": "str",
-            "default": "/api/docs",
-        },
-        "api_key": {
-            "type": "str",
-            "required": True,
-            "no_log": True,
-        },
+        **API_MODULE_ARGS,
         "keep": {
             "type": "bool",
             "default": False,
@@ -1260,13 +1217,7 @@ def main():
         "changed": False,
     }
 
-    # create an object to proxy the raw API object
-    # and carry the server_id into all API calls
-    # automatically, along with handling
-    # predictable exceptions
-    api_client = APIZoneRRSetWrapper(
-        module=module, result=result, object_type="zones", zone_id=None
-    )
+    api_client = APIZoneWrapper(module=module, result=result, object_type="zones", zone_id=None)
 
     partial_zone_info = api_client.listZones(zone=zone_name)
 

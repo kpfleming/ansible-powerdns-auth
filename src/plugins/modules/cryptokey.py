@@ -6,10 +6,9 @@
 import sys
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kpfleming.powerdns_auth.plugins.module_utils.api_wrapper import (
-    APIWrapper,
-    api_exception_handler,
-)
+
+from ..module_utils.api_module_args import API_MODULE_ARGS
+from ..module_utils.api_wrapper import APICryptokeyWrapper, APIZoneWrapper
 
 assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
 
@@ -200,56 +199,6 @@ cryptokeys:
 """
 
 
-class APIZoneWrapper(APIWrapper):
-    def __init__(self, *, module, result, object_type, zone_id):
-        super().__init__(module=module, result=result, object_type=object_type)
-        self.zone_id = zone_id
-
-    @api_exception_handler
-    def listZones(self, **kwargs):  # noqa: N802
-        return self.raw_api.listZones(server_id=self.server_id, **kwargs).result()
-
-
-class APICryptokeyWrapper(APIWrapper):
-    def __init__(self, *, module, result, object_type, zone_id, cryptokey_id):
-        super().__init__(module=module, result=result, object_type=object_type)
-        self.zone_id = zone_id
-        self.cryptokey_id = cryptokey_id
-
-    @api_exception_handler
-    def listCryptokeys(self):  # noqa: N802
-        return self.raw_api.listCryptokeys(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-        ).result()
-
-    @api_exception_handler
-    def createCryptokey(self, **kwargs):  # noqa: N802
-        return self.raw_api.createCryptokey(
-            server_id=self.server_id,
-            zone_id=self.zone_id,
-            **kwargs,
-        ).result()
-
-    @api_exception_handler
-    def getCryptokey(self):  # noqa: N802
-        return self.raw_api.getCryptokey(
-            server_id=self.server_id, zone_id=self.zone_id, cryptokey_id=self.cryptokey_id
-        ).result()
-
-    @api_exception_handler
-    def modifyCryptokey(self, **kwargs):  # noqa: N802
-        return self.raw_api.modifyCryptokey(
-            server_id=self.server_id, zone_id=self.zone_id, cryptokey_id=self.cryptokey_id, **kwargs
-        ).result()
-
-    @api_exception_handler
-    def deleteCryptokey(self):  # noqa: N802
-        return self.raw_api.deleteCryptokey(
-            server_id=self.server_id, zone_id=self.zone_id, cryptokey_id=self.cryptokey_id
-        ).result()
-
-
 def main():
     module_args = {
         "state": {
@@ -261,32 +210,20 @@ def main():
             "type": "str",
             "required": True,
         },
-        "server_id": {
-            "type": "str",
-            "default": "localhost",
-        },
-        "api_url": {
-            "type": "str",
-            "default": "http://localhost:8081",
-        },
-        "api_spec_path": {
-            "type": "str",
-            "default": "/api/docs",
-        },
-        "api_key": {
-            "type": "str",
-            "required": True,
-            "no_log": True,
-        },
+        **API_MODULE_ARGS,
         "id": {
             "type": "str",
         },
         "keytype": {"type": "str", "required": False, "choices": ["zsk", "ksk", "csk"]},
         "active": {"type": "bool", "default": False},
         "published": {"type": "bool", "default": True},
-        "dnskey": {"type": "str", "required": False},
+        "algorithm": {
+            "type": "str",
+            "required": False,
+            "choices": ["RSASHA1", "RSASHA256", "RSASHA512", "ECDSA", "ed25519", "ed"],
+        },
         "privatekey": {"type": "str", "required": False},
-        "algorithm": {"type": "str", "required": False},
+        "dnskey": {"type": "str", "required": False},
         "bits": {"type": "int", "default": 4096},
     }
 
@@ -296,7 +233,16 @@ def main():
         required_if=(
             ("state", "present", ["keytype", "active", "published"], True),
             ("state", "absent", ["id"]),
+            ("alogirthm", "RSASHA1", ["bits"]),
+            ("alogirthm", "RSASHA256", ["bits"]),
+            ("alogirthm", "RSASHA512", ["bits"]),
         ),
+        required_together=[
+            ("dnskey", "privatekey"),
+        ],
+        mutually_exclusive=[
+            ("dnskey", "algorithm"),
+        ],
     )
 
     result = {"changed": False, "cryptokeys": []}
