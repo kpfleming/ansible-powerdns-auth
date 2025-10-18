@@ -24,6 +24,8 @@ for emergencies).
 
 - Added testing against Python 3.14.
 
+- Removed support for Python 3.9 (EOL).
+
 ## [25.1.0] - 2025-06-21
 
 ### Changed

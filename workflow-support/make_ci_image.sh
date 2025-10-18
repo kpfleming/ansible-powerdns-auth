@@ -15,7 +15,7 @@ lint_deps=(shellcheck)
 publish_deps=(yq)
 
 toxenvs=(lint-action ci-action publish-action)
-cimatrix=(py3{9,10,11,12,13,14})
+cimatrix=(py3{10,11,12,13,14})
 
 c=$(buildah from "${base_image}")
 

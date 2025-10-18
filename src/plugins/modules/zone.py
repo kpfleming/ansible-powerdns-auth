@@ -10,7 +10,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APIZoneMetadataWrapper, APIZoneWrapper
 
-assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
+assert sys.version_info >= (3, 10), "This module requires Python 3.10 or newer."
 
 DOCUMENTATION = """
 %YAML 1.2
