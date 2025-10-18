@@ -95,7 +95,7 @@ or use the resource record options from one of the supported types :
 ```
 
 The supported types are :
-A,AAAA,CAA,CNAME,DNSKEY,DS,HINFO,HTTPS,LOC,MX,NAPTR,NS,NSEC,NSEC3PARAM,PTR,RP,SPF,SOA,SRV,SSHFP,SVCB,TLSA,TXT
+A,AAAA,CAA,CNAME,DNSKEY,DS,HINFO,HTTPS,LOC,MX,NAPTR,NS,PTR,RP,SPF,SOA,SRV,SSHFP,SVCB,TLSA,TXT
 
 Idempotency is only supported when the `keep` option is provided.
 

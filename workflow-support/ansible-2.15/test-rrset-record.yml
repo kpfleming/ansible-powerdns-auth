@@ -259,7 +259,7 @@
           - result['exception'] is not defined
           - not result.failed
           - not result.changed
-          - (result['rrsets'] | length) == 22
+          - (result['rrsets'] | length) == 20
 
     - name: check listing all RRsets of a given type
       kpfleming.powerdns_auth.rrset:

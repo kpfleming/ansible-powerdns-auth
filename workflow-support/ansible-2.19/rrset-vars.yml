@@ -106,13 +106,3 @@ rrsets_dnssec:
         digest_type: 2
         digest: 3f1c2d7a9b0e4a6f8c1d2233445566778899aabbccddeeff0011223344556670
         disabled: false
-  - NSEC:
-      - next_domain: next.example.com.
-        type_bitmap: "A AAAA RRSIG NSEC"
-        disabled: false
-  - NSEC3PARAM:
-      - hash_algorithm: 1
-        flags: 0
-        iterations: 10
-        salt: A1B2C3D4
-        disabled: false

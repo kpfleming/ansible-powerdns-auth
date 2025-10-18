@@ -10,7 +10,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APIZoneWrapper
 
-assert sys.version_info >= (3, 9), "This module requires Python 3.9 or newer."
+assert sys.version_info >= (3, 10), "This module requires Python 3.9 or newer."
 
 DOCUMENTATION = """
 %YAML 1.2
@@ -33,7 +33,7 @@ options:
   state:
     description:
       - If V(present) the RRset will be created unless it already exists
-        in which case if O(keep=false) records will be replaces and if
+        in which case if O(keep=false) RRs will be replaced and if
         O(keep=true) new RRs will be added.
       - If V(absent) and O(keep=false) the whole RRset will be deleted
       - If V(absent) and O(keep=true) only the matching RRs will be
@@ -67,13 +67,13 @@ options:
     default: 3600
   type:
     description:
-      - Type of resource record (e.g. A, PTR, NSEC...).
-      - Required if O(state=absent) or O(state=present) and none of the RR types options are
+      - Type of resource record (e.g. A, PTR...).
+      - Required if O(state=absent) or O(state=present) and none of the RR type options are
         provided.
     type: str
   records:
     description:
-      - Represents a list of records.
+      - Represents a list of RRs.
       - Required if O(type) and O(state=present).
     type: list
     elements: dict
@@ -91,8 +91,8 @@ options:
   A:
     description:
       - RR of type A.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option is not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -109,8 +109,8 @@ options:
   AAAA:
     description:
       - RR of type AAAA.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option is not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -127,8 +127,8 @@ options:
   CAA:
     description:
       - Certificate Authority Authorization RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -157,8 +157,8 @@ options:
   CNAME:
     description:
       - Canonical name RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -175,8 +175,8 @@ options:
   DNSKEY:
     description:
       - DNS Key RR for DNSSEC.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -210,8 +210,8 @@ options:
   DS:
     description:
       - Delegation Signer RR for DNSSEC.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -244,8 +244,8 @@ options:
   HINFO:
     description:
       - Host information RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -267,8 +267,8 @@ options:
   HTTPS:
     description:
       - HTTPS service binding RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -294,8 +294,8 @@ options:
   LOC:
     description:
       - Location RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -337,8 +337,8 @@ options:
   MX:
     description:
       - Mail exchange RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -360,8 +360,8 @@ options:
   NAPTR:
     description:
       - Name Authority Pointer RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -403,8 +403,8 @@ options:
   NS:
     description:
       - Name server RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -418,69 +418,11 @@ options:
           - Whether or not this RR is disabled.
         type: bool
         default: false
-  NSEC:
-    description:
-      - Next Secure RR for DNSSEC.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
-    type: list
-    elements: dict
-    suboptions:
-      next_domain:
-        description:
-          - Next domain name in canonical order.
-        type: str
-        required: true
-      type_bitmap:
-        description:
-          - Bitmap of record types present.
-        type: str
-        required: true
-      disabled:
-        description:
-          - Whether or not this RR is disabled.
-        type: bool
-        default: false
-  NSEC3PARAM:
-    description:
-      - NSEC3 parameters RR for DNSSEC.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
-    type: list
-    elements: dict
-    suboptions:
-      hash_algorithm:
-        description:
-          - Hash algorithm used.
-        type: int
-        required: true
-        choices: [1]
-      flags:
-        description:
-          - Flags field.
-        type: int
-        required: true
-        choices: [0, 1]
-      iterations:
-        description:
-          - Number of hash iterations.
-        type: int
-        required: true
-      salt:
-        description:
-          - Salt value for hashing.
-        type: str
-        required: true
-      disabled:
-        description:
-          - Whether or not this RR is disabled.
-        type: bool
-        default: false
   PTR:
     description:
       - Pointer RR for reverse DNS lookup.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -497,8 +439,8 @@ options:
   RP:
     description:
       - Responsible person RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -520,8 +462,8 @@ options:
   SPF:
     description:
       - Sender Policy Framework RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -538,8 +480,8 @@ options:
   SOA:
     description:
       - Start of Authority RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -581,8 +523,8 @@ options:
   SRV:
     description:
       - Service RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -614,8 +556,8 @@ options:
   SSHFP:
     description:
       - SSH fingerprint RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -644,8 +586,8 @@ options:
   SVCB:
     description:
       - Service binding RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -671,8 +613,8 @@ options:
   TLSA:
     description:
       - Transport Layer Security Authentication RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -707,8 +649,8 @@ options:
   TXT:
     description:
       - Text RR.
-      - Required if O(state=present) or O(state=absent) and O(type) and O(records)
-        and any of the other RR type option not present.
+      - At least one RR type is required if O(state=present) or O(state=absent) and O(type)
+        is not present.
     type: list
     elements: dict
     suboptions:
@@ -1058,26 +1000,6 @@ def main():
                 "disabled": {"type": "bool", "required": False, "default": False},
             },
         },
-        "NSEC": {
-            "type": "list",
-            "elements": "dict",
-            "options": {
-                "next_domain": {"type": "str", "required": True},
-                "type_bitmap": {"type": "str", "required": True},
-                "disabled": {"type": "bool", "required": False, "default": False},
-            },
-        },
-        "NSEC3PARAM": {
-            "type": "list",
-            "elements": "dict",
-            "options": {
-                "hash_algorithm": {"type": "int", "required": True, "choices": [1]},
-                "flags": {"type": "int", "required": True, "choices": [0, 1]},
-                "iterations": {"type": "int", "required": True},
-                "salt": {"type": "str", "required": True},
-                "disabled": {"type": "bool", "required": False, "default": False},
-            },
-        },
         "PTR": {
             "type": "list",
             "elements": "dict",
@@ -1182,8 +1104,6 @@ def main():
         "MX",
         "NAPTR",
         "NS",
-        "NSEC",
-        "NSEC3PARAM",
         "PTR",
         "RP",
         "SPF",
