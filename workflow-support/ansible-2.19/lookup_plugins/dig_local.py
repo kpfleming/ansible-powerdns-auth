@@ -38,7 +38,7 @@ DOCUMENTATION = '''
             - C(CAA) has been added in community.general 6.3.0.
         type: str
         default: 'A'
-        choices: [A, ALL, AAAA, CAA, CNAME, DNAME, DNSKEY, DS, HINFO, LOC, MX, NAPTR, NS, NSEC3PARAM, PTR, RP, RRSIG, SOA, SPF, SRV, SSHFP, TLSA, TXT]
+        choices: [A, ALL, AAAA, CAA, CNAME, DNAME, DNSKEY, DS, HINFO, HTTPS, LOC, MX, NAPTR, NS, NSEC, NSEC3PARAM, PTR, RP, RRSIG, SOA, SPF, SRV, SSHFP, SVCB, TLSA, TXT]
       flat:
         description: If 0 each record is returned as a dictionary, otherwise a string.
         type: int
@@ -205,8 +205,9 @@ try:
     import dns.resolver
     import dns.reversename
     import dns.rdataclass
-    from dns.rdatatype import (A, AAAA, CAA, CNAME, DNAME, DNSKEY, DS, HINFO, LOC,
-                               MX, NAPTR, NS, NSEC3PARAM, PTR, RP, SOA, SPF, SRV, SSHFP, TLSA, TXT)
+    from dns.rdatatype import (A, AAAA, CAA, CNAME, DNAME, DNSKEY, DS, HINFO, HTTPS, LOC, MX,
+                               NAPTR, NS, NSEC, NSEC3PARAM, PTR, RP, SOA, SPF, SRV, SSHFP,
+                               SVCB, TLSA, TXT)
     HAVE_DNS = True
 except ImportError:
     HAVE_DNS = False
@@ -231,10 +232,12 @@ def make_rdata_dict(rdata):
         DNSKEY: ['flags', 'algorithm', 'protocol', 'key'],
         DS: ['algorithm', 'digest_type', 'key_tag', 'digest'],
         HINFO: ['cpu', 'os'],
+        HTTPS: ['priority', 'target', 'params'],
         LOC: ['latitude', 'longitude', 'altitude', 'size', 'horizontal_precision', 'vertical_precision'],
         MX: ['preference', 'exchange'],
         NAPTR: ['order', 'preference', 'flags', 'service', 'regexp', 'replacement'],
         NS: ['target'],
+        NSEC: ['next', 'windows'],
         NSEC3PARAM: ['algorithm', 'flags', 'iterations', 'salt'],
         PTR: ['target'],
         RP: ['mbox', 'txt'],
@@ -243,6 +246,7 @@ def make_rdata_dict(rdata):
         SPF: ['strings'],
         SRV: ['priority', 'weight', 'port', 'target'],
         SSHFP: ['algorithm', 'fp_type', 'fingerprint'],
+        SVCB: ['priority', 'target', 'params'],
         TLSA: ['usage', 'selector', 'mtype', 'cert'],
         TXT: ['strings'],
     }

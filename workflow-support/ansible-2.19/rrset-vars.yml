@@ -1,0 +1,108 @@
+rrsets:
+  - A:
+      - address: 192.168.1.1
+        disabled: false
+  - AAAA:
+      - address: 2001:db8:85a3::8a2e:370:7334
+        disabled: false
+      - address: 2001:db8::1
+        disabled: false
+  - CAA:
+      - flags: 0
+        tag: issue
+        value: '"letsencrypt.org"'
+        disabled: false
+  - CNAME:
+      - cname: app.example.com.
+        disabled: false
+  - HINFO:
+      - cpu: '"Intel Xeon"'
+        os: '"Linux"'
+        disabled: false
+  - HTTPS:
+      - priority: 1
+        target: svc.example.com.
+        params: alpn=h2,http/1.1 port=443
+        disabled: false
+  - LOC:
+      - latitude: 37 0 0.000 N
+        longitude: 122 0 0.000 E
+        altitude: 15.00m
+        size: 1.00m
+        horizontal_precision: 10.00m
+        vertical_precision: 2.00m
+        disabled: false
+  - MX:
+      - preference: 10
+        exchange: mail1.example.com.
+        disabled: false
+      - preference: 20
+        exchange: mail2.example.com.
+        disabled: false
+  - NAPTR:
+      - order: 100
+        preference: 50
+        flags: "S"
+        services: "SIP+D2U"
+        regexp: "!^.*$!sip:proxy.example.com!"
+        replacement: .
+        disabled: false
+  - NS:
+      - host: ns1.example.com.
+        disabled: false
+  - PTR:
+      - ptrdname: host-1.example.com.
+        disabled: false
+  - RP:
+      - mbox: hostmaster.example.com.
+        txt: admin-contact.
+        disabled: false
+  - SPF:
+      - strings: "v=spf1 ip4:192.0.2.0/24 include:_spf.example.net ~all"
+        disabled: false
+  - SRV:
+      - priority: 10
+        weight: 5
+        port: 5222
+        target: xmpp.example.com.
+        disabled: false
+      - priority: 5
+        weight: 1
+        port: 443
+        target: web.example.com.
+        disabled: false
+  - SSHFP:
+      - algorithm: 4
+        fp_type: 2
+        fingerprint: 3f1c2d7a9b0e4a6f8c1d2233445566778899aabbccddee112233445566778899
+        disabled: false
+  - SVCB:
+      - priority: 1
+        target: svc.example.com.
+        params: alpn=h2 port=8443 ipv4hint=192.168.2.19
+        disabled: false
+  - TLSA:
+      - usage: 3
+        selector: 1
+        matching_type: 1
+        cert_assoc_data: 9f86d081884c7d659a2feaa0c55ad015
+        disabled: false
+  - TXT:
+      - strings: "v=verify1 abc123"
+        disabled: false
+      - strings: "project=powerdns env=dev"
+        disabled: false
+
+rrsets_dnssec:
+  - DNSKEY:
+      - flags: 257
+        protocol: 3
+        algorithm: 8
+        public_key: AwEAAa1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6A7B8C9D0E1F2G3H4I5J6K7L8M9N0O1P2Q3R4S5T6U7V8W9X0Y1Z2a3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z8A9B0C1D2E3F4G5H6I7J8K9L0M1N2O3P4Q5R6S7T8U9V0W1X2Y3Z4a5b6c7d8e9f
+        disabled: false
+  - DS:
+      - key_tag: 2371
+        algorithm: 8
+        digest_type: 2
+        digest: 3f1c2d7a9b0e4a6f8c1d2233445566778899aabbccddeeff0011223344556670
+        disabled: false

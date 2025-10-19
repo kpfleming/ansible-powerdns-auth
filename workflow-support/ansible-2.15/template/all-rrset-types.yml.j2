@@ -1,0 +1,42 @@
+{% for rrset in rrsets %}
+{% set rrset_type = rrset.keys() | first %}
+- name: Creating RRset of type {{ rrset_type }}
+  kpfleming.powerdns_auth.rrset:
+    {# The following types require the RR to be in the root of the zone #}
+    {% if rrset_type in ["DNSKEY", "NS"] %}
+        {% set name = "rrset.example." %}
+    {% else %}
+        {% set name = "t." ~ rrset_type ~ ".rrset.example." %}
+    {% endif %}
+    {% set params = {
+        "zone_name": "rrset.example.",
+        "name": name,
+        "state": "present",
+        "api_key": api_key
+        }
+    %}
+    {{ params | combine(rrset) }}
+  register: result
+
+- ansible.builtin.assert:
+    quiet: true
+    that:
+      - result['exception'] is not defined
+      - not result.failed
+      - result.changed
+      - rrset != "NXDOMAIN"
+      - >
+        ( rrset is not string and ( rrset | map(attribute='type') | unique | list ) == ["{{ rrset_type }}"])
+        or
+        ( rrset is string )
+      - >
+        ( rrset is not string and ( rrset | map(attribute='ttl') | unique | list ) == [3600])
+        or
+        ( rrset is string )
+      - >
+        ( rrset is not string and ( rrset | map(attribute='owner') | unique | list ) == ["{{ name }}"])
+        or
+        ( rrset is string )
+  vars:
+    rrset: "{% raw %}{{ query('dig_local', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
+{% endfor %}

@@ -1,0 +1,292 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - rrset-vars.yml
+
+  vars:
+    ansible_python_interpreter: python
+    api_key: foo
+    common_args: &common
+      api_key: foo
+      zone_name: rrset.example.
+
+  pre_tasks:
+    - ansible.builtin.debug:
+        var: ansible_python_interpreter
+
+    - name: Creating template for all RRset types
+      ansible.builtin.template:
+        src: ./template/all-rrset-types.yml.j2
+        dest: ./template/test-rrset-all-types.yml
+        mode: "644"
+
+    - ansible.builtin.set_fact:
+        rrsets: "{{ rrsets_dnssec }}"
+
+    - name: Creating template for all RRset dnssec types
+      ansible.builtin.template:
+        src: ./template/all-rrset-types.yml.j2
+        dest: ./template/test-rrset-all-dnssec-types.yml
+        mode: "644"
+
+    - name: check "Native" zone creation
+      kpfleming.powerdns_auth.zone:
+        api_key: "{{ api_key }}"
+        name: rrset.example.
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - result.zone.name == "rrset.example."
+          - result.zone.kind == "Native"
+
+  tasks:
+    - name: check creating each type of supported DNS RR
+      ansible.builtin.include_tasks:
+        file: ./template/test-rrset-all-types.yml
+
+    - name: check creating each type of supported DNSSEC RR
+      ansible.builtin.include_tasks:
+        file: ./template/test-rrset-all-dnssec-types.yml
+
+    - name: check deleting existing RRset
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: absent
+        name: t.hinfo.rrset.example.
+        type: HINFO
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - dig == "NXDOMAIN"
+      vars:
+        dig: "{{ lookup('dig_local', 't.hinfo.rrset.example.', qtype='HINFO', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check updating existing RRset by replacing all RRs
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: t.aaaa.rrset.example.
+        type: AAAA
+        ttl: 7200
+        records:
+          - content: 2001:db8::3
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - dig['address'] == "2001:db8::3"
+          - dig['ttl'] == 7200
+      vars:
+        dig: "{{ lookup('dig_local', 't.aaaa.rrset.example.', qtype='AAAA', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check updating existing RRset and keeping RRs
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: t.A.rrset.example.
+        keep: true
+        A:
+          - address: 10.0.0.1
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - (dig | sort(attribute='address') | map(attribute='address') | list) == ['10.0.0.1', '192.168.1.1']
+          - (dig | map(attribute='ttl') | unique | list) == [3600]
+      vars:
+        dig: "{{ query('dig_local', 't.a.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check deleting some RR in exisitng RRset
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: absent
+        name: t.TXT.rrset.example.
+        keep: true
+        TXT:
+          - strings: "project=powerdns env=dev"
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - (dig['strings'][0] | string) == "b'v=verify1 abc123'"
+          - dig['ttl'] == 3600
+          - dig['owner'] == "t.txt.rrset.example."
+      vars:
+        dig: "{{ lookup('dig_local', 't.txt.rrset.example.', qtype='TXT', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check updating existing RRset with same content
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: rrset.example.
+        keep: true
+        NS:
+          - host: ns1.example.com.
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - dig['target'] == "ns1.example.com."
+          - dig['ttl'] == 3600
+          - dig['owner'] == "rrset.example."
+      vars:
+        dig: "{{ lookup('dig_local', 'rrset.example.', qtype='NS', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check deleting nonexistent RR from existing RRset
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: absent
+        name: t.cname.rrset.example.
+        keep: true
+        CNAME:
+          - cname: app1.example.com
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - dig['target'] == "app.example.com."
+          - dig['ttl'] == 3600
+          - dig['owner'] == "t.cname.rrset.example."
+      vars:
+        dig: "{{ lookup('dig_local', 't.cname.rrset.example.', qtype='CNAME', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check deleting nonexistent RRset
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: absent
+        name: t.NX.rrset.example.
+        type: A
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" in result'
+          - result.failed
+          - not result.changed
+
+    - name: check operation on nonexistent zone
+      kpfleming.powerdns_auth.rrset:
+        api_key: foo
+        zone_name: NS.example.
+        state: absent
+        name: t.A.rrset.example.
+        type: A
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" in result'
+          - result.failed
+          - not result.changed
+
+    - name: check missing options
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: t.A.rrset.example.
+        keep: true
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" in result'
+          - result.failed
+          - not result.changed
+
+    - name: check missing options in RRset
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: t.NAPTR.rrset.example.
+        keep: true
+        NAPTR:
+          - order: 2
+      ignore_errors: true
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" in result'
+          - result.failed
+          - not result.changed
+
+    - name: check listing all RRsets of a zone
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: exists
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - (result['rrsets'] | length) == 20
+
+    - name: check listing all RRsets of a given type
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: exists
+        type: A
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - result.exists
+          - (result.rrsets | map(attribute='type') | unique | list) == ["A"]
+
+    - name: check listing all RRsets of a given name
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: exists
+        name: rrset.example.
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - result.exists
+          - (result.rrsets | map(attribute='name') | unique | list) == ["rrset.example."]
