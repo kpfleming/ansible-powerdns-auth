@@ -16,6 +16,12 @@ for emergencies).
 
 ## [Unreleased]
 
+## [25.2.0] - 2025-10-19
+
+### Added
+
+- Add modules for managing CryptoKeys and RRsets in zones (contributed by mohamed-chamrouk in PR #170).
+
 ### Changed
 
 - Added testing against PowerDNS Authoritative Server 5.0.x.
