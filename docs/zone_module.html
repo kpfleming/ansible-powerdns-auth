@@ -4,7 +4,7 @@
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta content="2.17.1" name="antsibull-docs" />
+<meta content="2.21.0" name="antsibull-docs" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>kpfleming.powerdns_auth.zone module – Manages a zone in a PowerDNS Authoritative server &mdash; Collections  documentation</title>
@@ -73,6 +73,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
   
               <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cryptokey_module.html">kpfleming.powerdns_auth.cryptokey module – Manages a CryptoKey in a zone of PowerDNS Authoritative server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rrset_module.html">kpfleming.powerdns_auth.rrset module – Manages an RRset in a zone of PowerDNS Authoritative server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tsigkey_module.html">kpfleming.powerdns_auth.tsigkey module – Manages a TSIG key in a PowerDNS Authoritative server</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">kpfleming.powerdns_auth.zone module – Manages a zone in a PowerDNS Authoritative server</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#synopsis">Synopsis</a></li>
@@ -118,7 +120,7 @@
 <h1>kpfleming.powerdns_auth.zone module – Manages a zone in a PowerDNS Authoritative server<a class="headerlink" href="#kpfleming-powerdns-auth-zone-module-manages-a-zone-in-a-powerdns-authoritative-server" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/kpfleming/powerdns_auth">kpfleming.powerdns_auth collection</a> (version 25.1.0).</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/kpfleming/powerdns_auth">kpfleming.powerdns_auth collection</a> (version 25.2.0).</p>
 <p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
 To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
 <p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">kpfleming.powerdns_auth</span></code>.
@@ -423,7 +425,6 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Optional zone name, indicating that this zone should be a member of the specified catalog zone.</p>
 <p>Must be an absolute zone name (ending with ‘.’).</p>
-<p>Only supported in server version 4.7.0 or later.</p>
 </div></td>
 </tr>
 <tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -431,7 +432,6 @@ see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-
 <a class="ansibleOptionLink" href="#parameter-properties/kind" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
 </div></td>
 <td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Zone kind.</p>
-<p><code class="ansible-value docutils literal notranslate"><span class="pre">Producer</span></code> and <code class="ansible-value docutils literal notranslate"><span class="pre">Consumer</span></code> are only supported in server version 4.7.0 or later.</p>
 <p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
 <ul class="simple">
 <li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;Native&quot;</span></code></p></li>

@@ -1,0 +1,1373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="2.21.0" name="antsibull-docs" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kpfleming.powerdns_auth.rrset module – Manages an RRset in a zone of PowerDNS Authoritative server &mdash; Collections  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=41de9001" />
+      <link rel="stylesheet" type="text/css" href="_static/css/ansible.css?v=c5b67dd2" />
+      <link rel="stylesheet" type="text/css" href="_static/antsibull-minimal.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/rtd-ethical-ads.css?v=289b023e" />
+
+  
+    <link rel="shortcut icon" href="_static/images/Ansible-Mark-RGB_Black.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=7f41d439"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="kpfleming.powerdns_auth.tsigkey module – Manages a TSIG key in a PowerDNS Authoritative server" href="tsigkey_module.html" />
+    <link rel="prev" title="kpfleming.powerdns_auth.cryptokey module – Manages a CryptoKey in a zone of PowerDNS Authoritative server" href="cryptokey_module.html" /><!-- extra head elements for Ansible beyond RTD Sphinx Theme -->
+
+
+
+
+</head>
+
+<body class="wy-body-for-nav"><!-- extra body elements for Ansible beyond RTD Sphinx Theme -->
+
+<div class="DocSite-globalNav ansibleNav">
+  <ul>
+    <li><a href="https://www.ansible.com/blog" target="_blank">Blog</a></li>
+    <li><a href="https://forum.ansible.com/" target="_blank">Ansible community forum</a></li>
+    <li><a href="https://docs.ansible.com/" target="_blank">Documentation</a></li>
+  </ul>
+</div>
+
+<a class="DocSite-nav" href="/" style="padding-bottom: 30px;">
+
+  <img class="DocSiteNav-logo"
+    src="_static/images/Ansible-Mark-RGB_White.png"
+    alt="Ansible Logo">
+  <div class="DocSiteNav-title">Collections Documentation</div>
+</a>
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Collections
+          </a><!--- Based on https://github.com/rtfd/sphinx_rtd_theme/pull/438/files -->
+
+<div class="version">
+  
+    
+  
+</div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <label class="sr-only" for="q">Search docs:</label>
+    <input type="text" class="st-default-search-input" id="q" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cryptokey_module.html">kpfleming.powerdns_auth.cryptokey module – Manages a CryptoKey in a zone of PowerDNS Authoritative server</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">kpfleming.powerdns_auth.rrset module – Manages an RRset in a zone of PowerDNS Authoritative server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#return-values">Return Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#authors">Authors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collection-links">Collection links</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tsigkey_module.html">kpfleming.powerdns_auth.tsigkey module – Manages a TSIG key in a PowerDNS Authoritative server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zone_module.html">kpfleming.powerdns_auth.zone module – Manages a zone in a PowerDNS Authoritative server</a></li>
+</ul>
+<!-- extra nav elements for Ansible beyond RTD Sphinx Theme -->
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Collections</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">kpfleming.powerdns_auth.rrset module – Manages an RRset in a zone of PowerDNS Authoritative server</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+  
+           <div itemprop="articleBody">
+             
+  <span class="target" id="ansible-collections-kpfleming-powerdns-auth-rrset-module"></span><section id="kpfleming-powerdns-auth-rrset-module-manages-an-rrset-in-a-zone-of-powerdns-authoritative-server">
+<h1>kpfleming.powerdns_auth.rrset module – Manages an RRset in a zone of PowerDNS Authoritative server<a class="headerlink" href="#kpfleming-powerdns-auth-rrset-module-manages-an-rrset-in-a-zone-of-powerdns-authoritative-server" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This module is part of the <a class="reference external" href="https://galaxy.ansible.com/kpfleming/powerdns_auth">kpfleming.powerdns_auth collection</a> (version 25.2.0).</p>
+<p>It is not included in <code class="docutils literal notranslate"><span class="pre">ansible-core</span></code>.
+To check whether it is installed, run <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">list</span></code>.</p>
+<p>To install it, use: <code class="code docutils literal notranslate"><span class="pre">ansible-galaxy</span> <span class="pre">collection</span> <span class="pre">install</span> <span class="pre">kpfleming.powerdns_auth</span></code>.
+You need further requirements to be able to use this module,
+see <a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-requirements"><span class="std std-ref">Requirements</span></a> for details.</p>
+<p>To use it in a playbook, specify: <code class="code docutils literal notranslate"><span class="pre">kpfleming.powerdns_auth.rrset</span></code>.</p>
+</div>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#synopsis" id="id1">Synopsis</a></p></li>
+<li><p><a class="reference internal" href="#requirements" id="id2">Requirements</a></p></li>
+<li><p><a class="reference internal" href="#parameters" id="id3">Parameters</a></p></li>
+<li><p><a class="reference internal" href="#examples" id="id4">Examples</a></p></li>
+<li><p><a class="reference internal" href="#return-values" id="id5">Return Values</a></p></li>
+</ul>
+</nav>
+<section id="synopsis">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Synopsis</a><a class="headerlink" href="#synopsis" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>This module can create, delete or update an RRset inside a zone of PowerDNS Authoritative server.</p></li>
+</ul>
+</section>
+<section id="requirements">
+<span id="ansible-collections-kpfleming-powerdns-auth-rrset-module-requirements"></span><h2><a class="toc-backref" href="#id2" role="doc-backlink">Requirements</a><a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<p>The below requirements are needed on the host that executes this module.</p>
+<ul class="simple">
+<li><p>bravado</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Parameters</a><a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<table class="longtable ansible-option-table docutils align-default" style="width: 100%">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-A"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-a"><strong>A</strong></p>
+<a class="ansibleOptionLink" href="#parameter-A" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>RR of type A.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-A/address"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-a-address"><strong>address</strong></p>
+<a class="ansibleOptionLink" href="#parameter-A/address" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>IPv4 address.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-A/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-a-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-A/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-AAAA"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-aaaa"><strong>AAAA</strong></p>
+<a class="ansibleOptionLink" href="#parameter-AAAA" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>RR of type AAAA.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-AAAA/address"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-aaaa-address"><strong>address</strong></p>
+<a class="ansibleOptionLink" href="#parameter-AAAA/address" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>IPv6 address.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-AAAA/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-aaaa-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-AAAA/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-api_key"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-api-key"><strong>api_key</strong></p>
+<a class="ansibleOptionLink" href="#parameter-api_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Key (token) used to authenticate to the API endpoint in the server.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-api_spec_path"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-api-spec-path"><strong>api_spec_path</strong></p>
+<a class="ansibleOptionLink" href="#parameter-api_spec_path" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Path of the OpenAPI (Swagger) API spec document in <code class="docutils literal notranslate"><span class="pre">api_url</span></code>.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;/api/docs&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-api_url"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-api-url"><strong>api_url</strong></p>
+<a class="ansibleOptionLink" href="#parameter-api_url" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>URL of the API endpoint in the server.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;http://localhost:8081&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CAA"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-caa"><strong>CAA</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CAA" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Certificate Authority Authorization RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CAA/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-caa-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CAA/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CAA/flags"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-caa-flags"><strong>flags</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CAA/flags" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Critical flag for CAA record.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">0</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CAA/tag"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-caa-tag"><strong>tag</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CAA/tag" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Property tag for CAA record.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;issue&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;issuewild&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;iodef&quot;</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CAA/value"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-caa-value"><strong>value</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CAA/value" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Property value for CAA record.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CNAME"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-cname"><strong>CNAME</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CNAME" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Canonical name RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CNAME/cname"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-cname-cname"><strong>cname</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CNAME/cname" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Canonical domain name.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-CNAME/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-cname-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-CNAME/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DNSKEY"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-dnskey"><strong>DNSKEY</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DNSKEY" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>DNS Key RR for DNSSEC.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DNSKEY/algorithm"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-dnskey-algorithm"><strong>algorithm</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DNSKEY/algorithm" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Algorithm used for the key.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DNSKEY/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-dnskey-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DNSKEY/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DNSKEY/flags"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-dnskey-flags"><strong>flags</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DNSKEY/flags" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Key flags field.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">256</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">257</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DNSKEY/protocol"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-dnskey-protocol"><strong>protocol</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DNSKEY/protocol" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Protocol field.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">3</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DNSKEY/public_key"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-dnskey-public-key"><strong>public_key</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DNSKEY/public_key" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Base64 encoded public key.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DS"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ds"><strong>DS</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DS" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Delegation Signer RR for DNSSEC.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DS/algorithm"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ds-algorithm"><strong>algorithm</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DS/algorithm" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Algorithm used for signing.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DS/digest"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ds-digest"><strong>digest</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DS/digest" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Digest value.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DS/digest_type"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ds-digest-type"><strong>digest_type</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DS/digest_type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Digest algorithm type.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">2</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">3</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">4</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DS/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ds-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DS/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-DS/key_tag"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ds-key-tag"><strong>key_tag</strong></p>
+<a class="ansibleOptionLink" href="#parameter-DS/key_tag" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Key tag field.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HINFO"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-hinfo"><strong>HINFO</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HINFO" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Host information RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HINFO/cpu"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-hinfo-cpu"><strong>cpu</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HINFO/cpu" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>CPU type.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HINFO/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-hinfo-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HINFO/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HINFO/os"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-hinfo-os"><strong>os</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HINFO/os" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Operating system.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HTTPS"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-https"><strong>HTTPS</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HTTPS" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>HTTPS service binding RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HTTPS/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-https-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HTTPS/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HTTPS/params"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-https-params"><strong>params</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HTTPS/params" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Service parameters.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HTTPS/priority"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-https-priority"><strong>priority</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HTTPS/priority" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Priority of the target host.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-HTTPS/target"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-https-target"><strong>target</strong></p>
+<a class="ansibleOptionLink" href="#parameter-HTTPS/target" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Target hostname.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-keep"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-keep"><strong>keep</strong></p>
+<a class="ansibleOptionLink" href="#parameter-keep" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Whether or not to keep existing records.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc"><strong>LOC</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Location RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/altitude"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-altitude"><strong>altitude</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/altitude" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Altitude coordinate.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/horizontal_precision"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-horizontal-precision"><strong>horizontal_precision</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/horizontal_precision" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Horizontal precision.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;10000.0m&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/latitude"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-latitude"><strong>latitude</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/latitude" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Latitude coordinate.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/longitude"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-longitude"><strong>longitude</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/longitude" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Longitude coordinate.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/size"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-size"><strong>size</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/size" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Size of the location.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;1.0m&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-LOC/vertical_precision"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-loc-vertical-precision"><strong>vertical_precision</strong></p>
+<a class="ansibleOptionLink" href="#parameter-LOC/vertical_precision" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Vertical precision.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;10.0m&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-MX"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-mx"><strong>MX</strong></p>
+<a class="ansibleOptionLink" href="#parameter-MX" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Mail exchange RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-MX/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-mx-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-MX/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-MX/exchange"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-mx-exchange"><strong>exchange</strong></p>
+<a class="ansibleOptionLink" href="#parameter-MX/exchange" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Mail server hostname.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-MX/preference"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-mx-preference"><strong>preference</strong></p>
+<a class="ansibleOptionLink" href="#parameter-MX/preference" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Priority preference for mail delivery.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-name"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-name"><strong>name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Name of the RRset</p>
+<p>Required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr"><strong>NAPTR</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Name Authority Pointer RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/flags"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-flags"><strong>flags</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/flags" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Flags field.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/order"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-order"><strong>order</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/order" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Order field for processing records.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/preference"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-preference"><strong>preference</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/preference" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Preference field for records with same order.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/regexp"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-regexp"><strong>regexp</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/regexp" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Regular expression for substitution.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/replacement"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-replacement"><strong>replacement</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/replacement" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Replacement domain name.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NAPTR/services"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-naptr-services"><strong>services</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NAPTR/services" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Services field.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NS"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ns"><strong>NS</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NS" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Name server RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NS/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ns-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NS/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-NS/host"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ns-host"><strong>host</strong></p>
+<a class="ansibleOptionLink" href="#parameter-NS/host" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Name server hostname.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-PTR"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ptr"><strong>PTR</strong></p>
+<a class="ansibleOptionLink" href="#parameter-PTR" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Pointer RR for reverse DNS lookup.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-PTR/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ptr-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-PTR/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-PTR/ptrdname"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ptr-ptrdname"><strong>ptrdname</strong></p>
+<a class="ansibleOptionLink" href="#parameter-PTR/ptrdname" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Domain name for reverse lookup.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-records"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-records"><strong>records</strong></p>
+<a class="ansibleOptionLink" href="#parameter-records" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Represents a list of RRs.</p>
+<p>Required if <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> and <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code>.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-records/content"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-records-content"><strong>content</strong></p>
+<a class="ansibleOptionLink" href="#parameter-records/content" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>The content of the RR.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-records/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-records-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-records/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-RP"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-rp"><strong>RP</strong></p>
+<a class="ansibleOptionLink" href="#parameter-RP" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Responsible person RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-RP/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-rp-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-RP/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-RP/mbox"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-rp-mbox"><strong>mbox</strong></p>
+<a class="ansibleOptionLink" href="#parameter-RP/mbox" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Mailbox domain name of responsible person.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-RP/txt"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-rp-txt"><strong>txt</strong></p>
+<a class="ansibleOptionLink" href="#parameter-RP/txt" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Domain name for TXT record with contact info.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-server_id"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-server-id"><strong>server_id</strong></p>
+<a class="ansibleOptionLink" href="#parameter-server_id" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>ID of the server instance which holds the key.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">&quot;localhost&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa"><strong>SOA</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Start of Authority RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/expire"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-expire"><strong>expire</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/expire" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Expire time in seconds.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/minimum"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-minimum"><strong>minimum</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/minimum" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Minimum TTL in seconds.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/mname"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-mname"><strong>mname</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/mname" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Primary master name server.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/refresh"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-refresh"><strong>refresh</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/refresh" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Refresh interval in seconds.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/retry"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-retry"><strong>retry</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/retry" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Retry interval in seconds.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/rname"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-rname"><strong>rname</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/rname" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Email address of zone administrator.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SOA/serial"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-soa-serial"><strong>serial</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SOA/serial" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Serial number of the zone.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SPF"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-spf"><strong>SPF</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SPF" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Sender Policy Framework RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SPF/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-spf-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SPF/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SPF/strings"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-spf-strings"><strong>strings</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SPF/strings" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>SPF policy strings.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SRV"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-srv"><strong>SRV</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SRV" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Service RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SRV/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-srv-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SRV/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SRV/port"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-srv-port"><strong>port</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SRV/port" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>TCP or UDP port number.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SRV/priority"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-srv-priority"><strong>priority</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SRV/priority" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Priority of the target host.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SRV/target"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-srv-target"><strong>target</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SRV/target" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Target hostname.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SRV/weight"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-srv-weight"><strong>weight</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SRV/weight" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Relative weight for records with same priority.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SSHFP"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-sshfp"><strong>SSHFP</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SSHFP" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>SSH fingerprint RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SSHFP/algorithm"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-sshfp-algorithm"><strong>algorithm</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SSHFP/algorithm" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>SSH key algorithm.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">2</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">3</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">4</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">6</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SSHFP/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-sshfp-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SSHFP/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SSHFP/fingerprint"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-sshfp-fingerprint"><strong>fingerprint</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SSHFP/fingerprint" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>SSH key fingerprint.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SSHFP/fp_type"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-sshfp-fp-type"><strong>fp_type</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SSHFP/fp_type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Fingerprint type.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">2</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">3</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-state"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><strong>state</strong></p>
+<a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>If <code class="ansible-value docutils literal notranslate"><span class="pre">present</span></code> the RRset will be created unless it already exists in which case if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-keep"><span class="std std-ref"><span class="pre">keep=false</span></span></a></code> RRs will be replaced and if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-keep"><span class="std std-ref"><span class="pre">keep=true</span></span></a></code> new RRs will be added.</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">absent</span></code> and <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-keep"><span class="std std-ref"><span class="pre">keep=false</span></span></a></code> the whole RRset will be deleted</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">absent</span></code> and <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-keep"><span class="std std-ref"><span class="pre">keep=true</span></span></a></code> only the matching RRs will be deleted</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">exists</span></code> a list of all RRsets in the zone will be returned</p>
+<p>If <code class="ansible-value docutils literal notranslate"><span class="pre">exists</span></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-name"><span class="std std-ref"><span class="pre">name</span></span></a></strong></code> and/or <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> existence will be checked and matching RRsets will be returned</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">&quot;present&quot;</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;absent&quot;</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">&quot;exists&quot;</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SVCB"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-svcb"><strong>SVCB</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SVCB" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Service binding RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SVCB/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-svcb-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SVCB/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SVCB/params"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-svcb-params"><strong>params</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SVCB/params" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Service parameters.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SVCB/priority"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-svcb-priority"><strong>priority</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SVCB/priority" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Priority of the target host.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-SVCB/target"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-svcb-target"><strong>target</strong></p>
+<a class="ansibleOptionLink" href="#parameter-SVCB/target" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Target hostname.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TLSA"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-tlsa"><strong>TLSA</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TLSA" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Transport Layer Security Authentication RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TLSA/cert_assoc_data"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-tlsa-cert-assoc-data"><strong>cert_assoc_data</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TLSA/cert_assoc_data" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Certificate association data.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TLSA/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-tlsa-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TLSA/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TLSA/matching_type"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-tlsa-matching-type"><strong>matching_type</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TLSA/matching_type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Matching type.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">2</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TLSA/selector"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-tlsa-selector"><strong>selector</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TLSA/selector" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Selector field.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TLSA/usage"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-tlsa-usage"><strong>usage</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TLSA/usage" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Certificate usage.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">2</span></code></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">3</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-ttl"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-ttl"><strong>ttl</strong></p>
+<a class="ansibleOptionLink" href="#parameter-ttl" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>TTL of the records, in seconds.</p>
+<p class="ansible-option-line"><strong class="ansible-option-default-bold">Default:</strong> <code class="ansible-option-default docutils literal notranslate"><span class="pre">3600</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TXT"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-txt"><strong>TXT</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TXT" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Text RR.</p>
+<p>At least one RR type is required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> and <code class="ansible-option docutils literal notranslate"><strong><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><span class="std std-ref"><span class="pre">type</span></span></a></strong></code> is not present.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TXT/disabled"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-txt-disabled"><strong>disabled</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TXT/disabled" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Whether or not this RR is disabled.</p>
+<p class="ansible-option-line"><strong class="ansible-option-choices">Choices:</strong></p>
+<ul class="simple">
+<li><p><code class="ansible-option-default-bold docutils literal notranslate"><strong><span class="pre">false</span></strong></code> <span class="ansible-option-choices-default-mark">← (default)</span></p></li>
+<li><p><code class="ansible-option-choices-entry docutils literal notranslate"><span class="pre">true</span></code></p></li>
+</ul>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-TXT/strings"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-txt-strings"><strong>strings</strong></p>
+<a class="ansibleOptionLink" href="#parameter-TXT/strings" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">any</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>Text strings.</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-type"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-type"><strong>type</strong></p>
+<a class="ansibleOptionLink" href="#parameter-type" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Type of resource record (e.g. A, PTR…).</p>
+<p>Required if <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> or <code class="ansible-option-value docutils literal notranslate"><a class="reference internal" href="#ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> and none of the RR type options are provided.</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="parameter-zone_name"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-parameter-zone-name"><strong>zone_name</strong></p>
+<a class="ansibleOptionLink" href="#parameter-zone_name" title="Permalink to this option"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span> / <span class="ansible-option-required">required</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>Name of the zone</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<div class="highlight-yaml+jinja notranslate"><div class="highlight"><pre><span></span><span class="nt">%YAML</span><span class="w"> </span><span class="m">1.2</span>
+<span class="nn">---</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Creating an RRset of RR type A</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns.zone.example.</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A</span>
+<span class="w">    </span><span class="nt">records</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.0.1</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Creating an RRset of RR type A</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns.zone.example.</span>
+<span class="w">    </span><span class="nt">A</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.0.1</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deleting an RRset</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns.zone.example.</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Replacing RR in an RRset</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns.zone.example.</span>
+<span class="w">    </span><span class="nt">A</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">192.168.1.1</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Adding RR to an RRset</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns.zone.example.</span>
+<span class="w">    </span><span class="nt">keep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">NS</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns1.example.</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deleting RR in RRset</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns.zone.example.</span>
+<span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">absent</span>
+<span class="w">    </span><span class="nt">keep</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">NS</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ns1.example.</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Listing all RRsets in a zone</span>
+<span class="w">  </span><span class="nt">kpfleming.powerdns_auth.rrset</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="w">    </span><span class="nt">zone_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zone.example.</span>
+<span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">exists</span>
+</pre></div>
+</div>
+</section>
+<section id="return-values">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Return Values</a><a class="headerlink" href="#return-values" title="Link to this heading"></a></h2>
+<p>Common return values are documented <a class="reference external" href="https://docs.ansible.com/ansible/devel/reference_appendices/common_return_values.html#common-return-values" title="(in Ansible vdevel)"><span class="xref std std-ref">here</span></a>, the following are the fields unique to this module:</p>
+<table class="longtable ansible-option-table docutils align-default" style="width: 100%">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-exists"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-exists"><strong>exists</strong></p>
+<a class="ansibleOptionLink" href="#return-exists" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">boolean</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>whether the provided name and type lead to existing RRset(s)</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> when state is exists and name and/or type provided</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-name"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-name"><strong>name</strong></p>
+<a class="ansibleOptionLink" href="#return-name" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>name of the RRset</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> always</p>
+<p class="ansible-option-line ansible-option-sample"><strong class="ansible-option-sample-bold">Sample:</strong> <code class="ansible-option-sample docutils literal notranslate"><span class="pre">&quot;rrset.example.&quot;</span></code></p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-rrsets"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-rrsets"><strong>rrsets</strong></p>
+<a class="ansibleOptionLink" href="#return-rrsets" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=dictionary</span></p>
+</div></td>
+<td><div class="ansible-option-cell"><p>list of existing RRsets or RRsets after changes are made</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> always</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-rrsets/comments"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-rrsets-comments"><strong>comments</strong></p>
+<a class="ansibleOptionLink" href="#return-rrsets/comments" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>list of comments on the RRset</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> success</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-rrsets/name"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-rrsets-name"><strong>name</strong></p>
+<a class="ansibleOptionLink" href="#return-rrsets/name" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>name of the RRset</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> success</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-rrsets/records"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-rrsets-records"><strong>records</strong></p>
+<a class="ansibleOptionLink" href="#return-rrsets/records" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">list</span> / <span class="ansible-option-elements">elements=string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>RRs list</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> success</p>
+</div></td>
+</tr>
+<tr class="row-even"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-rrsets/ttl"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-rrsets-ttl"><strong>ttl</strong></p>
+<a class="ansibleOptionLink" href="#return-rrsets/ttl" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">integer</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>TTL of the RRs, in seconds.</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> success</p>
+</div></td>
+</tr>
+<tr class="row-odd"><td><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+<div class="ansibleOptionAnchor" id="return-rrsets/type"></div><p class="ansible-option-title" id="ansible-collections-kpfleming-powerdns-auth-rrset-module-return-rrsets-type"><strong>type</strong></p>
+<a class="ansibleOptionLink" href="#return-rrsets/type" title="Permalink to this return value"></a><p class="ansible-option-type-line"><span class="ansible-option-type">string</span></p>
+</div></td>
+<td><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell"><p>RR type</p>
+<p class="ansible-option-line"><strong class="ansible-option-returned-bold">Returned:</strong> success</p>
+</div></td>
+</tr>
+</tbody>
+</table>
+<section id="authors">
+<h3>Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Mohamed Chamrouk (&#64;mohamed-chamrouk)</p></li>
+</ul>
+</section>
+<section id="collection-links">
+<h3>Collection links<a class="headerlink" href="#collection-links" title="Link to this heading"></a></h3>
+<ul class="ansible-links">
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/kpfleming/ansible-powerdns-auth/issues" rel="noopener external" target="_blank">Issue Tracker</a></span></li>
+<li><span><a aria-role="button" class="ansible-link reference external" href="https://github.com/kpfleming/ansible-powerdns-auth" rel="noopener external" target="_blank">Repository (Sources)</a></span></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          
+
+<footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cryptokey_module.html" class="btn btn-neutral float-left" title="kpfleming.powerdns_auth.cryptokey module – Manages a CryptoKey in a zone of PowerDNS Authoritative server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tsigkey_module.html" class="btn btn-neutral float-right" title="kpfleming.powerdns_auth.tsigkey module – Manages a TSIG key in a PowerDNS Authoritative server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Kevin P. Fleming and project contributors.</p>
+  </div>
+
+  
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script><!-- extra footer elements for Ansible beyond RTD Sphinx Theme -->
+
+</body>
+</html>
