@@ -17,7 +17,7 @@ jobs:
     - id: details
       uses: kpfleming/composite-actions/image-details@v3
       with:
-        base_image: python:bookworm-main
+        base_image: python:trixie-main
   publish_galaxy:
     runs-on: ubuntu-24.04-arm
     outputs:
