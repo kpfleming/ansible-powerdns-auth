@@ -245,7 +245,7 @@ options:
         description:
           - List of TSIG keys used to validate NOTIFY requests from zone masters and to
             sign AXFR/IXFR requests to zone masters.
-          - "Note: only the first key in the list will be used."
+          - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
       forward_dnsupdate:
@@ -312,7 +312,7 @@ options:
         description:
           - List of TSIG keys used to sign NOTIFY requests and to validate
             AXFR/IXFR requests.
-          - "Note: only the first key in the list will be used."
+          - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
       tsig_allow_dnsupdate:
