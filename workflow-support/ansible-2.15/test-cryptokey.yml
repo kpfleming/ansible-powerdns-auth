@@ -1,3 +1,4 @@
+---
 - hosts: localhost
   connection: local
   gather_facts: false
@@ -7,13 +8,16 @@
     common_args: &common
       api_key: foo
       zone_name: cryptokeys.example.
-    # For some reason in this test environment changes made to the CryptoKeys
-    # are not effective unless some record is updated in the zone hence the following
-    # task and its presence throughout the playbook.
+    # For some reason in this test environment changes made to the
+    # CryptoKeys are not effective unless some record is updated in
+    # the zone hence the following task and its presence throughout
+    # the playbook. A random-number generator is used for the TTL to
+    # ensure that the RRset will be changed.
     refresh_task: &refresh
       kpfleming.powerdns_auth.rrset:
         <<: *common
         name: cryptokeys.example.
+        ttl: "{{ 86400 | random(start=60) }}"
         NS:
           - host: ns1.example.
 

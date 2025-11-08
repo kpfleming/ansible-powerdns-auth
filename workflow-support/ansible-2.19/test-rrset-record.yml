@@ -143,7 +143,7 @@
       vars:
         dig: "{{ lookup('dig_local', 't.txt.rrset.example.', qtype='TXT', flat=0, fail_on_error=false, real_empty=false) }}"
 
-    - name: check updating existing RRset with same content
+    - name: check updating existing RRset with same content (keep=true)
       kpfleming.powerdns_auth.rrset:
         <<: *common
         state: present
@@ -163,6 +163,70 @@
           - dig['owner'] == "rrset.example."
       vars:
         dig: "{{ lookup('dig_local', 'rrset.example.', qtype='NS', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check updating existing RRset with same content (keep=false)
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: rrset.example.
+        NS:
+          - host: ns1.example.com.
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - dig['target'] == "ns1.example.com."
+          - dig['ttl'] == 3600
+          - dig['owner'] == "rrset.example."
+      vars:
+        dig: "{{ lookup('dig_local', 'rrset.example.', qtype='NS', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check creating RRset with multiple records
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: multi.A.rrset.example.
+        keep: true
+        A:
+          - address: 10.0.0.1
+          - address: 172.0.0.1
+          - address: 127.0.0.53
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - (dig | sort(attribute='address') | map(attribute='address') | list) == ['10.0.0.1', '127.0.0.53', '172.0.0.1']
+          - (dig | map(attribute='ttl') | unique | list) == [3600]
+      vars:
+        dig: "{{ query('dig_local', 'multi.a.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
+
+    - name: check confirming RRset with multiple records in a different order
+      kpfleming.powerdns_auth.rrset:
+        <<: *common
+        state: present
+        name: multi.A.rrset.example.
+        keep: true
+        A:
+          - address: 127.0.0.53
+          - address: 10.0.0.1
+          - address: 172.0.0.1
+      register: result
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - not result.changed
+          - (dig | sort(attribute='address') | map(attribute='address') | list) == ['10.0.0.1', '127.0.0.53', '172.0.0.1']
+          - (dig | map(attribute='ttl') | unique | list) == [3600]
+      vars:
+        dig: "{{ query('dig_local', 'multi.a.rrset.example.', qtype='A', flat=0, fail_on_error=false, real_empty=false) }}"
 
     - name: check deleting nonexistent RR from existing RRset
       kpfleming.powerdns_auth.rrset:
@@ -259,7 +323,7 @@
           - '"exception" not in result'
           - not result.failed
           - not result.changed
-          - (result['rrsets'] | length) == 20
+          - (result['rrsets'] | length) == 21
 
     - name: check listing all RRsets of a given type
       kpfleming.powerdns_auth.rrset:

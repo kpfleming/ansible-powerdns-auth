@@ -1196,12 +1196,15 @@ def main():
                     "ttl": params["ttl"],
                     "keep": params["keep"],
                     "changetype": changetype,
-                    "records": records,
+                    "records": sorted(records, key=lambda r: r["content"]),
                 }
             ]
 
             records = []
     else:
+        records = params.get("records", [])
+        if not records:
+            records = []
         rrsets_struct = [
             {
                 "name": params["name"].lower(),
@@ -1209,7 +1212,7 @@ def main():
                 "ttl": params["ttl"],
                 "keep": params["keep"],
                 "changetype": changetype,
-                "records": params.get("records", []),
+                "records": sorted(records, key=lambda r: r["content"]),
             }
         ]
 
@@ -1223,6 +1226,16 @@ def main():
             None,
         )
 
+        # eliminate any unneccessary attributes from existing_rrset
+        if existing_rrset:
+            existing_rrset["records"] = sorted(
+                [
+                    {"content": r["content"], "disabled": r["disabled"]}
+                    for r in existing_rrset["records"]
+                ],
+                key=lambda r: r["content"],
+            )
+
         rrset_changetype = rrset["changetype"]
         rrset_keep = rrset.pop(
             "keep"
@@ -1233,7 +1246,15 @@ def main():
                 # For REPLACE, not wanting to keep existing records or not having any existing
                 # records is the same
                 if rrset["type"] is not None:
-                    zone_struct.setdefault("rrsets", []).append(rrset)
+                    # if the existing records match the provided
+                    # records, and the TTL has not changed, no change
+                    # is necessary
+                    if (
+                        not existing_rrset
+                        or rrset["records"] != existing_rrset["records"]
+                        or rrset["ttl"] != existing_rrset["ttl"]
+                    ):
+                        zone_struct.setdefault("rrsets", []).append(rrset)
                 else:
                     module.fail_json("No valid record found for RRset creation.")
             elif rrset_changetype == "DELETE":
@@ -1288,7 +1309,10 @@ def main():
     if zone_struct:
         api_client.patchZone(zone_struct=zone_struct)
         result["changed"] = True
-        result["rrsets"] = get_rrsets(api_client)
+    else:
+        result["changed"] = False
+
+    result["rrsets"] = get_rrsets(api_client)
 
     module.exit_json(**result)
 
