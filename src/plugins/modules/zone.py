@@ -200,13 +200,15 @@ options:
         elements: str
       master_tsig_key_ids:
         description:
-          - The id of the TSIG keys used for master operation in this zone.
+          - The names of the TSIG keys used for master operation in this zone.
+            The names should end with '.'.
             Only used when O(properties.kind=Master) or O(properties.kind=Producer).
         type: list
         elements: str
       slave_tsig_key_ids:
         description:
-          - The id of the TSIG keys used for slave operation in this zone.
+          - The names of the TSIG keys used for slave operation in this zone.
+            The names should end with '.'.
             Only used when O(properties.kind=Slave) or O(properties.kind=Consumer).
         type: list
         elements: str
@@ -244,7 +246,7 @@ options:
       axfr_master_tsig:
         description:
           - List of TSIG keys used to validate NOTIFY requests from zone masters and to
-            sign AXFR/IXFR requests to zone masters.
+            sign AXFR/IXFR requests to zone masters. The names should end with '.'.
           - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
@@ -311,13 +313,14 @@ options:
       tsig_allow_axfr:
         description:
           - List of TSIG keys used to sign NOTIFY requests and to validate
-            AXFR/IXFR requests.
+            AXFR/IXFR requests. The names should end with '.'.
           - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
       tsig_allow_dnsupdate:
         description:
           - List of TSIG keys for which DNSUPDATE requests will be accepted.
+            The names should end with '.'.
         type: list
         elements: str
 
@@ -438,12 +441,16 @@ zone:
       type: list
       elements: str
     master_tsig_key_ids:
-      description: The id of the TSIG keys used for master operation in this zone.
+      description:
+        - The names of the TSIG keys used for master operation in this zone.
+          The names should end with '.'.
       returned: when present
       type: list
       elements: str
     slave_tsig_key_ids:
-      description: The id of the TSIG keys used for slave operation in this zone.
+      description:
+        - The names of the TSIG keys used for slave operation in this zone.
+          The names should end with '.'.
       returned: when present
       type: list
       elements: str
@@ -476,7 +483,7 @@ zone:
         axfr_master_tsig:
           description:
             - List of TSIG keys used to validate NOTIFY requests from zone masters and to
-              sign AXFR/IXFR requests to zone masters.
+              sign AXFR/IXFR requests to zone masters. The names should end with '.'.
           type: list
           elements: str
         axfr_source:
@@ -551,12 +558,13 @@ zone:
         tsig_allow_axfr:
           description:
             - List of TSIG keys used to sign NOTIFY requests and to validate
-              AXFR/IXFR requests.
+              AXFR/IXFR requests. The names should end with '.'.
           type: list
           elements: str
         tsig_allow_dnsupdate:
           description:
             - List of TSIG keys for which DNSUPDATE requests will be accepted.
+              The names should end with '.'.
           type: list
           elements: str
 """
@@ -746,7 +754,7 @@ class MetadataListValue(Metadata):
             )
 
     def update(self, oldval, newval, api_zone_metadata_client):
-        if newval == oldval:
+        if sorted(newval) == sorted(oldval):
             return False
 
         if len(newval) != 0:

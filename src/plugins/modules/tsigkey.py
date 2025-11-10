@@ -44,7 +44,7 @@ options:
     default: 'present'
   name:
     description:
-      - Name of the key to be managed.
+      - Name of the key to be managed. The name should end with '.'.
     type: str
     required: true
   algorithm:
