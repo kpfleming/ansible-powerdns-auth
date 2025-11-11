@@ -16,6 +16,10 @@ for emergencies).
 
 ## [Unreleased]
 
+### Changed
+
+- Improved rrsets and zone modules to eliminate unnecessary 'changed' reporting.
+
 ## [25.2.0] - 2025-10-19
 
 ### Added
