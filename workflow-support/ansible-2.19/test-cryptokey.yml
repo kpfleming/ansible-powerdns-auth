@@ -7,7 +7,7 @@
     ansible_python_interpreter: python
     common_args: &common
       api_key: foo
-      zone_name: cryptokeys.example.
+      zone_name: cryptokeys..example.
     # For some reason in this test environment changes made to the
     # CryptoKeys are not effective unless some record is updated in
     # the zone hence the following task and its presence throughout
