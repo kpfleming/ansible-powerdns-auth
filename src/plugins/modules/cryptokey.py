@@ -5,6 +5,8 @@
 
 import sys
 
+import dns.exception
+import dns.name
 from ansible.module_utils.basic import AnsibleModule
 
 from ..module_utils.api_module_args import API_MODULE_ARGS
@@ -25,6 +27,7 @@ description:
 
 requirements:
   - bravado
+  - dnspython
 
 extends_documentation_fragment:
   - kpfleming.powerdns_auth.api_details
@@ -249,7 +252,10 @@ def main():
 
     params = module.params
     state = params["state"]
-    zone_name = params["zone_name"]
+    try:
+        zone_name = dns.name.from_text(params["zone_name"]).to_text()
+    except dns.exception.DNSException as e:
+        module.fail_json(msg=f"Invalid DNS name: {params['zone_name']} - {e}", **result)
 
     api_zone_client = APIZoneWrapper(
         module=module, result=result, object_type="zones", zone_id=None
