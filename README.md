@@ -40,7 +40,7 @@ requirements file will need to be installed there:
   ansible.builtin.pip:
     name:
       - bravado
-	  - dnspython
+      - dnspython
       - jsonschema<4
       - swagger-spec-validator==2.6.0
 ```
