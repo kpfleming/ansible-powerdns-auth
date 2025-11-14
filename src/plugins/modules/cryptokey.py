@@ -5,12 +5,11 @@
 
 import sys
 
-import dns.exception
-import dns.name
 from ansible.module_utils.basic import AnsibleModule
 
 from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APICryptokeyWrapper, APIZoneWrapper
+from ..module_utils.dns_helpers import validate_dns_name
 
 assert sys.version_info >= (3, 10), "This module requires Python 3.9 or newer."
 
@@ -251,11 +250,10 @@ def main():
     result = {"changed": False, "cryptokeys": []}
 
     params = module.params
+
     state = params["state"]
-    try:
-        zone_name = dns.name.from_text(params["zone_name"]).to_text()
-    except dns.exception.DNSException as e:
-        module.fail_json(msg=f"Invalid DNS name: {params['zone_name']} - {e}", **result)
+
+    zone_name = validate_dns_name(params["zone_name"])
 
     api_zone_client = APIZoneWrapper(
         module=module, result=result, object_type="zones", zone_id=None
