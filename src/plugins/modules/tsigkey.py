@@ -9,7 +9,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APITSIGKeyWrapper
-from ..module_utils.dns_helpers import validate_dns_name
 
 assert sys.version_info >= (3, 10), "This module requires Python 3.10 or newer."
 
@@ -26,7 +25,6 @@ description:
 
 requirements:
   - bravado
-  - dnspython
 
 extends_documentation_fragment:
   - kpfleming.powerdns_auth.api_details
@@ -169,8 +167,7 @@ def main():
     params = module.params
 
     state = params["state"]
-
-    key = validate_dns_name(params["name"], "name")
+    name = params["name"]
 
     if module.check_mode:
         module.exit_json(**result)
@@ -181,13 +178,12 @@ def main():
     # predictable exceptions
     api_client = APITSIGKeyWrapper(module=module, result=result, object_type="tsigkey")
 
-    result["key"] = {"name": key, "exists": False}
+    result["key"] = {"name": name, "exists": False}
 
     # first step is to get information about the key, if it exists
     # this is required to translate the user-friendly key name into
     # the key_id required for subsequent API calls
-
-    partial_key_info = [k for k in api_client.listTSIGKeys() if k["name"] == key]
+    partial_key_info = [k for k in api_client.listTSIGKeys() if k["name"] == name]
 
     if len(partial_key_info) == 0:
         if state in ("exists", "absent"):
@@ -219,7 +215,7 @@ def main():
     if not key_id:
         # create the requested key
         key_struct = {
-            "name": key,
+            "name": name,
             "algorithm": params["algorithm"],
         }
 

@@ -8,9 +8,8 @@ base_image=${1}; shift
 image_name=${1}; shift
 
 pdns_build=(build-essential autoconf automake ragel bison flex libboost-all-dev pkg-config python3-venv libluajit-5.1-dev libssl-dev libsqlite3-dev sqlite3)
-pdns_run=(libsqlite3-0 libluajit-5.1-2)
-# remove these build deps once there are 'cffi' wheels for Python 3.14
-proj_build_deps=(gcc libffi-dev)
+pdns_run=(libsqlite3-0 libluajit-5.1-2 libboost-program-options1.83.0)
+proj_build_deps=()
 lint_deps=(shellcheck)
 publish_deps=(yq)
 
