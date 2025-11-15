@@ -253,7 +253,7 @@ def main():
 
     state = params["state"]
 
-    zone_name = validate_dns_name(params["zone_name"])
+    zone_name = validate_dns_name(params["zone_name"], "zone_name")
 
     api_zone_client = APIZoneWrapper(
         module=module, result=result, object_type="zones", zone_id=None

@@ -9,6 +9,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APITSIGKeyWrapper
+from ..module_utils.dns_helpers import validate_dns_name
 
 assert sys.version_info >= (3, 10), "This module requires Python 3.10 or newer."
 
@@ -161,12 +162,15 @@ def main():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    state = module.params["state"]
-    key = module.params["name"]
-
     result = {
         "changed": False,
     }
+
+    params = module.params
+
+    state = params["state"]
+
+    key = validate_dns_name(params["name"], "name")
 
     if module.check_mode:
         module.exit_json(**result)
@@ -216,11 +220,11 @@ def main():
         # create the requested key
         key_struct = {
             "name": key,
-            "algorithm": module.params["algorithm"],
+            "algorithm": params["algorithm"],
         }
 
-        if module.params["key"]:
-            key_struct["key"] = module.params["key"]
+        if params["key"]:
+            key_struct["key"] = params["key"]
 
         key_info = api_client.createTSIGKey(tsigkey=key_struct)
         result["changed"] = True
@@ -232,10 +236,10 @@ def main():
         # options and update it if necessary
         key_struct = {}
 
-        if (mod_alg := module.params["algorithm"]) and mod_alg != key_info["algorithm"]:
+        if (mod_alg := params["algorithm"]) and mod_alg != key_info["algorithm"]:
             key_struct["algorithm"] = mod_alg
 
-        if (mod_key := module.params["key"]) and mod_key != key_info["key"]:
+        if (mod_key := params["key"]) and mod_key != key_info["key"]:
             key_struct["key"] = mod_key
 
         if key_struct:

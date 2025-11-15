@@ -9,12 +9,12 @@ import dns.name
 class DNSNameError(Exception):
     """The supplied DNS name was not valid."""
 
-    def __init__(self, name, e):
-        super().__init__(f"Invalid DNS name: {name} - {e}")
+    def __init__(self, name, location, e):
+        super().__init__(f"Invalid DNS name in '{location}': {name} - {e}")
 
 
-def validate_dns_name(name):
+def validate_dns_name(name, location):
     try:
         return dns.name.from_text(name).to_text()
     except dns.exception.DNSException as e:
-        raise DNSNameError(name, e) from None
+        raise DNSNameError(name, location, e) from None
