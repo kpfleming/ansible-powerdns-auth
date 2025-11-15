@@ -9,6 +9,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ..module_utils.api_module_args import API_MODULE_ARGS
 from ..module_utils.api_wrapper import APIZoneMetadataWrapper, APIZoneWrapper
+from ..module_utils.dns_helpers import validate_dns_name
 
 assert sys.version_info >= (3, 10), "This module requires Python 3.10 or newer."
 
@@ -25,6 +26,7 @@ description:
 
 requirements:
   - bravado
+  - dnspython
 
 extends_documentation_fragment:
   - kpfleming.powerdns_auth.api_details
@@ -74,7 +76,6 @@ options:
         description:
           - Optional zone name, indicating that this zone should be a member of the specified
             catalog zone.
-          - Must be an absolute zone name (ending with '.').
         type: str
       nameservers:
         description:
@@ -82,7 +83,6 @@ options:
           - Only used when O(properties.kind=Native), O(properties.kind=Master),
             or O(properties.kind=Producer).
           - Only used when zone is being created (O(state=present) and zone is not present).
-          - Must be absolute names (ending with '.').
         type: list
         elements: str
       ttl:
@@ -104,13 +104,13 @@ options:
         suboptions:
           mname:
             description:
-              - DNS name (absolute, ending with '.') of primary name server for the zone.
+              - DNS name of primary name server for the zone.
             type: str
             required: true
           rname:
             description:
               - Email address of the 'responsible party' for the zone, formatted as a
-                DNS name (absolute, ending with '.').
+                DNS name.
             type: str
             required: true
           serial:
@@ -162,7 +162,6 @@ options:
           name:
             description:
               - Name for record set (e.g. "www.powerdns.com.").
-              - Must be absolute names (ending with '.').
             type: str
             required: true
           type:
@@ -574,8 +573,9 @@ class Metadata:
     map_by_api_kind = {}
     map_by_meta = {}
 
-    def __init__(self, api_kind):
+    def __init__(self, api_kind, validator=None):
         self.api_kind = api_kind
+        self.validator = validator
         self.meta = api_kind.lower().replace("-", "_")
         self.immutable = False
         self.map_by_api_kind[self.api_kind] = self
@@ -748,12 +748,18 @@ class MetadataListValue(Metadata):
 
     def set(self, value, api_zone_metadata_client):
         if len(value) != 0:
+            if self.validator:
+                value = [self.validator(v) for v in value]
+
             api_zone_metadata_client.modifyMetadata(
                 metadata_kind=self.api_kind,
                 metadata={"metadata": value},
             )
 
     def update(self, oldval, newval, api_zone_metadata_client):
+        if self.validator:
+            newval = [self.validator[v] for v in newval]
+
         if sorted(newval) == sorted(oldval):
             return False
 
@@ -776,12 +782,18 @@ class MetadataStringValue(Metadata):
 
     def set(self, value, api_zone_metadata_client):
         if value:
+            if self.validator:
+                value = self.validator(value)
+
             api_zone_metadata_client.modifyMetadata(
                 metadata_kind=self.api_kind,
                 metadata={"metadata": [value]},
             )
 
     def update(self, oldval, newval, api_zone_metadata_client):
+        if self.validator:
+            newval = self.validator(newval)
+
         if newval == oldval:
             return False
 
@@ -799,8 +811,9 @@ class ZoneMetadata:
     map_by_zone_kind = {}
     map_by_meta = {}
 
-    def __init__(self, api_kind, zone_kind):
+    def __init__(self, api_kind, zone_kind, validator=None):
         self.zone_kind = zone_kind
+        self.validator = validator
         self.meta = api_kind.lower().replace("-", "_")
         self.immutable = False
         self.map_by_zone_kind[self.zone_kind] = self
@@ -916,9 +929,15 @@ class ZoneMetadataListValue(ZoneMetadata):
 
     def set(self, value, zone_struct):
         if value != []:
+            if self.validator:
+                value = [self.validator(v) for v in value]
+
             zone_struct[self.zone_kind] = value
 
     def update(self, oldval, newval, zone_struct):
+        if self.validator:
+            newval = [self.validator[v] for v in newval]
+
         if newval != oldval:
             zone_struct[self.zone_kind] = newval
 
@@ -932,9 +951,15 @@ class ZoneMetadataStringValue(ZoneMetadata):
 
     def set(self, value, zone_struct):
         if value != "":
+            if self.validator:
+                value = self.validator(value)
+
             zone_struct[self.zone_kind] = value
 
     def update(self, oldval, newval, zone_struct):
+        if self.validator:
+            newval = self.validator(newval)
+
         if newval != oldval:
             zone_struct[self.zone_kind] = newval
 
@@ -1207,8 +1232,11 @@ def main():
         "changed": False,
     }
 
-    state = module.params["state"]
-    zone = module.params["name"]
+    params = module.params
+
+    state = params["state"]
+
+    zone = validate_dns_name(params["name"], "name")
 
     if module.check_mode:
         module.exit_json(**result)
@@ -1295,10 +1323,10 @@ def main():
             "name": zone,
         }
 
-        if not module.params["properties"]:
+        if not params["properties"]:
             module.fail_json(msg="'properties' must be specified for zone creation", **result)
 
-        props = module.params["properties"]
+        props = params["properties"]
 
         zone_struct["kind"] = props["kind"]
 
@@ -1311,6 +1339,9 @@ def main():
                     **result,
                 )
 
+            props["soa"]["mname"] = validate_dns_name(props["soa"]["mname"], "mname")
+            props["soa"]["rname"] = validate_dns_name(props["soa"]["rname"], "rname")
+
             if not props["nameservers"]:
                 module.fail_json(
                     msg=(
@@ -1319,6 +1350,9 @@ def main():
                     ),
                     **result,
                 )
+
+            for i in range(len(props["nameservers"])):
+                props["nameservers"][i] = validate_dns_name(props["nameservers"][i], "nameservers")
 
             # supply an empty nameserver list since NS records will be supplied in the rrsets
             zone_struct["nameservers"] = []
@@ -1363,6 +1397,14 @@ def main():
                             **result,
                         )
                         break
+
+                    rrset["name"] = validate_dns_name(rrset["name"], "rrset name")
+
+                    if rrset["type"] == "CNAME":
+                        rrset["records"][0]["content"] = validate_dns_name(
+                            rrset["records"][0]["content"], "CNAME content"
+                        )
+
                     rrset["ttl"] = str(rrset["ttl"])
                     zone_struct["rrsets"].append(rrset)
 
@@ -1373,10 +1415,10 @@ def main():
             zone_struct["account"] = props["account"]
 
         if props["catalog"]:
-            zone_struct["catalog"] = props["catalog"]
+            zone_struct["catalog"] = validate_dns_name(props["catalog"], "catalog")
 
-        if module.params["metadata"]:
-            for setter in ZoneMetadata.setters(module.params["metadata"]):
+        if params["metadata"]:
+            for setter in ZoneMetadata.setters(params["metadata"]):
                 setter(zone_struct)
 
         partial_zone_info = api_zone_client.createZone(zone_struct=zone_struct)
@@ -1385,8 +1427,8 @@ def main():
         api_zone_client.zone_id = partial_zone_info["id"]
         api_zone_metadata_client.zone_id = partial_zone_info["id"]
 
-        if module.params["metadata"]:
-            for setter in Metadata.setters(module.params["metadata"]):
+        if params["metadata"]:
+            for setter in Metadata.setters(params["metadata"]):
                 setter(api_zone_metadata_client)
 
         zone_info, result["zone"] = build_zone_result(api_zone_client, api_zone_metadata_client)
@@ -1395,8 +1437,8 @@ def main():
         # options and update it if necessary
         zone_struct = {}
 
-        if module.params["properties"]:
-            props = module.params["properties"]
+        if params["properties"]:
+            props = params["properties"]
 
             if prop_kind := props["kind"]:
                 if zone_info["kind"] != prop_kind:
@@ -1415,10 +1457,10 @@ def main():
             if (prop_catalog := props["catalog"]) and zone_info["catalog"] != prop_catalog:
                 zone_struct["catalog"] = prop_catalog
 
-        if module.params["metadata"]:
+        if params["metadata"]:
             for updater in ZoneMetadata.updaters(
                 result["zone"]["metadata"],
-                module.params["metadata"],
+                params["metadata"],
             ):
                 updater(zone_struct)
 
@@ -1426,8 +1468,8 @@ def main():
             api_zone_client.putZone(zone_struct=zone_struct)
             result["changed"] = True
 
-        if module.params["metadata"]:
-            for updater in Metadata.updaters(result["zone"]["metadata"], module.params["metadata"]):
+        if params["metadata"]:
+            for updater in Metadata.updaters(result["zone"]["metadata"], params["metadata"]):
                 if updater(api_zone_metadata_client):
                     result["changed"] = True
 
