@@ -185,7 +185,7 @@ def main():
 
     state = params["state"]
 
-    print(params)
+    print(params, file=sys.stderr)
 
     # for "exists" and "absent" only one of 'id' and 'name' can be provided
     if state in ("exists", "absent"):
