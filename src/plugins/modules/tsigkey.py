@@ -188,8 +188,8 @@ def main():
     print(params, file=sys.stderr)
 
     # for "exists" and "absent" only one of 'id' and 'name' can be provided
-    if state in ("exists", "absent"):
-        param_validation.check_mutually_exclusive([["id", "name"]], params)
+    # if state in ("exists", "absent"):
+    #    param_validation.check_mutually_exclusive([["id", "name"]], params)
 
     if module.check_mode:
         module.exit_json(**result)
