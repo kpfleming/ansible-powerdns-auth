@@ -1,4 +1,4 @@
-#!/usr/bin/python
+!/usr/bin/python
 # SPDX-FileCopyrightText: 2021 Kevin P. Fleming <kevin@km6g.us>
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
@@ -200,14 +200,12 @@ options:
       master_tsig_key_ids:
         description:
           - The names of the TSIG keys used for master operation in this zone.
-            The names should end with '.'.
             Only used when O(properties.kind=Master) or O(properties.kind=Producer).
         type: list
         elements: str
       slave_tsig_key_ids:
         description:
           - The names of the TSIG keys used for slave operation in this zone.
-            The names should end with '.'.
             Only used when O(properties.kind=Slave) or O(properties.kind=Consumer).
         type: list
         elements: str
@@ -244,8 +242,8 @@ options:
         type: str
       axfr_master_tsig:
         description:
-          - List of TSIG keys used to validate NOTIFY requests from zone masters and to
-            sign AXFR/IXFR requests to zone masters. The names should end with '.'.
+          - List of TSIG key names used to validate NOTIFY requests from zone masters and to
+            sign AXFR/IXFR requests to zone masters.
           - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
@@ -311,15 +309,14 @@ options:
         default: 'DEFAULT'
       tsig_allow_axfr:
         description:
-          - List of TSIG keys used to sign NOTIFY requests and to validate
-            AXFR/IXFR requests. The names should end with '.'.
+          - List of TSIG key names used to sign NOTIFY requests and to validate
+            AXFR/IXFR requests.
           - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
       tsig_allow_dnsupdate:
         description:
-          - List of TSIG keys for which DNSUPDATE requests will be accepted.
-            The names should end with '.'.
+          - List of TSIG key names for which DNSUPDATE requests will be accepted.
         type: list
         elements: str
 
@@ -481,8 +478,8 @@ zone:
           type: bool
         axfr_master_tsig:
           description:
-            - List of TSIG keys used to validate NOTIFY requests from zone masters and to
-              sign AXFR/IXFR requests to zone masters. The names should end with '.'.
+            - List of TSIG key names used to validate NOTIFY requests from zone masters and to
+              sign AXFR/IXFR requests to zone masters.
           type: list
           elements: str
         axfr_source:
@@ -556,14 +553,13 @@ zone:
           choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         tsig_allow_axfr:
           description:
-            - List of TSIG keys used to sign NOTIFY requests and to validate
-              AXFR/IXFR requests. The names should end with '.'.
+            - List of TSIG key names used to sign NOTIFY requests and to validate
+              AXFR/IXFR requests.
           type: list
           elements: str
         tsig_allow_dnsupdate:
           description:
-            - List of TSIG keys for which DNSUPDATE requests will be accepted.
-              The names should end with '.'.
+            - List of TSIG key names for which DNSUPDATE requests will be accepted.
           type: list
           elements: str
 """
