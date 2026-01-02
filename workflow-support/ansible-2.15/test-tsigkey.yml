@@ -12,7 +12,22 @@
     - ansible.builtin.debug:
         var: ansible_python_interpreter
 
-    - name: check for non-existent key
+    - name: check for non-existent key by ID
+      kpfleming.powerdns_auth.tsigkey:
+        <<: *common
+        id: k0
+        state: exists
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - not result.key.exists
+
+    - name: check for non-existent key by name
       kpfleming.powerdns_auth.tsigkey:
         <<: *common
         name: k1
