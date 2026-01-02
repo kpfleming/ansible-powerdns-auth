@@ -42,6 +42,7 @@
           - not result.failed
           - result.key.exists
           - result.key.algorithm == "hmac-md5"
+          - result.key.id != ""
 
     - name: check key removal
       kpfleming.powerdns_auth.tsigkey:
@@ -76,6 +77,7 @@
           - result.key.exists
           - result.key.algorithm == "hmac-sha256"
           - result.key.key == "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
+          - result.key.id != ""
 
     - name: check key existence
       kpfleming.powerdns_auth.tsigkey:
@@ -93,6 +95,7 @@
           - result.key.exists
           - result.key.algorithm == "hmac-sha256"
           - result.key.key == "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
+          - result.key.id != ""
 
     - name: check key algorithm change
       kpfleming.powerdns_auth.tsigkey:

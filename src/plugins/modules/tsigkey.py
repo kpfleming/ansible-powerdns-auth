@@ -64,7 +64,7 @@ options:
     default: 'hmac-md5'
   key:
     description:
-      - The base-64 encoded key value.
+      - The Base64 encoded key value.
     type: str
 
 author:
@@ -109,6 +109,10 @@ key:
   returned: always
   type: complex
   contains:
+    id:
+      description: ID
+      returned: always
+      type: str
     name:
       description: Name
       returned: always
@@ -125,7 +129,7 @@ key:
       type: str
     key:
       description:
-        - The base-64 encoded key value.
+        - The Base64 encoded key value.
       returned: always
       type: str
 """
@@ -195,6 +199,7 @@ def main():
     else:
         # get the full key info and populate the result dict
         key_id = partial_key_info[0]["id"]
+        result["key"]["id"] = key_id
         key_info = api_client.getTSIGKey(tsigkey_id=key_id)
         result["key"]["exists"] = True
         result["key"]["algorithm"] = key_info["algorithm"]
@@ -205,7 +210,7 @@ def main():
     if state == "exists":
         module.exit_json(**result)
 
-    # if absence was requested, remove the zone and exit
+    # if absence was requested, remove the key and exit
     if state == "absent":
         api_client.deleteTSIGKey(tsigkey_id=key_id)
         result["changed"] = True
@@ -225,6 +230,7 @@ def main():
         key_info = api_client.createTSIGKey(tsigkey=key_struct)
         result["changed"] = True
         result["key"]["exists"] = True
+        result["key"]["id"] = key_info["id"]
         result["key"]["algorithm"] = key_info["algorithm"]
         result["key"]["key"] = key_info["key"]
     else:

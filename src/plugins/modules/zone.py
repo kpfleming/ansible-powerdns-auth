@@ -199,13 +199,13 @@ options:
         elements: str
       master_tsig_key_ids:
         description:
-          - The names of the TSIG keys used for master operation in this zone.
+          - The IDs of the TSIG keys used for master operation in this zone.
             Only used when O(properties.kind=Master) or O(properties.kind=Producer).
         type: list
         elements: str
       slave_tsig_key_ids:
         description:
-          - The names of the TSIG keys used for slave operation in this zone.
+          - The IDs of the TSIG keys used for slave operation in this zone.
             Only used when O(properties.kind=Slave) or O(properties.kind=Consumer).
         type: list
         elements: str
@@ -309,8 +309,8 @@ options:
         default: 'DEFAULT'
       tsig_allow_axfr:
         description:
-          - List of TSIG key names used to sign NOTIFY requests and to validate
-            AXFR/IXFR requests.
+          - List of TSIG key names used to sign NOTIFY requests (unless signing is disabled) and to
+            validate AXFR/IXFR requests.
           - "Note: the first key in the list will be used for signing."
         type: list
         elements: str
@@ -438,15 +438,13 @@ zone:
       elements: str
     master_tsig_key_ids:
       description:
-        - The names of the TSIG keys used for master operation in this zone.
-          The names should end with '.'.
+        - The IDs of the TSIG keys used for master operation in this zone.
       returned: when present
       type: list
       elements: str
     slave_tsig_key_ids:
       description:
-        - The names of the TSIG keys used for slave operation in this zone.
-          The names should end with '.'.
+        - The IDs of the TSIG keys used for slave operation in this zone.
       returned: when present
       type: list
       elements: str
@@ -480,6 +478,7 @@ zone:
           description:
             - List of TSIG key names used to validate NOTIFY requests from zone masters and to
               sign AXFR/IXFR requests to zone masters.
+            - "Note: the first key in the list will be used for signing."
           type: list
           elements: str
         axfr_source:
@@ -553,8 +552,9 @@ zone:
           choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         tsig_allow_axfr:
           description:
-            - List of TSIG key names used to sign NOTIFY requests and to validate
-              AXFR/IXFR requests.
+            - List of TSIG key names used to sign NOTIFY requests (unless signing is disabled) and to
+              validate AXFR/IXFR requests.
+            - "Note: the first key in the list will be used for signing."
           type: list
           elements: str
         tsig_allow_dnsupdate:
