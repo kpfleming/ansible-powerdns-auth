@@ -56,7 +56,7 @@ jobs:
       matrix:
         pdns: ${{ fromJSON(needs.preflight.outputs.versions).pdns }}
         python: ${{ fromJSON(needs.preflight.outputs.versions).python }}
-      fail-fast: false
+      fail-fast: true
     uses: ./.github/workflows/test.yml
     with:
       if: ${{ needs.preflight.outputs.need_ci == 'true' }}

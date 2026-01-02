@@ -185,6 +185,8 @@ def main():
 
     state = params["state"]
 
+    print(params)
+
     # for "exists" and "absent" only one of 'id' and 'name' can be provided
     if state in ("exists", "absent"):
         param_validation.check_mutually_exclusive([["id", "name"]], params)
