@@ -1,4 +1,4 @@
-!/usr/bin/python
+#!/usr/bin/python
 # SPDX-FileCopyrightText: 2021 Kevin P. Fleming <kevin@km6g.us>
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
@@ -552,8 +552,8 @@ zone:
           choices: [ 'DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE' ]
         tsig_allow_axfr:
           description:
-            - List of TSIG key names used to sign NOTIFY requests (unless signing is disabled) and to
-              validate AXFR/IXFR requests.
+            - List of TSIG key names used to sign NOTIFY requests (unless signing is disabled)
+              and to validate AXFR/IXFR requests.
             - "Note: the first key in the list will be used for signing."
           type: list
           elements: str

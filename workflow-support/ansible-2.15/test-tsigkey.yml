@@ -41,10 +41,11 @@
           - result['exception'] is not defined
           - not result.failed
           - result.key.exists
-          - result.key.algorithm == "hmac-md5"
           - result.key.id != ""
+          - result.key.algorithm == "hmac-md5"
+          - result.key.key != ""
 
-    - name: check key removal
+    - name: check key removal by name
       kpfleming.powerdns_auth.tsigkey:
         <<: *common
         name: k2
@@ -58,6 +59,8 @@
           - result['exception'] is not defined
           - not result.failed
           - result.changed
+          - not result.key.exists
+          - result.key.id != ""
 
     - name: check non-default key creation
       kpfleming.powerdns_auth.tsigkey:
@@ -75,9 +78,9 @@
           - result['exception'] is not defined
           - not result.failed
           - result.key.exists
+          - result.key.id != ""
           - result.key.algorithm == "hmac-sha256"
           - result.key.key == "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
-          - result.key.id != ""
 
     - name: check key existence
       kpfleming.powerdns_auth.tsigkey:
@@ -93,9 +96,9 @@
           - result['exception'] is not defined
           - not result.failed
           - result.key.exists
+          - result.key.id != ""
           - result.key.algorithm == "hmac-sha256"
           - result.key.key == "+8fQxgYhf5PVGPKclKnk8ReujIfWXOw/aEzzPPhDi6AGagpg/r954FPZdzgFfUjnmjMSA1Yu7vo6DQHVoGnRkw=="
-          - result.key.id != ""
 
     - name: check key algorithm change
       kpfleming.powerdns_auth.tsigkey:
@@ -112,12 +115,31 @@
           - result['exception'] is not defined
           - not result.failed
           - result.key.exists
+          - result.key.id != ""
           - result.key.algorithm == "hmac-sha512"
 
-    - name: check key removal
+    - name: check key name change
       kpfleming.powerdns_auth.tsigkey:
         <<: *common
-        name: k3
+        id: "{{ result.key.id }}"
+        state: present
+        name: k4
+      ignore_errors: true
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - result['exception'] is not defined
+          - not result.failed
+          - result.key.exists
+          - result.key.id != ""
+          - result.key.name == "k4"
+
+    - name: check key removal by id
+      kpfleming.powerdns_auth.tsigkey:
+        <<: *common
+        id: "{{ result.key.id }}"
         state: absent
       ignore_errors: true
       register: result
@@ -128,6 +150,8 @@
           - result['exception'] is not defined
           - not result.failed
           - result.changed
+          - not result.key.exists
+          - result.key.id != ""
 
     - name: leave key for zone tests
       kpfleming.powerdns_auth.tsigkey:
