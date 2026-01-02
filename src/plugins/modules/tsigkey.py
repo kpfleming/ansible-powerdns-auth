@@ -174,7 +174,7 @@ def main():
     }
 
     module = AnsibleModule(
-        argument_spec=module_args, supports_check_mode=True, required_one_of=[["id", "name"]]
+        argument_spec=module_args, supports_check_mode=True
     )
 
     result = {
