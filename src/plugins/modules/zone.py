@@ -1355,7 +1355,7 @@ def main():
 
             if props["rrsets"]:
                 for rrset in props["rrsets"]:
-                    if rrset["type"] in ["SOA"]:
+                    if rrset["type"] == "SOA":
                         module.fail_json(
                             msg=(
                                 f"'{rrset['type']}' type is not permitted in 'properties -> rrsets'"
