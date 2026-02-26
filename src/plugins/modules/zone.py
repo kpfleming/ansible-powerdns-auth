@@ -1323,9 +1323,12 @@ def main():
             # supply an empty nameserver list since NS records will be supplied in the rrsets
             zone_struct["nameservers"] = []
 
+            # If zone is a variant name, use the cannonical name in the records.
+            zone_canonical = zone.split('..')[0] + '.' if '..' in zone else zone
+
             zone_struct["rrsets"] = [
                 {
-                    "name": zone,
+                    "name": zone_canonical,
                     "type": "SOA",
                     "ttl": str(props["ttl"]),
                     "records": [
@@ -1346,7 +1349,7 @@ def main():
                     ],
                 },
                 {
-                    "name": zone,
+                    "name": zone_canonical,
                     "type": "NS",
                     "ttl": str(props["ttl"]),
                     "records": [{"disabled": False, "content": ns} for ns in props["nameservers"]],

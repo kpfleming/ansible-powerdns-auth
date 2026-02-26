@@ -282,6 +282,56 @@
           - not result.failed
           - result.changed
 
+    - name: check "Variant" zone creation
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d4.example..variant
+        state: present
+        properties:
+          kind: Native
+          nameservers:
+            - ns.example.
+          soa:
+            mname: localhost.
+            rname: hostmaster.localhost.
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+          - result.zone.name == "d4.example..variant"
+          - result.zone.kind == "Native"
+
+    - name: check zone exists
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d4.example..variant
+        state: exists
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+
+    - name: check zone removal
+      kpfleming.powerdns_auth.zone:
+        <<: *common
+        name: d4.example..variant
+        state: absent
+      register: result
+
+    - ansible.builtin.assert:
+        quiet: true
+        that:
+          - '"exception" not in result'
+          - not result.failed
+          - result.changed
+
     - block:
         - name: check "Producer" zone creation
           register: result
