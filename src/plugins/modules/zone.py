@@ -1324,7 +1324,7 @@ def main():
             zone_struct["nameservers"] = []
 
             # If zone is a variant name, use the cannonical name in the records.
-            zone_canonical = zone.split('..')[0] + '.' if '..' in zone else zone
+            zone_canonical = zone.split("..")[0] + "." if ".." in zone else zone
 
             zone_struct["rrsets"] = [
                 {
