@@ -53,7 +53,7 @@ jobs:
       with:
         name: collection
     - run: docsite/workflow-support/make_docs.sh ${{ needs.publish_galaxy.outputs.collection_namespace }}.${{ needs.publish_galaxy.outputs.collection_name }} ${{ needs.publish_galaxy.outputs.collection_tarball }}
-    - uses: EndBug/add-and-commit@v9
+    - uses: EndBug/add-and-commit@v10
       with:
         cwd: docsite
         add: docs --no-ignore-removal
