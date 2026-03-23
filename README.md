@@ -30,6 +30,11 @@ can be installed, like this:
 pip install -r requirements.txt
 ```
 
+In addition, these versions of the packages rely on deprecated
+functionality from the `setuptools` package, which was removed in
+version 82. As a result the full requirements list includes pinning
+setuptools to version 81 or lower.
+
 This command can be executed in the environment on the Ansible
 controller if the roles will be used only on 'localhost'; if they will
 be used on Ansible-managed nodes, then the packages from the
@@ -41,6 +46,7 @@ requirements file will need to be installed there:
     name:
       - bravado
       - jsonschema<4
+	  - setuptools<82
       - swagger-spec-validator==2.6.0
 ```
 
