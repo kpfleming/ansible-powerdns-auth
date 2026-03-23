@@ -1,3 +1,4 @@
 bravado
 jsonschema<4
+setuptools<82
 swagger-spec-validator==2.6.0
