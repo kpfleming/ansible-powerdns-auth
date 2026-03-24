@@ -15,7 +15,8 @@ lint_deps=(shellcheck)
 publish_deps=(yq)
 
 toxenvs=(lint-action ci-action publish-action)
-cimatrix=(py3{10,11,12,13,14})
+py_versions=(py3{10,11,12,13,14})
+pdns_versions=(pdns{4.8,4.9,5.0})
 
 c=$(buildah from "${base_image}")
 
@@ -34,12 +35,12 @@ build_cmd apt install --yes --quiet=2 "${proj_build_deps[@]}" "${lint_deps[@]}" 
 for pdns_ver in "${@}"; do
     case "${pdns_ver}" in
 	master)
-	    pdns_url=https://github.com/PowerDNS/pdns/archive/refs/heads/master.tar.gz
-	    pdns_dir=pdns-master
+	    pdns_url="https://github.com/PowerDNS/pdns/archive/refs/heads/master.tar.gz"
+	    pdns_dir="pdns-master"
 	    ;;
 	*)
-	    pdns_url=https://github.com/PowerDNS/pdns/archive/refs/heads/rel/auth-"${pdns_ver}".x.tar.gz
-	    pdns_dir=pdns-rel-auth-"${pdns_ver}".x
+	    pdns_url="https://github.com/PowerDNS/pdns/archive/refs/heads/rel/auth-${pdns_ver}.x.tar.gz"
+	    pdns_dir="pdns-rel-auth-${pdns_ver}.x"
 	    ;;
     esac
 
@@ -58,8 +59,10 @@ buildah config --env TOX_USER_CONFIG_FILE=/tox/config.ini "${c}"
 for env in "${toxenvs[@]}"; do
     case "${env}" in
 	ci-action)
-	    for py in "${cimatrix[@]}"; do
-		build_cmd_with_source tox exec -e "${py}-${env}" -- uv pip list
+	    for py in "${py_versions[@]}"; do
+		for pdns in "${pdns_versions[@]}"; do
+		    build_cmd_with_source tox exec -e "${py}-${pdns}-${env}" -- uv pip list
+		done
 	    done
 	;;
 	*)
