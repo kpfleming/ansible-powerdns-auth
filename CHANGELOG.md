@@ -20,6 +20,13 @@ for emergencies).
 
 - Improved rrsets and zone modules to eliminate unnecessary 'changed' reporting.
 
+- Removed testing against the 'master' branch of PowerDNS Auth, as the API
+  schema in that branch has been converted to OpenAPI 3.1 format and
+  the Bravado API client package used in this collection does not
+  support OpenAPI. This also means that this collection will not
+  support PowerDNS Auth 5.1.0 or later versions until a new API client
+  package has been chosen and incorporated into the collection.
+
 ## [25.2.0] - 2025-10-19
 
 ### Added
