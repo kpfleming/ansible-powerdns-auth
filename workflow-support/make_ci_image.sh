@@ -16,7 +16,7 @@ publish_deps=(yq)
 
 toxenvs=(lint-action ci-action publish-action)
 py_versions=(py3{10,11,12,13,14})
-pdns_versions=(pdns{4.8,4.9,5.0,master})
+pdns_versions=(pdns{4.8,4.9,5.0})
 
 c=$(buildah from "${base_image}")
 
