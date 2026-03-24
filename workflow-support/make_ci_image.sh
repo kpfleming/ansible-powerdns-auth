@@ -15,7 +15,8 @@ lint_deps=(shellcheck)
 publish_deps=(yq)
 
 toxenvs=(lint-action ci-action publish-action)
-cimatrix=(py3{10,11,12,13,14})
+py_versions=(py3{10,11,12,13,14})
+pdns_versions=(pdns{4.8,4.9,5.0,master})
 
 c=$(buildah from "${base_image}")
 
@@ -58,8 +59,10 @@ buildah config --env TOX_USER_CONFIG_FILE=/tox/config.ini "${c}"
 for env in "${toxenvs[@]}"; do
     case "${env}" in
 	ci-action)
-	    for py in "${cimatrix[@]}"; do
-		build_cmd_with_source tox exec -e "${py}-${env}" -- uv pip list
+	    for py in "${py_versions[@]}"; do
+		for pdns in "${pdns_versions[@]}"; do
+		    build_cmd_with_source tox exec -e "${py}-${pdns}-${env}" -- uv pip list
+		done
 	    done
 	;;
 	*)
