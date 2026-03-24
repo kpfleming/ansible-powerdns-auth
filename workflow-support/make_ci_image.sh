@@ -35,12 +35,12 @@ build_cmd apt install --yes --quiet=2 "${proj_build_deps[@]}" "${lint_deps[@]}" 
 for pdns_ver in "${@}"; do
     case "${pdns_ver}" in
 	master)
-	    pdns_url=https://github.com/PowerDNS/pdns/archive/refs/heads/master.tar.gz
-	    pdns_dir=pdns-master
+	    pdns_url="https://github.com/PowerDNS/pdns/archive/refs/heads/master.tar.gz"
+	    pdns_dir="pdns-master"
 	    ;;
 	*)
-	    pdns_url=https://github.com/PowerDNS/pdns/archive/refs/heads/rel/auth-"${pdns_ver}".x.tar.gz
-	    pdns_dir=pdns-rel-auth-"${pdns_ver}".x
+	    pdns_url="https://github.com/PowerDNS/pdns/archive/refs/heads/rel/auth-${pdns_ver}.x.tar.gz"
+	    pdns_dir="pdns-rel-auth-${pdns_ver}.x"
 	    ;;
     esac
 
