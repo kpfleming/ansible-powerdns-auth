@@ -8,8 +8,9 @@ from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ..module_utils import api_wrapper2
+from ..module_utils.api_client.models.tsig_key import TSIGKey
 from ..module_utils.api_module_args import API_MODULE_ARGS
-from ..module_utils.api_wrapper import APITSIGKeyWrapper
 
 assert sys.version_info >= (3, 10), "This module requires Python 3.10 or newer."
 
@@ -25,7 +26,7 @@ description:
     of a TSIG key in a PowerDNS Authoritative server.
 
 requirements:
-  - bravado
+  - httpx
 
 extends_documentation_fragment:
   - kpfleming.powerdns_auth.api_details
@@ -175,7 +176,7 @@ def main():
     # and curry the server_id into all API calls
     # automatically, along with handling
     # predictable exceptions
-    api_client = APITSIGKeyWrapper(module=module, result=result, object_type="tsigkey")
+    api_client = api_wrapper2.TSIGKey(module=module, result=result)
 
     result["key"] = {"name": key, "exists": False}
 
@@ -183,7 +184,8 @@ def main():
     # this is required to translate the user-friendly key name into
     # the key_id required for subsequent API calls
 
-    partial_key_info = [k for k in api_client.listTSIGKeys() if k["name"] == key]
+    key_id = ""
+    partial_key_info = [k for k in api_client.list() if k.name == key]
 
     if len(partial_key_info) == 0:
         if state in ("exists", "absent"):
@@ -191,60 +193,60 @@ def main():
             module.exit_json(**result)
         else:
             # state must be 'present'
-            key_id = None
+            pass
     else:
         # get the full key info and populate the result dict
-        key_id = partial_key_info[0]["id"]
-        key_info = api_client.getTSIGKey(tsigkey_id=key_id)
+        key_id = partial_key_info[0].id
+        key_info = api_client.get(key_id=key_id)
         result["key"]["exists"] = True
-        result["key"]["algorithm"] = key_info["algorithm"]
-        result["key"]["key"] = key_info["key"]
+        result["key"]["algorithm"] = key_info.algorithm
+        result["key"]["key"] = key_info.key
 
     # if only an existence check was requested,
     # the operation is complete
     if state == "exists":
         module.exit_json(**result)
 
-    # if absence was requested, remove the zone and exit
+    # if absence was requested, remove the key and exit
     if state == "absent":
-        api_client.deleteTSIGKey(tsigkey_id=key_id)
+        api_client.delete(key_id=key_id)
         result["changed"] = True
         module.exit_json(**result)
 
     # state must be 'present'
-    if not key_id:
+    if len(key_id) != 0:
         # create the requested key
-        key_struct = {
-            "name": key,
-            "algorithm": module.params["algorithm"],
-        }
+        key = TSIGKey(name=key, algorithm=module.params["algorithm"])
 
         if module.params["key"]:
-            key_struct["key"] = module.params["key"]
+            key.key = module.params["key"]
 
-        key_info = api_client.createTSIGKey(tsigkey=key_struct)
+        key_info = api_client.create(key=key)
         result["changed"] = True
         result["key"]["exists"] = True
-        result["key"]["algorithm"] = key_info["algorithm"]
-        result["key"]["key"] = key_info["key"]
+        result["key"]["algorithm"] = key_info.algorithm
+        result["key"]["key"] = key_info.key
     else:
         # compare the key's attributes to the provided
         # options and update it if necessary
-        key_struct = {}
+        key = TSIGKey()
+        modified = False
 
         if (mod_alg := module.params["algorithm"]) and mod_alg != key_info["algorithm"]:
-            key_struct["algorithm"] = mod_alg
+            key.algorithm = mod_alg
+            modified = True
 
         if (mod_key := module.params["key"]) and mod_key != key_info["key"]:
-            key_struct["key"] = mod_key
+            key.key = mod_key
+            modified = True
 
-        if key_struct:
-            key_info = api_client.putTSIGKey(tsigkey_id=key_id, tsigkey=key_struct)
+        if modified:
+            key_info = api_client.put(key_id=key_id, key=key)
             result["changed"] = True
 
         if result["changed"]:
-            result["key"]["algorithm"] = key_info["algorithm"]
-            result["key"]["key"] = key_info["key"]
+            result["key"]["algorithm"] = key.algorithm
+            result["key"]["key"] = key_info.key
 
     module.exit_json(**result)
 

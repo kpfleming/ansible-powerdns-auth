@@ -3,6 +3,7 @@ target-version = "py310"
 line-length = 100
 
 src = [ "src" ]
+extend-exclude = [ "src/plugins/module_utils/api_client" ]
 lint.select = [ "ALL" ]
 lint.ignore = [
   "ANN",     # Mypy is better at this.
