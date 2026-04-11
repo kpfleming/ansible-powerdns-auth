@@ -3,7 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
 import sys
+from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -571,8 +574,8 @@ zone:
 
 
 class Metadata:
-    map_by_api_kind = {}
-    map_by_meta = {}
+    map_by_api_kind: dict[str, Metadata] = {}
+    map_by_meta: dict[str, Metadata] = {}
 
     def __init__(self, api_kind):
         self.api_kind = api_kind
@@ -580,6 +583,10 @@ class Metadata:
         self.immutable = False
         self.map_by_api_kind[self.api_kind] = self
         self.map_by_meta[self.meta] = self
+
+    # must be overidden in subclasses
+    def default(self) -> Any:
+        return None
 
     def value_or_default(self, value):
         return self.default() if value is None else value
@@ -602,7 +609,7 @@ class Metadata:
 
         for k, v in {m["kind"]: m["metadata"] for m in api_meta}.items():
             if meta_object := cls.by_kind(k):
-                meta_object.user_meta_from_api(user_meta, v)
+                meta_object.user_meta_from_api_item(user_meta, v)
 
         # remove 'None' metadata items
         for k, v in list(user_meta.items()):
@@ -647,7 +654,7 @@ class MetadataBinaryValue(Metadata):
     def default(self):
         return False
 
-    def user_meta_from_api(self, user_meta, api_meta_item):
+    def user_meta_from_api_item(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0] == "1"
 
     def set(self, value, api_zone_metadata_client):
@@ -675,7 +682,7 @@ class MetadataBinaryPresence(Metadata):
     def default(self):
         return False
 
-    def user_meta_from_api(self, user_meta, _api_meta_item):
+    def user_meta_from_api_item(self, user_meta, _api_meta_item):
         user_meta[self.meta] = True
 
     def set(self, value, api_zone_metadata_client):
@@ -703,7 +710,7 @@ class MetadataTernaryValue(Metadata):
     def default(self):
         return None
 
-    def user_meta_from_api(self, user_meta, api_meta_item):
+    def user_meta_from_api_item(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0] == "1"
 
     def set(self, value, api_zone_metadata_client):
@@ -743,7 +750,7 @@ class MetadataListValue(Metadata):
     def default(self):
         return []
 
-    def user_meta_from_api(self, user_meta, api_meta_item):
+    def user_meta_from_api_item(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item
 
     def set(self, value, api_zone_metadata_client):
@@ -771,7 +778,7 @@ class MetadataStringValue(Metadata):
     def default(self):
         return ""
 
-    def user_meta_from_api(self, user_meta, api_meta_item):
+    def user_meta_from_api_item(self, user_meta, api_meta_item):
         user_meta[self.meta] = api_meta_item[0]
 
     def set(self, value, api_zone_metadata_client):
@@ -796,8 +803,8 @@ class MetadataStringValue(Metadata):
 
 
 class ZoneMetadata:
-    map_by_zone_kind = {}
-    map_by_meta = {}
+    map_by_zone_kind: dict[str, ZoneMetadata] = {}
+    map_by_meta: dict[str, ZoneMetadata] = {}
 
     def __init__(self, api_kind, zone_kind):
         self.zone_kind = zone_kind
@@ -805,6 +812,10 @@ class ZoneMetadata:
         self.immutable = False
         self.map_by_zone_kind[self.zone_kind] = self
         self.map_by_meta[self.meta] = self
+
+    # must be overidden in subclasses
+    def default(self) -> Any:
+        return None
 
     def value_or_default(self, value):
         return self.default() if value is None else value
@@ -827,7 +838,7 @@ class ZoneMetadata:
 
         for k, v in api_zone.items():
             if meta_object := cls.by_kind(k):
-                meta_object.user_meta_from_api(user_meta, v)
+                meta_object.user_meta_from_api_item(user_meta, v)
 
         return user_meta
 
@@ -867,7 +878,7 @@ class ZoneMetadataBinaryValue(ZoneMetadata):
     def default(self):
         return False
 
-    def user_meta_from_api(self, user_meta, zone_meta_item):
+    def user_meta_from_api_item(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
     def set(self, value, zone_struct):
@@ -886,7 +897,7 @@ class ZoneMetadataTernaryValue(ZoneMetadata):
     def default(self):
         return None
 
-    def user_meta_from_api(self, user_meta, zone_meta_item):
+    def user_meta_from_api_item(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item == "1"
 
     def set(self, value, zone_struct):
@@ -911,7 +922,7 @@ class ZoneMetadataListValue(ZoneMetadata):
     def default(self):
         return []
 
-    def user_meta_from_api(self, user_meta, zone_meta_item):
+    def user_meta_from_api_item(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
     def set(self, value, zone_struct):
@@ -927,7 +938,7 @@ class ZoneMetadataStringValue(ZoneMetadata):
     def default(self):
         return ""
 
-    def user_meta_from_api(self, user_meta, zone_meta_item):
+    def user_meta_from_api_item(self, user_meta, zone_meta_item):
         user_meta[self.meta] = zone_meta_item
 
     def set(self, value, zone_struct):
@@ -1203,7 +1214,7 @@ def main():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    result = {
+    result: dict[str, Any] = {
         "changed": False,
     }
 

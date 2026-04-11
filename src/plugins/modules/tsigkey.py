@@ -4,6 +4,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -163,7 +164,7 @@ def main():
     state = module.params["state"]
     key = module.params["name"]
 
-    result = {
+    result: dict[str, Any] = {
         "changed": False,
     }
 
