@@ -24,7 +24,7 @@ jobs:
     container:
       image: ${{ inputs.image }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         show-progress: false
     - name: start pdns_server
