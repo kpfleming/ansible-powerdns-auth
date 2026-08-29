@@ -25,6 +25,7 @@ description:
 
 requirements:
   - bravado
+  - dnspython
 
 extends_documentation_fragment:
   - kpfleming.powerdns_auth.api_details

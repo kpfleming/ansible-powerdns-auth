@@ -25,13 +25,11 @@ class APIWrapper:
         except ImportError:
             module.fail_json(msg="This module requires the 'bravado' package.")
 
-        self.api_exceptions_to_catch = (
-            HTTPBadRequest,
-            HTTPNotFound,
-            HTTPConflict,
-            HTTPUnprocessableEntity,
-            HTTPInternalServerError,
-        )
+        self.bad_request_exception = HTTPBadRequest
+        self.not_found_exception = HTTPNotFound
+        self.conflict_exception = HTTPConflict
+        self.unprocessable_entity_exception = HTTPUnprocessableEntity
+        self.internal_server_error_exception = HTTPInternalServerError
 
         url = urlparse(module.params["api_url"])
 
@@ -43,6 +41,10 @@ class APIWrapper:
             param_in="header",
         )
 
+        # the API key information is repeated here because the
+        # SwaggerClient does not use the provided 'http_client' to
+        # download the API specification, and PowerDNS Auth requires
+        # authentication to download the specification
         full_api = SwaggerClient.from_url(
             module.params["api_url"] + module.params["api_spec_path"],
             http_client=http_client,
@@ -59,8 +61,14 @@ def api_exception_handler(func):
     def wrapper(self, *args, **kwargs):
         try:
             return func(self, *args, **kwargs)
-        except self.api_exceptions_to_catch as e:
-            # The 404 error returns a simple string, not a dict hence the following line
+        except (
+            self.bad_request_exception,
+            self.not_found_exception,
+            self.conflict_exception,
+            self.unprocessable_entity_exception,
+            self.internal_server_error_exception,
+        ) as e:
+            # The 'not found' error returns a simple string, not a dict hence the following line
             err_msg = (
                 e.swagger_result if "error" not in e.swagger_result else e.swagger_result["error"]  # noqa: SIM401
             )
@@ -157,20 +165,31 @@ class APITSIGKeyWrapper(APIWrapper):
         return self.raw_api.createTSIGKey(server_id=self.server_id, **kwargs).result()
 
     @api_exception_handler
-    def deleteTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.deleteTSIGKey(server_id=self.server_id, **kwargs).result()
+    def deleteTSIGKey(self, key_id, **kwargs):  # noqa: N802
+        return self.raw_api.deleteTSIGKey(
+            server_id=self.server_id, tsigkey_id=key_id, **kwargs
+        ).result()
 
     @api_exception_handler
-    def getTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.getTSIGKey(server_id=self.server_id, **kwargs).result()
+    def getTSIGKey(self, key_id, *, allow_not_found=False, **kwargs):  # noqa: N802
+        try:
+            return self.raw_api.getTSIGKey(
+                server_id=self.server_id, tsigkey_id=key_id, **kwargs
+            ).result()
+        except self.not_found_exception:
+            if allow_not_found:
+                return None
+            raise
 
     @api_exception_handler
     def listTSIGKeys(self):  # noqa: N802
         return self.raw_api.listTSIGKeys(server_id=self.server_id).result()
 
     @api_exception_handler
-    def putTSIGKey(self, **kwargs):  # noqa: N802
-        return self.raw_api.putTSIGKey(server_id=self.server_id, **kwargs).result()
+    def putTSIGKey(self, key_id, **kwargs):  # noqa: N802
+        return self.raw_api.putTSIGKey(
+            server_id=self.server_id, tsigkey_id=key_id, **kwargs
+        ).result()
 
 
 class APICryptokeyWrapper(APIWrapper):
