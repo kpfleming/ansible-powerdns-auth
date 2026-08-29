@@ -4,6 +4,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from typing import Any
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -1216,7 +1217,7 @@ def main():
             }
         ]
 
-    zone_struct = {}
+    zone_struct: dict[str, Any] = {}
 
     for rrset in rrsets_struct:
         # Retrieving existing rrset, there can only be one
