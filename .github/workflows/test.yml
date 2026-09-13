@@ -17,6 +17,13 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   test:
     if: inputs.if
@@ -24,13 +31,20 @@ jobs:
     container:
       image: ${{ inputs.image }}
     steps:
-    - uses: actions/checkout@v7
-      with:
-        show-progress: false
-    - name: start pdns_server
-      run: workflow-support/start_server.sh ${{ inputs.pdns }}
-    - name: run CI tests
-      run: tox run -e${{ inputs.python }}-pdns${{ inputs.pdns }}-ci-action
-      shell: bash
-      env:
-        pdns_version: ${{ inputs.pdns }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          show-progress: false
+          persist-credentials: false
+
+      - name: start pdns_server
+        run: workflow-support/start_server.sh ${INPUTS_PDNS}
+        env:
+          INPUTS_PDNS: ${{ inputs.pdns }}
+
+      - name: run CI tests
+        run: tox run -e${INPUTS_PYTHON}-pdns${INPUTS_PDNS}-ci-action
+        shell: bash
+        env:
+          pdns_version: ${{ inputs.pdns }}
+          INPUTS_PYTHON: ${{ inputs.python }}
+          INPUTS_PDNS: ${{ inputs.pdns }}

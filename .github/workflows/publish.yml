@@ -5,57 +5,77 @@ on:
     tags:
       - '*'
 
-permissions:
-  contents: write
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   image_details:
     runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
     outputs:
       image_base: ${{ steps.details.outputs.image_registry }}/${{ steps.details.outputs.registry_account }}/${{ steps.details.outputs.repo_name }}
     steps:
-    - id: details
-      uses: kpfleming/composite-actions/image-details@v3
-      with:
-        base_image: python:trixie-main
+      - id: details
+        uses: kpfleming/composite-actions/image-details@74c01bb4d399a98545e8cdc5826d832b7917ac6b # v3.1.0
+        with:
+          base_image: python:trixie-main
+
   publish_galaxy:
     runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
     outputs:
       collection_namespace: ${{ steps.publish.outputs.collection_namespace }}
       collection_name: ${{ steps.publish.outputs.collection_name }}
       collection_tarball: ${{ steps.publish.outputs.collection_tarball }}
     needs:
-    - image_details
+      - image_details
     container:
       image: ${{ needs.image_details.outputs.image_base }}:main
     steps:
-    - uses: actions/checkout@v7
-      with:
-        show-progress: false
-    - id: publish
-      uses: kpfleming/composite-actions/galaxy-publish-tox@v3
-      with:
-        galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
-        tag: ${{ github.ref_name }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          show-progress: false
+          persist-credentials: false
+      - id: publish
+        uses: kpfleming/composite-actions/galaxy-publish-tox@74c01bb4d399a98545e8cdc5826d832b7917ac6b # v3.1.0
+        with:
+          galaxy_token: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
+          tag: ${{ github.ref_name }}
+
   publish_docs:
     runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
     needs:
-    - publish_galaxy
+      - publish_galaxy
     container:
-      image: docker.io/python:3.11
+      image: docker.io/python:3.14
     steps:
-    - uses: actions/checkout@v7
-      with:
-        ref: docsite
-        path: docsite
-        show-progress: false
-    - uses: actions/download-artifact@v8
-      with:
-        name: collection
-    - run: docsite/workflow-support/make_docs.sh ${{ needs.publish_galaxy.outputs.collection_namespace }}.${{ needs.publish_galaxy.outputs.collection_name }} ${{ needs.publish_galaxy.outputs.collection_tarball }}
-    - uses: EndBug/add-and-commit@v11
-      with:
-        cwd: docsite
-        add: docs --no-ignore-removal
-        tag: docsite-${{ github.ref_name }} --force
-        tag_push: --force
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: docsite
+          path: docsite
+          show-progress: false
+          persist-credentials: false
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: collection
+
+      - run: docsite/workflow-support/make_docs.sh ${NEEDS_PUBLISH_GALAXY_OUTPUTS_COLLECTION_NAMESPACE}.${NEEDS_PUBLISH_GALAXY_OUTPUTS_COLLECTION_NAME} ${NEEDS_PUBLISH_GALAXY_OUTPUTS_COLLECTION_TARBALL}
+        env:
+          NEEDS_PUBLISH_GALAXY_OUTPUTS_COLLECTION_NAMESPACE: ${{ needs.publish_galaxy.outputs.collection_namespace }}
+          NEEDS_PUBLISH_GALAXY_OUTPUTS_COLLECTION_NAME: ${{ needs.publish_galaxy.outputs.collection_name }}
+          NEEDS_PUBLISH_GALAXY_OUTPUTS_COLLECTION_TARBALL: ${{ needs.publish_galaxy.outputs.collection_tarball }}
+
+      - uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
+        with:
+          cwd: docsite
+          add: docs --no-ignore-removal
+          tag: docsite-${{ github.ref_name }} --force
+          tag_push: --force
