@@ -27,6 +27,10 @@ for emergencies).
   support PowerDNS Auth 5.1.0 or later versions until a new API client
   package has been chosen and incorporated into the collection.
 
+- Removed support for Python 3.10 and Ansible 2.15-2.18.
+
+- Added testing against Python 3.15.
+
 ## [25.2.0] - 2025-10-19
 
 ### Added
