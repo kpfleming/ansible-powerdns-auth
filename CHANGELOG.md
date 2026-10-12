@@ -29,6 +29,8 @@ for emergencies).
 
 - Removed support for Python 3.10 and Ansible 2.15-2.18.
 
+- Added testing against Python 3.15.
+
 ## [25.2.0] - 2025-10-19
 
 ### Added
