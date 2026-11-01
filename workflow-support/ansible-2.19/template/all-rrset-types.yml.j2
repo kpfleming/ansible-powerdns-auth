@@ -19,10 +19,10 @@
   register: result
 
 - ansible.builtin.debug:
-    msg: "{% raw %}query('community.general.dig', '@127.0.0.1', port=55353, '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false){% endraw %}"
+    msg: "{% raw %}query('community.general.dig', '@127.0.0.1', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', port=55353, flat=0, fail_on_error=false, real_empty=false){% endraw %}"
 
 - ansible.builtin.debug:
-    msg: "{% raw %}{{ query('community.general.dig', '@127.0.0.1', port=55353, '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
+    msg: "{% raw %}{{ query('community.general.dig', '@127.0.0.1', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', port=55353, flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
 
 - ansible.builtin.assert:
     quiet: true
@@ -35,5 +35,5 @@
       - ( rrset | map(attribute='ttl') | unique | list ) == [3600]
       - ( rrset | map(attribute='owner') | unique | list ) == ["{{ name }}"]
   vars:
-    rrset: "{% raw %}{{ query('community.general.dig', '@127.0.0.1', port=55353, '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
+    rrset: "{% raw %}{{ query('community.general.dig', '@127.0.0.1', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', port=55353, flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
 {% endfor %}
