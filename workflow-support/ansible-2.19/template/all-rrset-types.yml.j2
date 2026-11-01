@@ -24,10 +24,10 @@
       - '"exception" not in result'
       - not result.failed
       - result.changed
-      - rrset != "NXDOMAIN"
-      - ( rrset | map(attribute='type') | unique | list ) == ["{{ rrset_type }}"]
-      - ( rrset | map(attribute='ttl') | unique | list ) == [3600]
-      - ( rrset | map(attribute='owner') | unique | list ) == ["{{ name }}"]
+      - result_rrset != "NXDOMAIN"
+      - ( result_rrset | map(attribute='type') | unique | list ) == ["{{ rrset_type }}"]
+      - ( result_rrset | map(attribute='ttl') | unique | list ) == [3600]
+      - ( result_rrset | map(attribute='owner') | unique | list ) == ["{{ name }}"]
   vars:
-    rrset: "{% raw %}{{ query('dig_local', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
+    result_rrset: "{% raw %}{{ query('dig_local', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
 {% endfor %}
