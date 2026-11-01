@@ -19,6 +19,9 @@
   register: result
 
 - ansible.builtin.debug:
+    msg: "{% raw %}query('dig_local', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false){% endraw %}"
+
+- ansible.builtin.debug:
     msg: "{% raw %}{{ query('dig_local', '{% endraw %}{{ name }}{% raw %}', qtype='{% endraw %}{{ rrset_type }}{% raw %}', flat=0, fail_on_error=false, real_empty=false) }}{% endraw %}"
 
 - ansible.builtin.assert:
