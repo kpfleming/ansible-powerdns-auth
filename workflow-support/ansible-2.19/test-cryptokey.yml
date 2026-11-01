@@ -69,7 +69,7 @@
           - result.cryptokeys == []
           - output == ""
       vars:
-        output: "{{ lookup('community.general.dig', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
+        output: "{{ lookup('dig_local', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
 
     - name: check generated CryptoKey creation
       kpfleming.powerdns_auth.cryptokey:
@@ -93,7 +93,7 @@
           - output["algorithm"] == 15
           - output["type"] == "DNSKEY"
       vars:
-        output: "{{ lookup('community.general.dig', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=true, real_empty=true)}}"
+        output: "{{ lookup('dig_local', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=true, real_empty=true)}}"
 
     - name: check CryptoKey deletion
       kpfleming.powerdns_auth.cryptokey:
@@ -111,7 +111,7 @@
           - result.cryptokeys == []
           - output == ""
       vars:
-        output: "{{ lookup('community.general.dig', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
+        output: "{{ lookup('dig_local', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
 
     - name: check imported CryptoKey creation
       kpfleming.powerdns_auth.cryptokey:
@@ -140,7 +140,7 @@
           - output["key"] == "lMu/7quhLeSueMcdlt3T0sxln32yhrhASCKKDB1xJOk="
           - output["algorithm"] == 15
       vars:
-        output: "{{ lookup('community.general.dig', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false)}}"
+        output: "{{ lookup('dig_local', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false)}}"
 
     - name: check getting CryptoKey by id
       kpfleming.powerdns_auth.cryptokey:
@@ -216,7 +216,7 @@
           - result.cryptokeys[0]['active'] == true
           - output["algorithm"] == 15
       vars:
-        output: "{{ lookup('community.general.dig', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false)}}"
+        output: "{{ lookup('dig_local', '@127.0.0.1', 'cryptokeys.example.', qtype='DNSKEY', port=55353, flat=0, fail_on_error=false, real_empty=false)}}"
 
     - name: check getting CryptoKey by id of nonexistent CryptoKey
       kpfleming.powerdns_auth.cryptokey:

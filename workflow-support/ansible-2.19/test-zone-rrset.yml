@@ -44,7 +44,7 @@
           - (d1_rrset | sort(attribute='address'))[1]['address'] == "192.168.1.2"
           - (d1_rrset | sort(attribute='address'))[2]['address'] == "192.168.3.4"
       vars:
-        d1_rrset: "{{ lookup('community.general.dig', '@127.0.0.1', 't1.d1.rrset.example.', qtype='A', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
+        d1_rrset: "{{ lookup('dig_local', '@127.0.0.1', 't1.d1.rrset.example.', qtype='A', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
 
     - name: check zone creation with zone delegation
       kpfleming.powerdns_auth.zone:
@@ -143,8 +143,8 @@
           - '"192.168.6.2" in t2_d4_rrset'
           - '"192.168.7.4" in t2_d4_rrset'
       vars:
-        t1_d4_rrset: "{{ query('community.general.dig', '@127.0.0.1', 't1.d4.rrset.example.', qtype='A', port=55353, flat=1, fail_on_error=false, real_empty=false) }}"
-        t2_d4_rrset: "{{ query('community.general.dig', '@127.0.0.1', 't2.d4.rrset.example.', qtype='A', port=55353, flat=1, fail_on_error=false, real_empty=false) }}"
+        t1_d4_rrset: "{{ query('dig_local', '@127.0.0.1', 't1.d4.rrset.example.', qtype='A', port=55353, flat=1, fail_on_error=false, real_empty=false) }}"
+        t2_d4_rrset: "{{ query('dig_local', '@127.0.0.1', 't2.d4.rrset.example.', qtype='A', port=55353, flat=1, fail_on_error=false, real_empty=false) }}"
 
     - name: check zone creation with one rrset, with non-default TTL
       kpfleming.powerdns_auth.zone:
@@ -175,7 +175,7 @@
           - result.changed
           - d5_rrset['ttl'] == 900
       vars:
-        d5_rrset: "{{ lookup('community.general.dig', '@127.0.0.1', 't1.d5.rrset.example.', qtype='A', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
+        d5_rrset: "{{ lookup('dig_local', '@127.0.0.1', 't1.d5.rrset.example.', qtype='A', port=55353, flat=0, fail_on_error=false, real_empty=false) }}"
 
     - name: check zone creation with one rrset, with a disabled rr
       kpfleming.powerdns_auth.zone:
@@ -208,4 +208,4 @@
           - result.changed
           - '"192.168.1.2" not in d6_rrset'
       vars:
-        d6_rrset: "{{ query('community.general.dig', '@127.0.0.1', 't1.d6.rrset.example.', qtype='A', port=55353, flat=1, fail_on_error=false, real_empty=false) }}"
+        d6_rrset: "{{ query('dig_local', '@127.0.0.1', 't1.d6.rrset.example.', qtype='A', port=55353, flat=1, fail_on_error=false, real_empty=false) }}"
